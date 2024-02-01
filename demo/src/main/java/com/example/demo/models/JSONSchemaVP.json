@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"},
+    "type": {"type": "string"},
+    "issuingDate": {"type": "string", "format": "date-time"},
+    "verifiableCredential": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string"},
+          "issuer": {"type": "string"},
+          "issuanceDate": {"type": "string", "format": "date-time"},
+          "credentialSubject": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "name": {"type": "string"},
+              "birthDate": {"type": "string", "format": "date"},
+              "age": {"type": "integer", "minimum": 18}
+            },
+            "required": ["id", "name", "birthDate", "age"]
+            },
+          "proof": {"type": "object"}  
+        },
+        "required": ["id", "type", "issuer", "issuanceDate", "credentialSubject", "proof"]
+      }
+    },
+    "proof": {"type": "object"}
+  },
+  "required": ["id", "type", "issuingDate", "verifiableCredential", "proof"]
+}

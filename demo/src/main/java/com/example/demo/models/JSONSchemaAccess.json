@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "ct": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "ii": {
+          "type": "integer"
+        },
+        "is": {
+          "type": "string"
+        },
+        "su": {
+          "type": "string"
+        },
+        "de": {
+          "type": "string"
+        },
+        "si": {
+          "type": "string"
+        },
+        "ar": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ac": {
+                "type": "string"
+              },
+              "re": {
+                "type": "string"
+              }
+            },
+            "required": ["ac", "re"]
+          }
+        },
+        "nb": {
+          "type": "integer"
+        },
+        "na": {
+          "type": "integer"
+        }
+      },
+      "required": ["id", "ii", "is", "su", "de", "si", "ar", "nb", "na"]
+    },
+    "sar": {
+      "type": "object",
+      "properties": {
+        "ac": {
+          "type": "string"
+        },
+        "re": {
+          "type": "string"
+        }
+      },
+      "required": ["ac", "re"]
+    }
+  },
+  "required": ["ct", "sar"]
+}

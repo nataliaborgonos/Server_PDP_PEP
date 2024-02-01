@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "properties": {
+  "didSP": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength" : 20
+    },
+     "sar": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "resource": {
+          "type": "string"
+        }
+     }
+     },
+    "didSolicitante": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength" : 20
+    },
+    "verifiablePresentation": {
+      "type": "string",
+      "format":"base64"
+    }
+  }
+}

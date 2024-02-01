@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "properties": {
+  "id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength" : 20
+    },
+    "ii": {
+      "type": "number"
+    },
+    "is": {
+    	"type": "string"
+    },
+    "su": {
+    	"type": "string"
+    },
+    "de":{
+    	"type":"string"
+    },
+    "si":{
+    	"type":"string"
+    },
+    "ar":{
+    	"type":"array",
+          "items":{
+            "ac":{
+          	"type":"string"
+            },
+            "re":{
+            "type":"number"
+            }
+          }
+    },
+    "nb":{
+    	"type":"number"
+    },
+    "na":{
+    	"type":"number"
+    }
+  }
+ }
