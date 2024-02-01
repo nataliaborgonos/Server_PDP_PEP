@@ -43,11 +43,11 @@ public class PEP implements PEPInterface {
 		this.pdp=pdp;
 		try {
 			schemaRequest = JsonLoader.fromPath(
-					"/home/natalia/git/repository/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
+					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
 			schemaToken = JsonLoader.fromPath(
-					"/home/natalia/git/repository/demo/src/main/java/com/example/demo/models/JSONSchemaToken.json");
+					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaToken.json");
 			schemaAccess = JsonLoader.fromPath(
-					"/home/natalia/git/repository/demo/src/main/java/com/example/demo/models/JSONSchemaAccess.json");
+					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaAccess.json");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

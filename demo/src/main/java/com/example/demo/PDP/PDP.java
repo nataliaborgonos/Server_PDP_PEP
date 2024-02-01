@@ -63,8 +63,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 		//Check this to add a wallet parameter
 		public PDP(PIP pip) {
 			try {
-				schemaRequest=JsonLoader.fromPath("/home/natalia/git/repository/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
-				schemaPolitica=JsonLoader.fromPath("/home/natalia/git/repository/demo/src/main/java/com/example/demo/models/JSONSchemaPol.json");
+				schemaRequest=JsonLoader.fromPath("/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
+				schemaPolitica=JsonLoader.fromPath("/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaPol.json");
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
