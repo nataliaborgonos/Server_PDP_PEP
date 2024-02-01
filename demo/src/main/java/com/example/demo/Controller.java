@@ -49,10 +49,7 @@ public class Controller {
     	CapabilityToken ct=process(req);
     	String token = gson.toJson(ct);
     	System.out.println("Capability Token successfully issued.");
-    	return "Capability Token: " +  token + " issued for requester: \n ServiceProvider: " + request.getDidSP()
-    	+ " Simple Access Right: " + request.getSar().getAction() 
-    	+ " Requester: " + request.getDidRequester()
-    	+ " VP: " + request.getVerifiablePresentation();
+    	return token ;
     }
     
     public CapabilityToken process(String req) {
