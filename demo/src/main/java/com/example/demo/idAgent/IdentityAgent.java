@@ -41,13 +41,9 @@ public class IdentityAgent {
 		
 	}
 	
-	
-	//PRUEBAS DE LA API
-	
-	
-	//Crear una wallet para el solicitante 
-	//Habilitar esa wallet para hacer operaciones? -> POST /vcwallet/open -> La respuesta devuelve un token para hacer operaciones sobre ella
 	public void createWallet(String user) {  
+		
+		//Create a wallet for the requester
 		
 		System.setProperty("javax.net.ssl.trustStore", "/home/natalia/eclipse-workspace/TFG_/ec-cakey.jks");
 		System.setProperty("javax.net.ssl.trustStorePassword", "hola123");
@@ -150,7 +146,8 @@ public class IdentityAgent {
 	            e.printStackTrace();
 	        }
 		    
-		    //Habilitar la wallet para hacer operaciones -> devuelve el token
+			//Unlock that wallet and get a token
+		    
 		    try {
 	            String url = "https://localhost:8082/vcwallet/open";
 	            String requestBody = "{\r\n" +
@@ -186,22 +183,17 @@ public class IdentityAgent {
 	            e.printStackTrace();
 	        }
 		    
-		    //METER CREDENCIALES EN LA WALLET
-		    
 	    }
 	
-	//Método para verificar la VPresentation del solicitante
 	public boolean verifyPresentation(String VPjson) {
-		// Recibe la VPresentation del solicitante
+		
 		//VPresentation vp = gson.fromJson(VPjson, VPresentation.class);
 
-		// Realiza la petición HTTP a la API con los parámetros necesarios en JSON
-
+		// Verify the requester's Verifiable Presentation 
 		System.setProperty("javax.net.ssl.trustStore", "/home/natalia/eclipse-workspace/TFG_/ec-cakey.jks");
 		System.setProperty("javax.net.ssl.trustStorePassword", "hola123");
 
 		CertificateFactory certificateFactory=null;
-		  //Crear wallet para el solicitante 
 	    
         Path certificatePath = Paths.get("/home/natalia/eclipse-workspace/TFG_/ec-cacert.pem");
         try {
@@ -221,7 +213,6 @@ public class IdentityAgent {
 			e1.printStackTrace();
 		}
 
-        // Configurar el truststore con el certificado del servidor
         KeyStore keyStore = null;
         
 		try {
@@ -243,7 +234,6 @@ public class IdentityAgent {
 			e.printStackTrace();
 		}
 
-        // Configurar el SSLContext con el truststore
         TrustManagerFactory trustManagerFactory = null;
 		try {
 			trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -330,7 +320,6 @@ public class IdentityAgent {
 
 
             if(responseCode==200) {
-	            // Obtener propiedades de la respuesta
 	            if (responseBody.contains("error")) {
 	                System.out.println("Error " );
 	                return false;
@@ -344,11 +333,6 @@ public class IdentityAgent {
             	System.out.println(responseBody);
             }
         
-            
-			// Obtener la respuesta
-			// Recibe las respuestas en JSON
-			// Verificado con éxito -> boolean
-			// Error -> string
 
 		} catch (Exception e) {
 			e.printStackTrace();
