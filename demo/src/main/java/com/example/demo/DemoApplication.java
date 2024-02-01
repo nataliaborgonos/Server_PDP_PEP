@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class DemoApplication {
 
+	//Default port used if there's no "--port" parameter
 	static int port=8080;
 	
 	public static void main(String[] args) {
@@ -27,15 +28,4 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 	
-
-    private static int setPort(String[] args) {
-        for (int i = 0; i < args.length - 1; i++) {
-            if ("--port".equals(args[i])) {
-            	port=Integer.parseInt(args[i+1]);
-                return Integer.parseInt(args[i + 1]);
-            }
-        }
-        // Default port
-        return 8080;
-    }
 }
