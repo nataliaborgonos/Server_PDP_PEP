@@ -125,8 +125,6 @@ public class CapabilityToken {
 			signature = generateSignature(this, privateKey);
 
 			return signature;
-			// Aqu� puedes utilizar la clave privada para firmar tus archivos
-			// ...
 		} else {
 			System.out.println("That key is not private.");
 		}

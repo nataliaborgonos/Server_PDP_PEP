@@ -34,7 +34,8 @@ public class IdentityAgent {
     private static final String ALIAS="myserver";
     
 	Gson gson = new Gson();
-	//Token para hacer operaciones sobre la wallet
+	
+	//Initialize token for the wallet's operations 
 	String authToken="token"; 
 	
 	public IdentityAgent() {
@@ -49,7 +50,6 @@ public class IdentityAgent {
 		System.setProperty("javax.net.ssl.trustStorePassword", "hola123");
 
 		CertificateFactory certificateFactory=null;
-		  //Crear wallet para el solicitante 
 	    
         Path certificatePath = Paths.get("/home/natalia/eclipse-workspace/TFG_/ec-cacert.pem");
         try {
@@ -68,8 +68,6 @@ public class IdentityAgent {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
-        // Configurar el truststore con el certificado del servidor
         KeyStore keyStore = null;
         
 		try {
@@ -91,7 +89,6 @@ public class IdentityAgent {
 			e.printStackTrace();
 		}
 
-        // Configurar el SSLContext con el truststore
         TrustManagerFactory trustManagerFactory = null;
 		try {
 			trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -166,16 +163,14 @@ public class IdentityAgent {
 	                    .build();
 	            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 	            int responseCode = response.statusCode();
-	            System.out.println("Código de respuesta: " + responseCode);
+	            System.out.println("Response Code: " + responseCode);
 
 	            String responseBody = response.body();
-	            System.out.println("Respuesta del servidor: " + responseBody);
+	            System.out.println("Response Message: " + responseBody);
 
-	            // Convertir la cadena JSON a un objeto JsonObject
 	            JsonParser jsonParser = new JsonParser();
 	            JsonObject jsonObject = jsonParser.parse(responseBody).getAsJsonObject();
 
-	            //Coger el token de respuesta -> meterlo en la variable authToken
 	            authToken = jsonObject.get("token").getAsString();
 	           
 
@@ -313,20 +308,20 @@ public class IdentityAgent {
 		
 	        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             int responseCode = response.statusCode();
-            System.out.println("Código de respuesta: " + responseCode);
+            System.out.println("Response Code: " + responseCode);
 
             String responseBody = response.body();
-            System.out.println("Respuesta del servidor: " + responseBody);
+            System.out.println("Response Message: " + responseBody);
 
 
             if(responseCode==200) {
 	            if (responseBody.contains("error")) {
-	                System.out.println("Error " );
+	                System.out.println("Error: Verifiable Presentation can't be verified." );
 	                return false;
 	            }
 	
 	            else if (responseBody.contains("verified")) {
-	                System.out.println("Verified ");
+	                System.out.println("Verifiable Presentation has been successfully verified.");
 	                return true;
 	            }
             } else {

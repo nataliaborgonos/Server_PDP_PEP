@@ -151,15 +151,13 @@ public class PDP implements PDPInterface {
 			listajsn.add(j);
 		}
 
-		// Verificar si todos los elementos del camino (path) coinciden con los campos
-		// del objeto CredentialSubject
+		// Verify if every path's element match the object CredentialSubject's fields 
 		boolean allFieldsMatch = true;
 
 		long inicioTiempoPoliticas = System.currentTimeMillis();
-		// true x defecto-> si alguna no se cumple se acaba
-		// ir recorriendo los bucles
+		// True default, if there is a mismatch, finish the loop 
 		for (Policy p : politicas) {
-			// Comprobar si la politica es bien formada
+			// Find out if the policy is correctly formed 
 			String politicaJSON = gson.toJson(p);
 
 			JsonSchemaFactory factory1 = JsonSchemaFactory.byDefault();
@@ -184,7 +182,7 @@ public class PDP implements PDPInterface {
 			List<Field> fields = constraints.getFields();
 			for (Field f : fields) {
 				List<String> path = f.getPath();
-				// buscar jerarquia $.credentialSubject.
+				// Look for hierarchy ( $.credentialSubject. )
 
 				JsonObject objGlobal = new JsonObject();
 
@@ -193,12 +191,12 @@ public class PDP implements PDPInterface {
 
 						String[] partes = i.split("\\.");
 
-						// Recorremos la lista de la jerarqu�a
+						// Hierarchy list 
 						for (String parte : partes) {
 							String parte2 = new String(parte);
 							for (JsonObject obj1 : listajsn) {
 								JsonObject currentObj = obj1;
-								// Se comprueba que ese campo est�, y si est� se coge su valor
+								// If the field is present, we take its value 
 								if (!parte.equals("$")) {
 
 									if (obj1.has(parte)) {
@@ -233,12 +231,12 @@ public class PDP implements PDPInterface {
 
 								String[] partes1 = i.split("\\.");
 
-								// Recorremos la lista de la jerarqu�a
+								// Hierarchy list
 								for (String parte1 : partes1) {
 									String parte2 = new String(parte1);
 									for (JsonObject obj1 : listajsn) {
 										JsonObject currentObj = obj1;
-										// Se comprueba que ese campo est�, y si est� se coge su valor
+										// If the field is present, we take its value
 										if (!parte1.equals("$")) {
 
 											if (obj1.has(parte1)) {
@@ -273,12 +271,12 @@ public class PDP implements PDPInterface {
 
 								String[] partes1 = i.split("\\.");
 
-								// Recorremos la lista de la jerarqu�a
+								// Hierarchy list
 								for (String parte1 : partes1) {
 									String parte2 = new String(parte1);
 									for (JsonObject obj1 : listajsn) {
 										JsonObject currentObj = obj1;
-										// Se comprueba que ese campo est�, y si est� se coge su valor
+										// If the field is present, we take its value
 										if (!parte1.equals("$")) {
 
 											if (obj1.has(parte1)) {
@@ -315,13 +313,10 @@ public class PDP implements PDPInterface {
 		long finTiempoPoliticas = System.currentTimeMillis();
 		long difTiempoPoliticas = finTiempoPoliticas - inicioTiempoPoliticas;
 		double tiempoPoliticasSeg = difTiempoPoliticas / 1000.0;
-		// Si todo ok, se genera el token
+		// If everything is OK, the Capability Token is issued
 
 		if (allMatches == true) {
-			// ct=new CapabilityToken(KEYSTORE, KEYSTOREPWD, ALIAS);
 			ct = new CapabilityToken(KEYSTORE, KEYSTOREPWD, ALIAS, ar.getDidRequester(), ar.getDidSP(), ar.getSar());
-
-			// pbk=ct.getPublicKey();
 			pbk = ct.getPublicKey();
 		}
 		return ct;

@@ -127,7 +127,6 @@ public class Requester {
 		return json;
 	}
 
-	//Esto hay que cambiarlo y delegar en el idAgent para que genere la VPresentation -> solicitud a API 
 	
 	public VPresentation generaVP() {
 		
