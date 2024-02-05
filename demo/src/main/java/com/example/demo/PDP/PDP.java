@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Base64;
 
+import com.example.demo.PAP.PAP;
 import com.example.demo.PEP.PEP;
 import com.example.demo.PIP.PIP;
 import com.example.demo.PIP.PolicyStore;
@@ -44,9 +45,10 @@ public class PDP implements PDPInterface {
 	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
 	private static final String ALIAS = "MiAliasPriv";
 
-	TrustScoreStore trustScores = new TrustScoreStore();
-	PolicyStore policies = new PolicyStore();
+
+
 	PIP pip;
+	PAP pap;
 	PEP pep;
 	IdentityAgent idAgent = new IdentityAgent();
 
@@ -59,7 +61,7 @@ public class PDP implements PDPInterface {
 	/* CONSTRUCTOR */
 
 	// Check this to add a wallet parameter
-	public PDP(PIP pip) {
+	public PDP(PIP pip,PAP pap) {
 		try {
 			schemaRequest = JsonLoader.fromPath(
 					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
@@ -72,6 +74,7 @@ public class PDP implements PDPInterface {
 		}
 		gson = new Gson();
 		this.pip = pip;
+		this.pap = pap;
 	}
 
 	/* METHODS */
@@ -111,7 +114,7 @@ public class PDP implements PDPInterface {
 		}
 
 		// Get policies needed to do the requested action in that resource
-		ArrayList<Policy> politicas = pip.getPolicies(ar.getDidSP(), ar.getSar().getResource());
+		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource());
 
 		// Get trust score associated with the requester
 		double trustScore = pip.getTrustScore(ar.getDidRequester());

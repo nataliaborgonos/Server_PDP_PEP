@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.PAP.PAP;
 import com.example.demo.PDP.PDP;
 import com.example.demo.PEP.PEP;
 import com.example.demo.PIP.PIP;
@@ -25,10 +26,12 @@ import com.google.gson.Gson;
 public class Controller {
 	
 	TrustScoreStore trustScores=new TrustScoreStore();
+	PIP pip=new PIP(trustScores);
+	
 	PolicyStore policies=new PolicyStore();
-	PIP pip=new PIP(trustScores,policies);
+	PAP pap=new PAP(policies);
 
-	PDP pdp=new PDP(pip);
+	PDP pdp=new PDP(pip,pap);
 	
 	PEP pep= new PEP(pdp);
 

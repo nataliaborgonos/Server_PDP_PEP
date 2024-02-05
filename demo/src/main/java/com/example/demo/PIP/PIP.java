@@ -10,22 +10,14 @@ import com.example.demo.models.Resource;
 public class PIP implements PIPInterface{
 
 	TrustScoreStore trustScoreStore;
-	PolicyStore policyStore;
 
 	//PolicyStore -> Ponerlo en el PAP
 	
 	
-	public PIP(TrustScoreStore trustScores, PolicyStore policies ) {
+	public PIP(TrustScoreStore trustScores) {
 		this.trustScoreStore=trustScores;
-		this.policyStore=policies;
 	}
 	
-	@Override
-	public ArrayList<Policy> getPolicies(String didSP, String recursoSolicitado) {
-		return policyStore.getPolicy(didSP, recursoSolicitado);
-	}
-
-
 	@Override
 	public double getTrustScore(String didSolicitante) {
 		return trustScoreStore.getTrustScore(didSolicitante);
