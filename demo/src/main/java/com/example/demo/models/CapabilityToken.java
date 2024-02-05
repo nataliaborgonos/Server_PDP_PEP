@@ -135,7 +135,8 @@ public class CapabilityToken {
 	public String getSignatureString(CapabilityToken token) {
 		String signature = null;
 		signature = token.getId() + token.getIi() + token.getIs() + token.getSu() + token.getDe()
-				+ token.getAr().toString() + token.getNb() + token.getNa();
+				+ token.getAr().get(0).getAction()+token.getAr().get(0).getResource() + token.getNb() + token.getNa();
+
 		return signature;
 	}
 
@@ -144,7 +145,7 @@ public class CapabilityToken {
 		String dataToCheck = this.getSignatureString(token);
 
 		try {
-			Signature signature = Signature.getInstance("SHA1withRSA");
+			Signature signature = Signature.getInstance("SHA256withRSA");
 			signature.initSign(serverPrivateKey);
 			signature.update(dataToCheck.getBytes());
 			byte[] sigBytes;

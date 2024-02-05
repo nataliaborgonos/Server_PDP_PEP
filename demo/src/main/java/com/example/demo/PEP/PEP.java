@@ -130,9 +130,9 @@ public class PEP implements PEPInterface {
 			// Verify the token's signature
 			// Decode from Base64
 			byte[] signatureBytes = Base64.getDecoder().decode(acc.getCt().getSi());
-
+			
 			// Obtain a Signature's instance and configure for verifying with the Public Key
-			Signature signature = Signature.getInstance("SHA1withRSA");
+			Signature signature = Signature.getInstance("SHA256withRSA");
 			pbk = pdp.getPbk();
 			signature.initVerify(pbk);
 
@@ -141,10 +141,10 @@ public class PEP implements PEPInterface {
 
 			// Concatenate fields
 			signature1 = acc.getCt().getId() + acc.getCt().getIi() + acc.getCt().getIs() + acc.getCt().getSu()
-					+ acc.getCt().getDe() + acc.getCt().getAr().toString() + acc.getCt().getNb() + acc.getCt().getNa();
+					+ acc.getCt().getDe() + acc.getCt().getAr().get(0).getAction()+acc.getCt().getAr().get(0).getResource()+ acc.getCt().getNb() + acc.getCt().getNa();
 
 			byte[] messageBytes = signature1.getBytes(StandardCharsets.UTF_8);
-
+			
 			// Update signature
 			try {
 				signature.update(messageBytes);
@@ -169,12 +169,12 @@ public class PEP implements PEPInterface {
 			}
 
 			// If everything matches, access to the resource is granted
-			if (!notExpired && !signatureVerified && !simpleAccessRightsOk) {
-				System.out.println("ERROR: Validation failed. Capability Token is not valid.");
-			} else {
+			if (notExpired && signatureVerified && simpleAccessRightsOk) {
 				System.out.println("SUCCESS: Capability Token has been successfully validated.");
 				return "SUCCESS: Capability Token has been successfully validated.";
+			}else {System.out.println("ERROR: Validation failed. Capability Token is not valid.");
 			}
+			
 
 		} catch (ProcessingException e1) {
 			// TODO Auto-generated catch block

@@ -49,8 +49,6 @@ public class Controller {
     	// no limitar credential subject -> no poner atributos especificos
     	//VP Bien formada con json ld
     	
-    	//MIRAR VALIDACION TOKEN -> POST Y GET
-    	
     	//Create access request
 		String req=requester.requestAccess(request.getSar().getResource(), request.getSar().getAction());
 		pep.parseRequest(req);
