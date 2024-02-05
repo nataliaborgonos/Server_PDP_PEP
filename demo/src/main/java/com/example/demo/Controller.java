@@ -43,15 +43,6 @@ public class Controller {
     	//Create a requester with request data
     	Requester requester =new Requester(request.getDidSP(),request.getDidRequester(),request.getVerifiablePresentation());
     	
-    	//DIFF EXCHANGE (PRESENTATION EXCHANGE) -> MIRAR CONTEXT POLICIES -> MIRAR NOMBRES
-    	//Deserializar json 
-    	//campos explicitos -> ponerles not null 
-    	//los demas, dejarlos ahi
-    	//tomar la vpresentation como un json, no depender del tipo
-    	//mirar libreria JSON LD -> modos contexto 
-    	// no limitar credential subject -> no poner atributos especificos
-    	//VP Bien formada con json ld
-    	
     	//Create access request
 		String req=requester.requestAccess(request.getSar().getResource(), request.getSar().getAction());
 		pep.parseRequest(req);
