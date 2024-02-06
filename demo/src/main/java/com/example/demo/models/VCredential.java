@@ -3,21 +3,25 @@ package com.example.demo.models;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class VCredential {
-	    private String id;
-	    private String type;
-	    private String issuer;
-	    private String issuanceDate;
+		private String context;
 	    private CredentialSubject credentialSubject;
+	    private String expirationDate;
+	    private String id;
+	    private String issuanceDate;
+	    private String issuer;
 	    private Proof proof;
+	    private String referenceNumber;
+	    private ArrayList<String> type;
+
 
 	    public VCredential(String id, String type, String issuer, String issuanceDate, CredentialSubject credentialSubject) {
 	        this.id = id;
-	        this.type = type;
 	        this.issuer = issuer;
 	        this.issuanceDate = issuanceDate;
 	        this.credentialSubject = credentialSubject;
@@ -27,14 +31,11 @@ public class VCredential {
 	    
 	    public VCredential(CredentialSubject cs) {
 	    	this.id=UUID.randomUUID().toString().substring(0, 8);
-	    	this.type="VerifiableCredential";
 	    	this.issuer="Erathostenes";
 	    	LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 	    	String nowStr = now.format(DateTimeFormatter.ISO_DATE_TIME);
 	    	this.issuanceDate=nowStr;
 	    	this.credentialSubject=cs;
-	    	//Map<String, String> proof =new HashMap<>();
-	    	//proof.put("JWS", "123");
 	    }
 
 	    public Proof getProof() {
@@ -53,15 +54,40 @@ public class VCredential {
 	        this.id = id;
 	    }
 
-	    public String getType() {
-	        return type;
-	    }
 
-	    public void setType(String type) {
-	        this.type = type;
-	    }
+	    public String getContext() {
+			return context;
+		}
 
-	    public String getIssuer() {
+		public void setContext(String context) {
+			this.context = context;
+		}
+
+		public String getExpirationDate() {
+			return expirationDate;
+		}
+
+		public void setExpirationDate(String expirationDate) {
+			this.expirationDate = expirationDate;
+		}
+
+		public String getReferenceNumber() {
+			return referenceNumber;
+		}
+
+		public void setReferenceNumber(String referenceNumber) {
+			this.referenceNumber = referenceNumber;
+		}
+
+		public ArrayList<String> getType() {
+			return type;
+		}
+
+		public void setType(ArrayList<String> type) {
+			this.type = type;
+		}
+
+		public String getIssuer() {
 	        return issuer;
 	    }
 

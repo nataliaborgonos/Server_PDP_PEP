@@ -31,7 +31,7 @@ public class Requester {
 	String birthdate;
 	int age;
 	String VPJSON;
-	VPresentation VP_base64;
+	//VPresentation VP_base64;
 	
 	/* ADICIONAL */
 	private Gson gson =new Gson();
@@ -41,7 +41,7 @@ public class Requester {
 	
 	/* CONSTRUCTORES */
 	
-	public Requester(String didSP, String didRequester, VPresentation verifiablePresentation) {
+	public Requester(String didSP, String didRequester, String verifiablePresentation) {
 		this.didSP=didSP;
 		//this.sar=sar;
 		this.didRequester=didRequester;
@@ -50,7 +50,7 @@ public class Requester {
 		LocalDate birthDate = LocalDate.parse(birthdate);
 	    LocalDate currentDate = LocalDate.now();
 	    this.age= Period.between(birthDate, currentDate).getYears();
-	    this.VP_base64=verifiablePresentation;
+	    this.VPJSON=verifiablePresentation;
 	}
 	
 	public String getVPJSON() {
@@ -107,13 +107,13 @@ public class Requester {
 	
 	
 	
-	public VPresentation getVP_base64() {
-		return VP_base64;
-	}
+	//public VPresentation getVP_base64() {
+		//return VP_base64;
+	//}
 
-	public void setVP_base64(VPresentation vP_base64) {
-		VP_base64 = vP_base64;
-	}
+	//public void setVP_base64(VPresentation vP_base64) {
+		//VP_base64 = vP_base64;
+	//}
 
 	public String requestAccess(String recursoSolicitado, String accion) {
 		AuthRequest ar=new AuthRequest(recursoSolicitado,accion,this);

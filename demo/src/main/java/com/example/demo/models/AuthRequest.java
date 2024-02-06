@@ -8,14 +8,14 @@ public class AuthRequest {
 	String didSP;
 	SimpleAccessRight sar;
 	String didRequester;
-	VPresentation verifiablePresentation;
+	String verifiablePresentation;
 
 	/* CONSTRUCTORS */
 	public AuthRequest(String resource, String action, Requester requester) {
 		this.didSP = requester.getDidSP();
 		this.sar = new SimpleAccessRight(action, resource);
 		this.didRequester = requester.getDidRequester();
-		this.verifiablePresentation = requester.getVP_base64();
+		this.verifiablePresentation = requester.getVPJSON();
 	}
 
 	public AuthRequest() {
@@ -46,11 +46,11 @@ public class AuthRequest {
 		this.didRequester = didRequester;
 	}
 
-	public VPresentation getVerifiablePresentation() {
+	public String getVerifiablePresentation() {
 		return verifiablePresentation;
 	}
 
-	public void setVerifiablePresentation(VPresentation verifiablePresentation) {
+	public void setVerifiablePresentation(String verifiablePresentation) {
 		this.verifiablePresentation = verifiablePresentation;
 	}
 

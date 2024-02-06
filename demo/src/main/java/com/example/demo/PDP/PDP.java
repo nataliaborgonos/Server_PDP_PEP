@@ -1,6 +1,7 @@
 package com.example.demo.PDP;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import com.example.demo.models.Policy;
 import com.example.demo.models.Proof;
 import com.example.demo.models.VCredential;
 import com.example.demo.models.VPresentation;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,6 +36,9 @@ import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+
+import javax.json.*;
 
 import org.apache.commons.*;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -125,10 +130,10 @@ public class PDP implements PDPInterface {
 			}
 		}
 
-		// TODO: CAMBIAR EL FORMATO DE PRESENTACIÓN ??
+		//TODO: CAMBIAR EL FORMATO DE PRESENTACIÓN
 
-		// VPresentation VP=ar.getVerifiablePresentation();
-
+		String VP=ar.getVerifiablePresentation();
+System.out.println("VP: "+VP);
 		// Call API for verifying Verifiable Presentation
 		boolean allMatches = true;
 
@@ -141,11 +146,48 @@ public class PDP implements PDPInterface {
 
 		// Prove matching policies with requester's VP
 		String vp_json = gson.toJson(ar.getVerifiablePresentation());
-		JsonObject vpresentation = gson.fromJson(vp_json, JsonObject.class);
+	//	JsonObject vpresentation = gson.fromJson(vp_json, JsonObject.class);
 
-		JsonObject obj = vpresentation;
+	//	JsonObject obj = vpresentation;                                                                       
 
-		List<VCredential> listavc = ar.getVerifiablePresentation().getVerifiableCredential();
+       
+       //JSON DESERIALIZACION
+		
+		
+		  javax.json.JsonObject jsonObject;                                                       
+		  try (JsonReader reader = Json.createReader(new StringReader(VP))) {
+		            jsonObject = reader.readObject();  
+		            System.out.println("json obj: "+jsonObject);
+		  }                                                                      
+		                                                                               
+      VPresentation presentationData = new VPresentation(); 
+      List<JsonValue> contextList = jsonObject.getJsonArray("@context");
+      ArrayList<String> stringList = new ArrayList<>();
+      for (JsonValue jsonValue : contextList) {
+          stringList.add(jsonValue.toString());
+          System.out.println(jsonValue.toString());
+          // O puedes usar stringList.add(jsonValue.asJsonString());
+      }
+      presentationData.setContext(stringList);
+      
+      presentationData.setHolder(jsonObject.getString("holder"));
+   
+      javax.json.JsonObject proofJsonObject = jsonObject.getJsonObject("proof");
+      String jsonString = proofJsonObject.toString();
+      Proof proof=gson.fromJson(jsonString, Proof.class);
+      presentationData.setProof(proof);
+	
+      presentationData.setType(jsonObject.getString("type"));
+      
+      List<JsonValue> vcredential=jsonObject.getJsonArray("verifiableCredential");
+     List<VCredential> stringCred = new ArrayList<>();
+      for (JsonValue jsonValue : vcredential) {
+          stringList.add(jsonValue.toString());
+      }                                                                                                           
+              presentationData.setVerifiableCredential(stringCred);                                                 
+     
+      
+		 List<VCredential> listavc = presentationData.getVerifiableCredential();
 		List<JsonObject> listajsn = new ArrayList<>();
 		for (VCredential v : listavc) {
 			String vjson = gson.toJson(v);

@@ -11,14 +11,12 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.SignedJWT;
 public class Proof {
-	
-		String type;
 		String created;
-		String verificationMethod;
+		String jws; 
 		String proofPurpose;
-	    String jws; 
-	   // String proofValue; -> SI NO SE USA JsonWebSignature
-	   
+		String type;
+		String verificationMethod;
+		
 	    public Proof() {}
 	    
 	    public Proof(String contentToSign) {
