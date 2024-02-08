@@ -181,9 +181,7 @@ public class IdentityAgent {
 	    }
 	
 	public boolean verifyPresentation(String VPjson) {
-		System.out.println("presentacion a verificar: "+VPjson);
-		//VPresentation vp = gson.fromJson(VPjson, VPresentation.class);
-
+	
 		// Verify the requester's Verifiable Presentation 
 		System.setProperty("javax.net.ssl.trustStore", "/home/natalia/eclipse-workspace/TFG_/ec-cakey.jks");
 		System.setProperty("javax.net.ssl.trustStorePassword", "hola123");
