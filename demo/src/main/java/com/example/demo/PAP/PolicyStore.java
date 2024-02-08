@@ -1,4 +1,4 @@
-package com.example.demo.PIP;
+package com.example.demo.PAP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,42 +20,65 @@ public class PolicyStore {
 	public PolicyStore() {
 		this.policies=new HashMap<String,HashMap<Resource,ArrayList<Policy>>>();
 
-		//PROVISIONAL PARA HACER PRUEBAS
-		Policy politica=new Policy(1);
-		politica.setNombre("Politica ejemplo");
-		politica.setPurpose("Ejemplificar");
-		politica.setServiceProvider("did:serviceProvider:1");
+		// Create a policy for trying the Server
+		Policy policy=new Policy(1);
+		policy.setName("Student Information");
+		policy.setPurpose("Reveal id and name of the BachelorDegree's student in MIT.");
+		policy.setServiceProvider("did:serviceProvider:1");
 		SimpleAccessRight sar=new SimpleAccessRight("GET", "/temperatura");
 		List<SimpleAccessRight> accessRights=new ArrayList<>();
 		accessRights.add(sar);
-		politica.setAccessRights(accessRights);
-		politica.setAuthTime(123123123);
-		politica.setMinTrustScore(0.5);
-		Field field1=new Field("Debe revelar nombre y appellido","Restricción de revelar");
+		policy.setAccessRights(accessRights);
+		policy.setAuthTime(123123123);
+		policy.setMinTrustScore(0.5);
+		
+		// Field for revealing id
+		Field field1=new Field();
 		List<String> path=new ArrayList<String>();
-		//path.add("$.credentialSubject.nombre");
-		//path.add("$.credentialSubject.apellido");
-		path.add("$.credentialSubject.age");
+		path.add("$.id");
 		field1.setPath(path);
-		//Filter filtro=new Filter("string");
-		//filtro.setPattern("Jefe");
-		//field1.setFilter(filtro);
-		Filter filtro=new Filter("number");
-		filtro.setMin(18);
-		filtro.setMax(100);
-		field1.setFilter(filtro);
+		
+		// Field for revealing name
+		Field field2=new Field();
+		List<String> path2=new ArrayList<String>();
+		path2.add("$.name");
+		field2.setPath(path2);
+		
+		// Field for matching degree type with "BachelorDegree"
+		Field field3=new Field();
+		List<String> path3=new ArrayList<String>();
+		path3.add("$.degree.type");
+		field3.setPath(path3);
+		Filter degreeTypeFilter=new Filter("string");
+		degreeTypeFilter.setPattern("BachelorDegree");
+		field3.setFilter(degreeTypeFilter);
+	
+		// Field  for matching degree university with "MIT"
+		Field field4=new Field();
+		List<String> path4=new ArrayList<String>();
+		path4.add("$.degree.university");
+		field4.setPath(path4);
+		Filter degreeUniversityFilter=new Filter("string");
+		degreeUniversityFilter.setPattern("MIT");
+		field4.setFilter(degreeUniversityFilter);
+		
 		Constraint constraints=new Constraint();
+		
 		List<Field> fields=new ArrayList<>();
 		fields.add(field1);
+		fields.add(field2);
+		fields.add(field3);
+		fields.add(field4);
 		constraints.setFields(fields);
-		politica.setConstraints(constraints);
+	
+		policy.setConstraints(constraints);
 		
 		Resource r=new Resource(1, "/temperatura");
-		//pap.nuevaPolitica("did:serviceProvider:1", politica, r);
-		ArrayList<Policy> politicas=new ArrayList<>();
-		politicas.add(politica);
+		
+		ArrayList<Policy> pols=new ArrayList<>();
+		pols.add(policy);
 		HashMap<Resource,ArrayList<Policy>> rec=new HashMap<>();
-		rec.put(r,politicas);
+		rec.put(r,pols);
 		policies.put("natalia", rec);
 	}
 	

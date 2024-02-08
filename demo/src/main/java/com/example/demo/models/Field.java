@@ -15,6 +15,10 @@ public class Field {
 		this.path=new ArrayList<String>();
 	}
 
+	public Field() {
+		
+	}
+	
 	public String getPurpose() {
 		return purpose;
 	}

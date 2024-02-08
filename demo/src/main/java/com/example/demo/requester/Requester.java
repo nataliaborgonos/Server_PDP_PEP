@@ -128,34 +128,6 @@ public class Requester {
 	}
 
 	
-	public VPresentation generaVP() {
-		
-		//agente.generateVP();
-		
-		CredentialSubject cs=new CredentialSubject(didRequester, user,"apellido", birthdate);
-		VCredential vc=new VCredential(cs);
-		String payloadVC=gson.toJson(vc);
-		Proof pVC = new Proof(payloadVC);
-		String pVCString=gson.toJson(pVC);
-		vc.setProof(pVC);
-				
-		List<VCredential> lista=new ArrayList<>();
-		lista.add(vc);
-		VPresentation contentToSign=new VPresentation(lista);
-		String payload=gson.toJson(contentToSign);
-		System.out.println("Contenido a firmar: "+payload);
-		
-		Proof p = new Proof(payload);
-		String pJson=gson.toJson(p);
-		System.out.println("proof en json "+pJson);
-		contentToSign.setProof(p);
-		//Añadirle a la VPresentation el campo proof 
-		
-	//	Map<String,String> proof=new HashMap<>();
-		//proof.put("JWS", "123");
-	//	VPresentation vp=new VPresentation(lista, proof);
-//		return vp;
-		return  contentToSign;
-	}
+	
 }
 

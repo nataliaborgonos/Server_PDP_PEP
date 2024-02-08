@@ -11,7 +11,7 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 public class Policy {
 	
 	String id;
-	String nombre;
+	String name;
 	String purpose;
 	private String serviceProvider;
     private List<SimpleAccessRight> accessRights;
@@ -32,12 +32,12 @@ public class Policy {
 		this.id = id;
 	}
 
-	public String getNombre() {
-		return nombre;
+	public String getName() {
+		return name;
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getPurpose() {
@@ -88,27 +88,5 @@ public class Policy {
 		this.constraints = constraints;
 	}
 
-
-/*
-	public boolean isCumplida(String request) {
-		JsonSchemaFactory factory=JsonSchemaFactory.byDefault();
-		try {
-			JsonSchema schema1=factory.getJsonSchema(schema);
-			try {
-				ok=JsonLoader.fromString(request);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			schema1.validate(ok);
-			System.out.println("La solicitud cumple la politica");
-			return true;
-		} catch (ProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-	*/
 }
 

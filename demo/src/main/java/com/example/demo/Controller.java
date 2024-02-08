@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.PAP.PAP;
+import com.example.demo.PAP.PolicyStore;
 import com.example.demo.PDP.PDP;
 import com.example.demo.PEP.PEP;
 import com.example.demo.PIP.PIP;
-import com.example.demo.PIP.PolicyStore;
 import com.example.demo.PIP.TrustScoreStore;
 import com.example.demo.models.AccessRequest;
 import com.example.demo.models.AuthRequest;
@@ -50,6 +50,10 @@ public class Controller {
 		//Process access request to obtain a Capability Token 
     	CapabilityToken ct=process(req);
     	String token = gson.toJson(ct);
+    	if(ct==null) {
+    		System.out.println("Capability Token couldn't be issued, please revise the request and try again.");
+    		return "Capability Token couldn't be issued, please revise the request and try again.";
+    	}
     	System.out.println("Capability Token successfully issued.");
     	return token ;
     }

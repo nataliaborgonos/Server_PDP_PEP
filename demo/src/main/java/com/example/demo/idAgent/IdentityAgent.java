@@ -172,16 +172,16 @@ public class IdentityAgent {
 	            JsonObject jsonObject = jsonParser.parse(responseBody).getAsJsonObject();
 
 	            authToken = jsonObject.get("token").getAsString();
-	           
+	         
 
 	        } catch (Exception e) {
-	            e.printStackTrace();
+	            System.err.println("Wallet already unlocked. The auth token hasn't expired yet.");
 	        }
 		    
 	    }
 	
 	public boolean verifyPresentation(String VPjson) {
-		
+		System.out.println("presentacion a verificar: "+VPjson);
 		//VPresentation vp = gson.fromJson(VPjson, VPresentation.class);
 
 		// Verify the requester's Verifiable Presentation 
@@ -262,39 +262,7 @@ public class IdentityAgent {
 			String url = "https://localhost:8082/vcwallet/verify";
 			String requestBody="{\n"
 					+ "    \"auth\":\""+authToken+"\",\n"
-					+ "    \"presentation\":{\n"
-					+ "    \"@context\": [\"https://www.w3.org/2018/credentials/v1\"],\n"
-					+ "    \"holder\": \"did:key:z6MknC1wwS6DEYwtGbZZo2QvjQjkh2qSBjb4GYmbye8dv4S5\",\n"
-					+ "    \"proof\": {\n"
-					+ "      \"created\": \"2021-03-26T14:08:21.15597-04:00\",\n"
-					+ "      \"jws\": \"eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..GUbI3psCXXhCjDJ2yBTwteuKSUHJuEK840yJzxWuPPxYyAuza1uwK1v75Az2jO63ILHEsLmxwcEhBlKcTw7ODA\",\n"
-					+ "      \"proofPurpose\": \"authentication\",\n"
-					+ "      \"type\": \"Ed25519Signature2018\",\n"
-					+ "      \"verificationMethod\": \"did:key:z6MknC1wwS6DEYwtGbZZo2QvjQjkh2qSBjb4GYmbye8dv4S5#z6MknC1wwS6DEYwtGbZZo2QvjQjkh2qSBjb4GYmbye8dv4S5\"\n"
-					+ "    },\n"
-					+ "    \"type\": \"VerifiablePresentation\",\n"
-					+ "    \"verifiableCredential\": [{\n"
-					+ "      \"@context\": [\"https://www.w3.org/2018/credentials/v1\", \"https://www.w3.org/2018/credentials/examples/v1\", \"https://w3id.org/security/bbs/v1\"],\n"
-					+ "      \"credentialSubject\": {\n"
-					+ "        \"degree\": {\"type\": \"BachelorDegree\", \"university\": \"MIT\"},\n"
-					+ "        \"id\": \"did:example:ebfeb1f712ebc6f1c276e12ec21\",\n"
-					+ "        \"name\": \"Jayden Doe\",\n"
-					+ "        \"spouse\": \"did:example:c276e12ec21ebfeb1f712ebc6f1\"\n"
-					+ "      },\n"
-					+ "      \"expirationDate\": \"2020-01-01T19:23:24Z\",\n"
-					+ "      \"id\": \"http://example.edu/credentials/1872\",\n"
-					+ "      \"issuanceDate\": \"2010-01-01T19:23:24Z\",\n"
-					+ "      \"issuer\": {\"id\": \"did:example:76e12ec712ebc6f1c221ebfeb1f\", \"name\": \"Example University\"},\n"
-					+ "      \"proof\": {\n"
-					+ "        \"created\": \"2021-03-26T14:08:20.898673-04:00\",\n"
-					+ "        \"jws\": \"eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..PeIllfXnUh7zD4mH24NCnfFFeKf0Fys8XWt8nVE2Z-fgSvE6-3Rbc-LgSIpyKPF20CtFzEdownwOiMavy2_tAQ\",\n"
-					+ "        \"proofPurpose\": \"assertionMethod\",\n"
-					+ "        \"type\": \"Ed25519Signature2018\",\n"
-					+ "        \"verificationMethod\": \"did:key:z6MknC1wwS6DEYwtGbZZo2QvjQjkh2qSBjb4GYmbye8dv4S5#z6MknC1wwS6DEYwtGbZZo2QvjQjkh2qSBjb4GYmbye8dv4S5\"\n"
-					+ "      },\n"
-					+ "      \"referenceNumber\": 83294847,\n"
-					+ "      \"type\": [\"VerifiableCredential\", \"UniversityDegreeCredential\"]\n"
-					+ "    }]},\n"
+					+ "    \"presentation\":"+VPjson+",\n"
 					+ "    \"userid\":\"natalia\"\n"
 					+ "  }";
 			HttpClient client = HttpClient.newBuilder()

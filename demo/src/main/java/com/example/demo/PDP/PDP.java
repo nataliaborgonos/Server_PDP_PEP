@@ -11,20 +11,24 @@ import java.util.Map;
 import java.util.Base64;
 
 import com.example.demo.PAP.PAP;
+import com.example.demo.PAP.PolicyStore;
 import com.example.demo.PEP.PEP;
 import com.example.demo.PIP.PIP;
-import com.example.demo.PIP.PolicyStore;
 import com.example.demo.PIP.TrustScoreStore;
 import com.example.demo.idAgent.IdentityAgent;
 import com.example.demo.models.AuthRequest;
 import com.example.demo.models.CapabilityToken;
 import com.example.demo.models.Constraint;
+import com.example.demo.models.CredentialSubject;
+import com.example.demo.models.Degree;
 import com.example.demo.models.Field;
+import com.example.demo.models.Issuer;
 import com.example.demo.models.Policy;
 import com.example.demo.models.Proof;
 import com.example.demo.models.VCredential;
 import com.example.demo.models.VPresentation;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,8 +44,13 @@ import com.google.gson.reflect.TypeToken;
 
 import javax.json.*;
 
+import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.utils.JsonUtils;
+
 import org.apache.commons.*;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.mozilla.javascript.tools.shell.JSConsole;
 
 public class PDP implements PDPInterface {
 
@@ -130,34 +139,39 @@ public class PDP implements PDPInterface {
 			}
 		}
 
-		//TODO: CAMBIAR EL FORMATO DE PRESENTACIÓN
-
+		//Get the requester's VP
 		String VP=ar.getVerifiablePresentation();
-System.out.println("VP: "+VP);
-		// Call API for verifying Verifiable Presentation
+	
+		//Validate if the VP is well formed -> Put the not null fields
+		try {
+			Map<String, Object> presentation = (Map<String, Object>) JsonUtils.fromString(VP);
+			   Object type = presentation.get("type");
+	            if (type == null || !"VerifiablePresentation".equals(type.toString())) {
+	                System.out.println("Not a valid presentation.");;
+	            }
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		boolean allMatches = true;
 
 		// Call API for verify the VPresentation
 		idAgent.createWallet("natalia");
-		boolean response = idAgent.verifyPresentation("param");
+		boolean response = idAgent.verifyPresentation(VP);
 		if (!response) {
 			allMatches = false;
 		}
 
 		// Prove matching policies with requester's VP
-		String vp_json = gson.toJson(ar.getVerifiablePresentation());
-	//	JsonObject vpresentation = gson.fromJson(vp_json, JsonObject.class);
-
-	//	JsonObject obj = vpresentation;                                                                       
-
-       
-       //JSON DESERIALIZACION
 		
-		
+		//Deserialize JSON
 		  javax.json.JsonObject jsonObject;                                                       
 		  try (JsonReader reader = Json.createReader(new StringReader(VP))) {
 		            jsonObject = reader.readObject();  
-		            System.out.println("json obj: "+jsonObject);
 		  }                                                                      
 		                                                                               
       VPresentation presentationData = new VPresentation(); 
@@ -165,8 +179,6 @@ System.out.println("VP: "+VP);
       ArrayList<String> stringList = new ArrayList<>();
       for (JsonValue jsonValue : contextList) {
           stringList.add(jsonValue.toString());
-          System.out.println(jsonValue.toString());
-          // O puedes usar stringList.add(jsonValue.asJsonString());
       }
       presentationData.setContext(stringList);
       
@@ -181,25 +193,35 @@ System.out.println("VP: "+VP);
       
       List<JsonValue> vcredential=jsonObject.getJsonArray("verifiableCredential");
      List<VCredential> stringCred = new ArrayList<>();
-      for (JsonValue jsonValue : vcredential) {
-          stringList.add(jsonValue.toString());
-      }                                                                                                           
-              presentationData.setVerifiableCredential(stringCred);                                                 
      
+		List<javax.json.JsonObject> listajsn = new ArrayList<>();
+      for (JsonValue jsonValue : vcredential) {
+    	 
+    	  
+    	  javax.json.JsonObject jsonObject1 ;
+               // Verifica si el JsonValue es un objeto JSON
+               if (jsonValue.getValueType() == JsonValue.ValueType.OBJECT) {
+                   // Convierte el JsonValue a JsonObject
+                   jsonObject1 = jsonValue.asJsonObject();
+                   
+                   listajsn.add(jsonObject1);
+               }
+    	 
+      }                                                                                                           
+      //presentationData.setVerifiableCredential(stringCred);         
       
-		 List<VCredential> listavc = presentationData.getVerifiableCredential();
-		List<JsonObject> listajsn = new ArrayList<>();
-		for (VCredential v : listavc) {
-			String vjson = gson.toJson(v);
-			JsonObject j = gson.fromJson(vjson, JsonObject.class);
+      //for(VCredential v : presentationData.getVerifiableCredential()) {
+    	//  System.out.println(v.toString());
+      //}
+      
+    // System.out.println(presentationData.getVerifiableCredential());
+      
+	
 
-			listajsn.add(j);
-		}
-
+		
 		// Verify if every path's element match the object CredentialSubject's fields 
 		boolean allFieldsMatch = true;
 
-		long inicioTiempoPoliticas = System.currentTimeMillis();
 		// True default, if there is a mismatch, finish the loop 
 		for (Policy p : politicas) {
 			// Find out if the policy is correctly formed 
@@ -225,38 +247,43 @@ System.out.println("VP: "+VP);
 
 			Constraint constraints = p.getConstraints();
 			List<Field> fields = constraints.getFields();
+			
+			System.out.println("Starting matching policies process...");
 			for (Field f : fields) {
+				
 				List<String> path = f.getPath();
 				// Look for hierarchy ( $.credentialSubject. )
 
-				JsonObject objGlobal = new JsonObject();
+				javax.json.JsonObject objGlobal = null;
 
 				if (f.getFilter() == null) {
 					for (String i : path) {
-
 						String[] partes = i.split("\\.");
 
 						// Hierarchy list 
 						for (String parte : partes) {
 							String parte2 = new String(parte);
-							for (JsonObject obj1 : listajsn) {
-								JsonObject currentObj = obj1;
+							
+							//Comprobar que ese path de la politica esta indicado en la VP
+							
+							
+							for (javax.json.JsonObject obj1 : listajsn) {
+								   javax.json.JsonObject credentialSubject = obj1.getJsonObject("credentialSubject");		  
+								javax.json.JsonObject currentObj = obj1;
 								// If the field is present, we take its value 
 								if (!parte.equals("$")) {
-
-									if (obj1.has(parte)) {
-
+									
+									if (credentialSubject.containsKey(parte)) {
 										String parte1 = new String(parte);
-										JsonElement e = obj1.get(parte1);
+										JsonValue e = credentialSubject.get(parte1);
+										
+										if (e.getValueType() == JsonValue.ValueType.OBJECT) {
+										if (e.asJsonObject() != null) {
+											objGlobal = e.asJsonObject();
+										}}
+									} else if (objGlobal!=null && credentialSubject.containsKey(parte2) ) {
 
-										if (e.isJsonObject()) {
-											objGlobal = e.getAsJsonObject();
-
-										}
-									} else if (objGlobal.has(parte2)) {
-
-										JsonElement valor = objGlobal.get(parte2);
-
+										JsonValue valor = credentialSubject.get(parte2);
 									} else {
 										allMatches = false;
 									}
@@ -273,32 +300,35 @@ System.out.println("VP: "+VP);
 							String patron = f.getFilter().getPattern();
 							String patron1 = "\"" + patron + "\"";
 							for (String j : path) {
-
+								
 								String[] partes1 = i.split("\\.");
 
 								// Hierarchy list
 								for (String parte1 : partes1) {
 									String parte2 = new String(parte1);
-									for (JsonObject obj1 : listajsn) {
-										JsonObject currentObj = obj1;
+									for (javax.json.JsonObject obj1 : listajsn) {
+										 javax.json.JsonObject credentialSubject = obj1.getJsonObject("credentialSubject");
+										javax.json.JsonObject currentObj = obj1;
 										// If the field is present, we take its value
 										if (!parte1.equals("$")) {
-
-											if (obj1.has(parte1)) {
-
+											if (credentialSubject.containsKey(parte1)) {
 												String parte11 = new String(parte1);
-												JsonElement e = obj1.get(parte11);
-
-												if (e.isJsonObject()) {
-													objGlobal = e.getAsJsonObject();
-
-												}
-											} else if (objGlobal.has(parte2)) {
-												JsonElement valor = objGlobal.get(parte2);
+												JsonValue e = credentialSubject.get(parte11);
+												if (e.getValueType() == JsonValue.ValueType.OBJECT) {
+							
+												if (e.asJsonObject() != null) {
+													objGlobal = e.asJsonObject();
+												}}
+												
+											} else if (objGlobal!=null && objGlobal.containsKey(parte2)) {
+												
+												JsonValue valor = objGlobal.get(parte2);
 												String valorS = valor.toString();
-
+												
+											
 												if (patron1.equals(valorS)) {
-
+													
+													
 												} else {
 													allMatches = false;
 												}
@@ -319,24 +349,28 @@ System.out.println("VP: "+VP);
 								// Hierarchy list
 								for (String parte1 : partes1) {
 									String parte2 = new String(parte1);
-									for (JsonObject obj1 : listajsn) {
-										JsonObject currentObj = obj1;
+									for (javax.json.JsonObject obj1 : listajsn) {
+										 javax.json.JsonObject credentialSubject = obj1.getJsonObject("credentialSubject");
+										javax.json.JsonObject currentObj = obj1;
 										// If the field is present, we take its value
 										if (!parte1.equals("$")) {
 
-											if (obj1.has(parte1)) {
+											if (credentialSubject.containsKey(parte1)) {
 
 												String parte11 = new String(parte1);
-												JsonElement e = obj1.get(parte11);
+												JsonValue e = obj1.get(parte11);
 
-												if (e.isJsonObject()) {
-													objGlobal = e.getAsJsonObject();
+												if (objGlobal!=null && e.asJsonObject() != null) {
+													objGlobal = e.asJsonObject();
 
 												}
-											} else if (objGlobal.has(parte2)) {
-												JsonElement valor = objGlobal.get(parte2);
-												Number valorS = valor.getAsNumber();
-
+											} else if (objGlobal.containsKey(parte2)) {
+												JsonValue valor = objGlobal.get(parte2);
+												Number valorS = null;
+												if (valor instanceof Number) {
+													 valorS = (Number) valor;
+												}
+												
 												if ((valorS.intValue() < minimo.intValue())
 														|| (valorS.intValue() > maximo.intValue())) {
 													allMatches = false;
@@ -355,14 +389,15 @@ System.out.println("VP: "+VP);
 			}
 		}
 
-		long finTiempoPoliticas = System.currentTimeMillis();
-		long difTiempoPoliticas = finTiempoPoliticas - inicioTiempoPoliticas;
-		double tiempoPoliticasSeg = difTiempoPoliticas / 1000.0;
+	
 		// If everything is OK, the Capability Token is issued
 
 		if (allMatches == true) {
+			System.out.println("The matching process has been successfully finished. Issuing Capability Token for requester...");
 			ct = new CapabilityToken(KEYSTORE, KEYSTOREPWD, ALIAS, ar.getDidRequester(), ar.getDidSP(), ar.getSar());
 			pbk = ct.getPublicKey();
+		}else {
+			System.out.println("The matching process failed...");
 		}
 		return ct;
 	}

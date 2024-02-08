@@ -8,19 +8,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 public class VCredential {
 		private String context;
-	    private CredentialSubject credentialSubject;
+	    private String credentialSubject;
 	    private String expirationDate;
 	    private String id;
 	    private String issuanceDate;
-	    private String issuer;
+	    private Issuer issuer;
 	    private Proof proof;
 	    private String referenceNumber;
 	    private ArrayList<String> type;
 
 
-	    public VCredential(String id, String type, String issuer, String issuanceDate, CredentialSubject credentialSubject) {
+	    public VCredential(String id, String type, Issuer issuer, String issuanceDate, String credentialSubject) {
 	        this.id = id;
 	        this.issuer = issuer;
 	        this.issuanceDate = issuanceDate;
@@ -29,14 +34,7 @@ public class VCredential {
 	    
 	    public VCredential() {}
 	    
-	    public VCredential(CredentialSubject cs) {
-	    	this.id=UUID.randomUUID().toString().substring(0, 8);
-	    	this.issuer="Erathostenes";
-	    	LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-	    	String nowStr = now.format(DateTimeFormatter.ISO_DATE_TIME);
-	    	this.issuanceDate=nowStr;
-	    	this.credentialSubject=cs;
-	    }
+	   
 
 	    public Proof getProof() {
 			return proof;
@@ -87,11 +85,11 @@ public class VCredential {
 			this.type = type;
 		}
 
-		public String getIssuer() {
+		public Issuer getIssuer() {
 	        return issuer;
 	    }
 
-	    public void setIssuer(String issuer) {
+	    public void setIssuer(Issuer issuer) {
 	        this.issuer = issuer;
 	    }
 
@@ -103,11 +101,11 @@ public class VCredential {
 	        this.issuanceDate = issuanceDate;
 	    }
 
-	    public CredentialSubject getCredentialSubject() {
+	    public String getCredentialSubject() {
 	        return credentialSubject;
 	    }
 
-	    public void setCredentialSubject(CredentialSubject credentialSubject) {
+	    public void setCredentialSubject(String credentialSubject) {
 	        this.credentialSubject = credentialSubject;
 	    }
 
@@ -121,6 +119,9 @@ public class VCredential {
 	                ", credentialSubject=" + credentialSubject +
 	                '}';
 	    }
+	    
+	   
+	    
 	}
 
 
