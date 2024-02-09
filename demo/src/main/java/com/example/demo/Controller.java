@@ -25,6 +25,8 @@ import com.google.gson.Gson;
 @RequestMapping("/api")
 public class Controller {
 	
+	//Create the PAP,PIP according to the args
+	
 	TrustScoreStore trustScores=new TrustScoreStore();
 	PIPTest pip=new PIPTest(trustScores);
 	
