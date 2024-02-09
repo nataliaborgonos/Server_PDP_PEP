@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import com.example.demo.models.Policy;
 
-public class PAP implements PAPInterface{
+public class PAPTest implements PAPInterface{
 
 	PolicyStore policyStore;
 	
-	public PAP(PolicyStore policies ) {
+	public PAPTest(PolicyStore policies ) {
 		this.policyStore = policies;
 	}
 

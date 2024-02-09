@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Base64;
 
-import com.example.demo.PAP.PAP;
+import com.example.demo.PAP.PAPTest;
 import com.example.demo.PAP.PolicyStore;
 import com.example.demo.PEP.PEP;
-import com.example.demo.PIP.PIP;
+import com.example.demo.PIP.PIPTest;
 import com.example.demo.PIP.TrustScoreStore;
 import com.example.demo.idAgent.IdentityAgent;
 import com.example.demo.models.AuthRequest;
@@ -59,8 +59,8 @@ public class PDP implements PDPInterface {
 	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
 	private static final String ALIAS = "MiAliasPriv";
 
-	PIP pip;
-	PAP pap;
+	PIPTest pip;
+	PAPTest pap;
 	PEP pep;
 	IdentityAgent idAgent = new IdentityAgent();
 
@@ -73,7 +73,7 @@ public class PDP implements PDPInterface {
 	/* CONSTRUCTOR */
 
 	// Check this to add a wallet parameter
-	public PDP(PIP pip,PAP pap) {
+	public PDP(PIPTest pip,PAPTest pap) {
 		try {
 			schemaRequest = JsonLoader.fromPath(
 					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");

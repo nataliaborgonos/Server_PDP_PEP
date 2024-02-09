@@ -7,11 +7,11 @@ import java.util.Map;
 import com.example.demo.models.Policy;
 import com.example.demo.models.Resource;
 
-public class PIP implements PIPInterface{
+public class PIPTest implements PIPInterface{
 
 	TrustScoreStore trustScoreStore;
 
-	public PIP(TrustScoreStore trustScores) {
+	public PIPTest(TrustScoreStore trustScores) {
 		this.trustScoreStore=trustScores;
 	}
 	
