@@ -170,9 +170,9 @@ public class PEP implements PEPInterface {
 
 			// If everything matches, access to the resource is granted
 			if (notExpired && signatureVerified && simpleAccessRightsOk) {
-				System.out.println("SUCCESS: Capability Token has been successfully validated.");
-				return "SUCCESS: Capability Token has been successfully validated.";
-			}else {System.out.println("ERROR: Validation failed. Capability Token is not valid.");
+				System.out.println("SUCCESS: Capability Token has been successfully validated.The requester could access to the resource.\n");
+				return "SUCCESS: Capability Token has been successfully validated. The requester could access to the resource.\n";
+			}else {System.out.println("ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n");
 			}
 			
 
@@ -186,7 +186,7 @@ public class PEP implements PEPInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "ERROR: Validation failed. Capability Token is not valid.";
+		return "ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n";
 	}
 
 }

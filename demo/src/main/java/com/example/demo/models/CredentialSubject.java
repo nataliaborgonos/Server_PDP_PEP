@@ -6,13 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CredentialSubject {
+	
+	/* ATTRIBUTES */
 	 private String id;
 	 private String nombre;
 	 private Degree degree;
 
+	 /* CONSTRUCTOR */
 	 public CredentialSubject() {}
 	 
-
+	 /* GETTER AND SETTER METHODS */
 	    public String getId() {
 	        return id;
 	    }

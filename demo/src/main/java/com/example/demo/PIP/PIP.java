@@ -11,9 +11,6 @@ public class PIP implements PIPInterface{
 
 	TrustScoreStore trustScoreStore;
 
-	//PolicyStore -> Ponerlo en el PAP
-	
-	
 	public PIP(TrustScoreStore trustScores) {
 		this.trustScoreStore=trustScores;
 	}

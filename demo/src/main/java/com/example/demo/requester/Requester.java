@@ -24,22 +24,19 @@ import com.example.demo.models.VPresentation;
 
 public class Requester {
 	
-	/* ATRIBUTOS */
+	/* ATTIBUTES */
 	String didSP;
 	String didRequester;
 	String user;
 	String birthdate;
 	int age;
 	String VPJSON;
-	//VPresentation VP_base64;
-	
-	/* ADICIONAL */
 	private Gson gson =new Gson();
 	PEP pep;
 	CapabilityToken token;
 //	idAgent agente;
 	
-	/* CONSTRUCTORES */
+	/* CONSTRUCTOR */
 	
 	public Requester(String didSP, String didRequester, String verifiablePresentation) {
 		this.didSP=didSP;
@@ -53,18 +50,17 @@ public class Requester {
 	    this.VPJSON=verifiablePresentation;
 	}
 	
+	
+	/* GETTER AND SETTER METHODS */
+	
 	public String getVPJSON() {
 		return VPJSON;
 	}
-
 
 	public void setVPJSON(String vPJSON) {
 		VPJSON = vPJSON;
 	}
 
-	
-	/* M�TODOS DE CONSULTA Y MODIFICACI�N */
-	
 	public String getDidSP() {
 		return didSP;
 	}
@@ -103,17 +99,8 @@ public class Requester {
 	}
 	
 	
-	/* FUNCIONALIDAD */
+	/* METHODS */
 	
-	
-	
-	//public VPresentation getVP_base64() {
-		//return VP_base64;
-	//}
-
-	//public void setVP_base64(VPresentation vP_base64) {
-		//VP_base64 = vP_base64;
-	//}
 
 	public String requestAccess(String recursoSolicitado, String accion) {
 		AuthRequest ar=new AuthRequest(recursoSolicitado,accion,this);

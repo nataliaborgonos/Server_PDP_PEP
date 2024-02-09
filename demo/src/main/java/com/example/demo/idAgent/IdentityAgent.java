@@ -134,10 +134,9 @@ public class IdentityAgent {
 	                    .build();
 	            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 	            int responseCode = response.statusCode();
-	            System.out.println("Código de respuesta: " + responseCode);
-
+	       
 	            String responseBody = response.body();
-	            System.out.println("Respuesta del servidor: " + responseBody);
+	            System.out.println("Created wallet profile for the requester.");
 
 	        } catch (Exception e) {
 	            e.printStackTrace();
@@ -150,7 +149,6 @@ public class IdentityAgent {
 	            String requestBody = "{\r\n" +
 	                    "    \"userID\":\"natalia\",\r\n" +
 	                    "    \"localKMSPassphrase\":\"pass\"\r\n" +
-	                  //  "    \"expiry\":\"9000000000000\"\r\n"+
 	                    "}";
 
 	            HttpClient client = HttpClient.newBuilder()
@@ -163,16 +161,16 @@ public class IdentityAgent {
 	                    .build();
 	            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 	            int responseCode = response.statusCode();
-	            System.out.println("Response Code: " + responseCode);
+	      
 
 	            String responseBody = response.body();
-	            System.out.println("Response Message: " + responseBody);
+	          
 
 	            JsonParser jsonParser = new JsonParser();
 	            JsonObject jsonObject = jsonParser.parse(responseBody).getAsJsonObject();
 
 	            authToken = jsonObject.get("token").getAsString();
-	         
+	            System.out.println("Wallet has been successfully unlocked, getting auth token...");
 
 	        } catch (Exception e) {
 	            System.err.println("Wallet already unlocked. The auth token hasn't expired yet.");
@@ -274,20 +272,18 @@ public class IdentityAgent {
 		
 	        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             int responseCode = response.statusCode();
-            System.out.println("Response Code: " + responseCode);
-
+     
             String responseBody = response.body();
-            System.out.println("Response Message: " + responseBody);
-
+    
 
             if(responseCode==200) {
 	            if (responseBody.contains("error")) {
-	                System.out.println("Error: Verifiable Presentation can't be verified." );
+	                System.out.println("Error: Verifiable Presentation can't be verified.\n" );
 	                return false;
 	            }
 	
 	            else if (responseBody.contains("verified")) {
-	                System.out.println("Verifiable Presentation has been successfully verified.");
+	                System.out.println("Verifiable Presentation has been successfully verified.\n");
 	                return true;
 	            }
             } else {

@@ -51,10 +51,10 @@ public class Controller {
     	CapabilityToken ct=process(req);
     	String token = gson.toJson(ct);
     	if(ct==null) {
-    		System.out.println("Capability Token couldn't be issued, please revise the request and try again.");
-    		return "Capability Token couldn't be issued, please revise the request and try again.";
+    		System.out.println("Capability Token couldn't be issued, please revise the request and try again.\n");
+    		return "Capability Token couldn't be issued, please revise the request and try again.\n";
     	}
-    	System.out.println("Capability Token successfully issued.");
+    	System.out.println("Capability Token successfully issued.\n");
     	return token ;
     }
     

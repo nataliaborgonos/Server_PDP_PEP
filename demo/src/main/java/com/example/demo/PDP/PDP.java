@@ -59,8 +59,6 @@ public class PDP implements PDPInterface {
 	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
 	private static final String ALIAS = "MiAliasPriv";
 
-
-
 	PIP pip;
 	PAP pap;
 	PEP pep;
@@ -142,7 +140,7 @@ public class PDP implements PDPInterface {
 		//Get the requester's VP
 		String VP=ar.getVerifiablePresentation();
 	
-		//Validate if the VP is well formed -> Put the not null fields
+		//Validate if the VP is well formed -> Put the not null fields (context,holder,proof,VCredential)
 		try {
 			Map<String, Object> presentation = (Map<String, Object>) JsonUtils.fromString(VP);
 			   Object type = presentation.get("type");
@@ -393,11 +391,11 @@ public class PDP implements PDPInterface {
 		// If everything is OK, the Capability Token is issued
 
 		if (allMatches == true) {
-			System.out.println("The matching process has been successfully finished. Issuing Capability Token for requester...");
+			System.out.println("The matching process has been successfully finished. Issuing Capability Token for requester...\n");
 			ct = new CapabilityToken(KEYSTORE, KEYSTOREPWD, ALIAS, ar.getDidRequester(), ar.getDidSP(), ar.getSar());
 			pbk = ct.getPublicKey();
 		}else {
-			System.out.println("The matching process failed...");
+			System.out.println("The matching process failed...\n");
 		}
 		return ct;
 	}
