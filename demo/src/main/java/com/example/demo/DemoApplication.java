@@ -50,7 +50,16 @@ public class DemoApplication {
 		        } else {
 		            System.err.println("Missing value after '--wallet'. You need the requester's wallet.");
 		        }
+		    	
 		    }
+		    //TODO: Add the missing information here
+		    else if (args[i].equals("--help")) {
+		        System.out.println("Arguments information: \n"
+		        		+ "--port [number] The port can be set manually adding this argument. If this is not set, the app will be running in port 8080.\n"
+		        		+ "--pip [test | ] The app needs the trust score store. \n"
+		        		+ "--pap [test | ] The app needs the policy store.\n"
+		        		+ "--wallet [test | ] The app needs the requester's wallet.\n");
+		        System.exit(0);
 		    //else if(args[i].equals("--requester")) {
 		    	//if (i < args.length - 1) {
 		          //  requester = args[i + 1];
@@ -58,7 +67,7 @@ public class DemoApplication {
 		        //} else {
 		         //   System.err.println("Missing value after '--requester'. You need a Policies Store.");
 		        //}
-		    //}
+		    }
 		}
 
 		

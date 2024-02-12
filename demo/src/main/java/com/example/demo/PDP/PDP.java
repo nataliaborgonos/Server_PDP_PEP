@@ -159,6 +159,8 @@ public class PDP implements PDPInterface {
 		
 		boolean allMatches = true;
 
+		
+		//TODO: This will be changing in order to the requester's wallet. This is just a test.
 		// Call API for verify the VPresentation
 		idAgent.createWallet("natalia");
 		boolean response = idAgent.verifyPresentation(VP);

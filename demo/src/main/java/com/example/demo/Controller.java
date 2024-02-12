@@ -44,8 +44,8 @@ public class Controller {
         this.papConfig = System.getProperty("papConfig");
         this.wallet=System.getProperty("wallet");
         		
-        if(pipConfig.equals("test") && papConfig.equals("test") && wallet.equals("test")) {
       //Create the PAP,PIP according to the args
+        if(pipConfig.equals("test") && papConfig.equals("test") && wallet.equals("test")) {
     	
     	TrustScoreStore trustScores=new TrustScoreStore();
     	pip=new PIPTest(trustScores);
@@ -58,7 +58,10 @@ public class Controller {
     	pep= new PEP(pdp);
 
     	gson=new Gson();
-        }else {System.err.println("Not a valid configuration."); System.exit(0);}
+        }
+        else {
+        	System.err.println("Not a valid configuration."); System.exit(0);
+        }
     }
 	
     @PostMapping("/request-access")
