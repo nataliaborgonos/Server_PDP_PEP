@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Base64;
 
+import com.example.demo.PAP.PAPErat;
 import com.example.demo.PAP.PAPTest;
 import com.example.demo.PAP.PolicyStore;
 import com.example.demo.PEP.PEP;
+import com.example.demo.PIP.PIPErat;
 import com.example.demo.PIP.PIPTest;
 import com.example.demo.PIP.TrustScoreStore;
 import com.example.demo.idAgent.IdentityAgent;
@@ -90,8 +92,15 @@ public class PDP implements PDPInterface {
 		this.pap = pap;
 		this.wallet=wallet;
 	}
+	
+	public PDP(PIPErat pip,PAPErat pap, String wallet) {
+		//TODO
+	}
+	
 
 	/* METHODS */
+	
+	//TODO Method for erathostenes configuration
 
 	// Method for formatting JSON
 	private String removeQuotesAndUnescape(String uncleanJson) {
@@ -160,7 +169,7 @@ public class PDP implements PDPInterface {
 		boolean allMatches = true;
 
 		
-		//TODO: This will be changing in order to the requester's wallet. This is just a test.
+		//TODO: This will be changing in order to the requester's wallet. This is just for testing.
 		// Call API for verify the VPresentation
 		idAgent.createWallet("natalia");
 		boolean response = idAgent.verifyPresentation(VP);

@@ -59,6 +59,10 @@ public class Controller {
 
     	gson=new Gson();
         }
+        
+        //erathostenes option 
+        
+        
         else {
         	System.err.println("Not a valid configuration."); System.exit(0);
         }
