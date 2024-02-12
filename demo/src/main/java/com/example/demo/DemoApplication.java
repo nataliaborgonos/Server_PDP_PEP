@@ -15,6 +15,7 @@ public class DemoApplication {
 	static String pipConfig;
 	static String papConfig;
 	static String requester;
+	static String wallet;
 	
 	public static void main(String[] args) {
 		
@@ -42,7 +43,15 @@ public class DemoApplication {
 		        } else {
 		            System.err.println("Missing value after '--pap'. You need a Policies Store.");
 		        }
-		    }//else if(args[i].equals("--requester")) {
+		    }else if(args[i].equals("--wallet")) {
+		    	if (i < args.length - 1) {
+		            wallet = args[i + 1];
+		            System.setProperty("wallet", wallet);
+		        } else {
+		            System.err.println("Missing value after '--wallet'. You need the requester's wallet.");
+		        }
+		    }
+		    //else if(args[i].equals("--requester")) {
 		    	//if (i < args.length - 1) {
 		          //  requester = args[i + 1];
 		            //System.setProperty("requester", requester);
@@ -52,25 +61,8 @@ public class DemoApplication {
 		    //}
 		}
 
-		/*
-		 if (args.length > 1) {
-			
-			 if(args[1].equals("--port")) {
-	            try {
-	                port = Integer.parseInt(args[2]);
-	                System.setProperty("server.port", String.valueOf(port));
-	            } catch (NumberFormatException e) {
-	                System.err.println("Not a valid port.");
-	            }
-			 }else if (args[1].equals("--pip")) {
-		            customString = args[2];
-		            System.setProperty("customString", customString);
-		            // Podrías usar esta cadena personalizada según sea necesario
-		        }
-		 }*/
+		
 		System.out.println("PDP and PEP REST Server are listening in port " + port);
-		System.out.println("configuracion para pip: "+pipConfig);
-		System.out.println("configuracion para pap: "+papConfig);
 		
 		SpringApplication.run(DemoApplication.class, args);
 	}

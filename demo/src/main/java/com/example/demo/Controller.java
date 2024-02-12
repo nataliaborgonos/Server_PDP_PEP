@@ -30,6 +30,7 @@ public class Controller {
 
     private final String pipConfig;
     private final String papConfig;
+    private final String wallet;
     
     PIPTest pip;
     PAPTest pap;
@@ -41,8 +42,9 @@ public class Controller {
     public Controller(Environment env) {
         this.pipConfig = System.getProperty("pipConfig");
         this.papConfig = System.getProperty("papConfig");
-     
-        if(pipConfig.equals("test")) {
+        this.wallet=System.getProperty("wallet");
+        		
+        if(pipConfig.equals("test") && papConfig.equals("test") && wallet.equals("test")) {
       //Create the PAP,PIP according to the args
     	
     	TrustScoreStore trustScores=new TrustScoreStore();
@@ -51,7 +53,7 @@ public class Controller {
     	PolicyStore policies=new PolicyStore();
     	pap=new PAPTest(policies);
 
-    	pdp=new PDP(pip,pap);
+    	pdp=new PDP(pip,pap,wallet);
     	
     	pep= new PEP(pdp);
 
