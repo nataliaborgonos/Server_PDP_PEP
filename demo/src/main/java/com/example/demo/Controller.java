@@ -2,6 +2,9 @@ package com.example.demo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,21 +27,38 @@ import com.google.gson.Gson;
 @RestController
 @RequestMapping("/api")
 public class Controller {
-	
-	//Create the PAP,PIP according to the args
-	
-	TrustScoreStore trustScores=new TrustScoreStore();
-	PIPTest pip=new PIPTest(trustScores);
-	
-	PolicyStore policies=new PolicyStore();
-	PAPTest pap=new PAPTest(policies);
 
-	PDP pdp=new PDP(pip,pap);
+    private final String pipConfig;
+    private final String papConfig;
+    
+    PIPTest pip;
+    PAPTest pap;
+    PDP pdp;
+    PEP pep;
+    Gson gson;
+
+    @Autowired
+    public Controller(Environment env) {
+        this.pipConfig = System.getProperty("pipConfig");
+        this.papConfig = System.getProperty("papConfig");
+     
+        if(pipConfig.equals("test")) {
+      //Create the PAP,PIP according to the args
+    	
+    	TrustScoreStore trustScores=new TrustScoreStore();
+    	pip=new PIPTest(trustScores);
+    	
+    	PolicyStore policies=new PolicyStore();
+    	pap=new PAPTest(policies);
+
+    	pdp=new PDP(pip,pap);
+    	
+    	pep= new PEP(pdp);
+
+    	gson=new Gson();
+        }else {System.err.println("Not a valid configuration."); System.exit(0);}
+    }
 	
-	PEP pep= new PEP(pdp);
-
-	Gson gson=new Gson();
-
     @PostMapping("/request-access")
     public String requestAccess(@RequestBody AuthRequest request) {
     	
