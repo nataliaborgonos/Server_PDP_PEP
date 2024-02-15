@@ -33,7 +33,7 @@ public class PolicyExample {
 
 			PolicyServicesClient client = null;
 			try {
-				client = new PolicyServicesClient("localhost", 8080, false, handler);
+				client = new PolicyServicesClient("0.0.0.0", 8086, false, handler);
 				System.out.println("creo el cliente");
 			} catch (SSLException e) {
 				// TODO Auto-generated catch block
@@ -52,7 +52,6 @@ public class PolicyExample {
 					+ "        \"    }\\n\" +\n"
 					+ "        \"  ],\\n\" +\n"
 					+ "        \"  \\\"authTime\\\": 123456789,\\n\" +\n"
-					+ "        \"  \\\"minTrustScore\\\": 0.5,\\n\" +\n"
 					+ "        \"  \\\"constraints\\\": {\\n\" +\n"
 					+ "        \"    \\\"fields\\\": [\\n\" +\n"
 					+ "        \"      {\\n\" +\n"
