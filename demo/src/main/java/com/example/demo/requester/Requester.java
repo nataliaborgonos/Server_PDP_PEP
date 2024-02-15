@@ -15,6 +15,7 @@ import java.util.Base64;
 import com.example.demo.PEP.PEP;
 import com.example.demo.models.AccessRequest;
 import com.example.demo.models.AuthRequest;
+import com.example.demo.models.AuthRequestTango;
 import com.example.demo.models.CapabilityToken;
 import com.example.demo.models.CredentialSubject;
 import com.example.demo.models.Proof;
@@ -104,6 +105,12 @@ public class Requester {
 
 	public String requestAccess(String recursoSolicitado, String accion) {
 		AuthRequest ar=new AuthRequest(recursoSolicitado,accion,this);
+		String json = gson.toJson(ar);
+		return json;
+	}
+	
+	public String requestAccessToken(String recursoSolicitado, String accion,String token) {
+		AuthRequestTango ar=new AuthRequestTango(recursoSolicitado,accion,this, token);
 		String json = gson.toJson(ar);
 		return json;
 	}

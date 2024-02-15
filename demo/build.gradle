@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+	implementation files('libs/PolicyServicesClient-1.0-SNAPSHOT.jar')
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

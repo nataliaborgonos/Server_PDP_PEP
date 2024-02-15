@@ -8,7 +8,7 @@ public class PAPErat implements PAPInterface{
 
 	@Override
 	public ArrayList<Policy> getPolicies(String didSP, String recursoSolicitado) {
-		// TODO Auto-generated method stub
+		// TODO request the policy to the DLT
 		return null;
 	}
 

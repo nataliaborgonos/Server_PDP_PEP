@@ -19,6 +19,7 @@ import com.example.demo.PIP.PIPTest;
 import com.example.demo.PIP.TrustScoreStore;
 import com.example.demo.models.AccessRequest;
 import com.example.demo.models.AuthRequest;
+import com.example.demo.models.AuthRequestTango;
 import com.example.demo.models.SimpleAccessRight;
 import com.example.demo.models.CapabilityToken;
 import com.example.demo.requester.Requester;
@@ -58,7 +59,7 @@ public class Controller {
     	pep= new PEP(pdp);
 
     	gson=new Gson();
-        }
+        } //else if(pipConfig.equals("erathostenes") && papConfig.equals("erathostenes") && wallet.equals("erathostenes")){}
         
         //erathostenes option 
         
@@ -97,6 +98,37 @@ public class Controller {
     	
     	return ct;
     }
+    
+    @PostMapping("/access-token-tango")
+    public String accessTokenForTango(@RequestBody AuthRequestTango request) {
+    	
+    	//Create a requester with request data -> change the token tango instead VP
+    	Requester requester =new Requester(request.getDidSP(),request.getDidRequester(),request.getToken());
+    	
+    	//Create access request
+		String req=requester.requestAccessToken(request.getSar().getResource(), request.getSar().getAction(),request.getToken());
+		//pep.parseRequest(req);
+		
+		//Process access request to obtain a Capability Token 
+		System.out.println("token received "+req);
+    	CapabilityToken ct=processTokenTango(req);
+    	String token = gson.toJson(ct);
+    	if(ct==null) {
+    		System.out.println("Capability Token couldn't be issued, please revise the request and try again.\n");
+    		return "Capability Token couldn't be issued, please revise the request and try again.\n";
+    	}
+    	System.out.println("Capability Token successfully issued.\n");
+    	return token ;
+    }
+    
+    public CapabilityToken processTokenTango(String req) {
+    	
+    	//Send request to PEP for issuing the Capability token -> change the PEP treatment 
+    	String requestJson=gson.toJson(req);
+    	CapabilityToken ct=pep.sendToken(requestJson);
+    	return ct;
+    }
+    
     
     @PostMapping("/access-with-token")
     public String accessWithToken(@RequestBody AccessRequest request) {

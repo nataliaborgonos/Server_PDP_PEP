@@ -4,7 +4,7 @@ public class PIPErat implements PIPInterface{
 
 	@Override
 	public double getTrustScore(String didSolicitante) {
-		// TODO Auto-generated method stub
+		// TODO request the trust score to the TMB 
 		return 0;
 	}
 
