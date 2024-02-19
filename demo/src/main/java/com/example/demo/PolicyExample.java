@@ -33,38 +33,14 @@ public class PolicyExample {
 
 			PolicyServicesClient client = null;
 			try {
-				client = new PolicyServicesClient("0.0.0.0", 8086, false, handler);
+				client = new PolicyServicesClient("localhost", 8080, false, handler);
 				System.out.println("creo el cliente");
 			} catch (SSLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			String jsonExample = "\"{\\n\" +\n"
-					+ "        \"  \\\"id\\\": \\\"policy_id\\\",\\n\" +\n"
-					+ "        \"  \\\"nombre\\\": \\\"Nombre de la política\\\",\\n\" +\n"
-					+ "        \"  \\\"purpose\\\": \\\"Propósito de la política\\\",\\n\" +\n"
-					+ "        \"  \\\"serviceProvider\\\": \\\"Proveedor de servicios\\\",\\n\" +\n"
-					+ "        \"  \\\"accessRights\\\": [\\n\" +\n"
-					+ "        \"    {\\n\" +\n"
-					+ "        \"      \\\"resource\\\": \\\"recurso\\\",\\n\" +\n"
-					+ "        \"      \\\"action\\\": \\\"GET\\\"\\n\" +\n"
-					+ "        \"    }\\n\" +\n"
-					+ "        \"  ],\\n\" +\n"
-					+ "        \"  \\\"authTime\\\": 123456789,\\n\" +\n"
-					+ "        \"  \\\"constraints\\\": {\\n\" +\n"
-					+ "        \"    \\\"fields\\\": [\\n\" +\n"
-					+ "        \"      {\\n\" +\n"
-					+ "        \"        \\\"purpose\\\": \\\"Revelar nombre\\\",\\n\" +\n"
-					+ "        \"        \\\"name\\\": \\\"name\\\",\\n\" +\n"
-					+ "        \"        \\\"path\\\": [\\\"usuario\\\"],\\n\" +\n"
-					+ "        \"        \\\"filter\\\": {\\n\" +\n"
-					+ "        \"          \\\"type\\\": \\\"string\\\"\\n\" +\n"
-					+ "        \"        }\\n\" +\n"
-					+ "        \"      }\\n\" +\n"
-					+ "        \"    ]\\n\" +\n"
-					+ "        \"  }\\n\" +\n"
-					+ "        \"}\";"; // Your example JSON here
+			String jsonExample = "{\"id\":\"policy_id\",\"nombre\":\"Nombre de la política\",\"purpose\":\"Propósito de la política\",\"serviceProvider\":\"Proveedor de servicios\",\"accessRights\":[{\"resource\":\"recurso\",\"action\":\"GET\"}],\"authTime\":123456789,\"constraints\":{\"fields\":[{\"purpose\":\"Revelar nombre\",\"name\":\"name\",\"path\":[\"usuario\"],\"filter\":{\"type\":\"string\"}}]}}";
 			String id = "123";
 			String accessRightsJSON = "[{\"resource\":\"/recurso\",\"action\":\"GET\"}]";
 

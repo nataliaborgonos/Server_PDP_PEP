@@ -11,10 +11,12 @@ import java.util.Map;
 import java.util.Base64;
 
 import com.example.demo.PAP.PAPErat;
+import com.example.demo.PAP.PAPInterface;
 import com.example.demo.PAP.PAPTest;
 import com.example.demo.PAP.PolicyStore;
 import com.example.demo.PEP.PEP;
 import com.example.demo.PIP.PIPErat;
+import com.example.demo.PIP.PIPInterface;
 import com.example.demo.PIP.PIPTest;
 import com.example.demo.PIP.TrustScoreStore;
 import com.example.demo.idAgent.IdentityAgent;
@@ -63,8 +65,8 @@ public class PDP implements PDPInterface {
 	private static final String ALIAS = "MiAliasPriv";
 
 	String wallet; // temporarily this is String
-	PIPTest pip;
-	PAPTest pap;
+	PIPInterface pip;
+	PAPInterface pap;
 	
 	
 	
@@ -80,7 +82,26 @@ public class PDP implements PDPInterface {
 	/* CONSTRUCTOR */
 
 	// Check this to add a wallet parameter
-	public PDP(PIPTest pip,PAPTest pap, String wallet) {
+	
+	/*public PDP(PIPTest pip,PAPTest pap, String wallet) {
+		try {
+			schemaRequest = JsonLoader.fromPath(
+					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
+			schemaPolitica = JsonLoader.fromPath(
+					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaPol.json");
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		gson = new Gson();
+		this.pip = pip;
+		this.pap = pap;
+		this.wallet=wallet;
+	}*/
+	
+	public PDP(PIPInterface pip,PAPInterface pap, String wallet) {
+		//TODO
 		try {
 			schemaRequest = JsonLoader.fromPath(
 					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
@@ -97,14 +118,13 @@ public class PDP implements PDPInterface {
 		this.wallet=wallet;
 	}
 	
-	public PDP(PIPErat pip,PAPErat pap, String wallet) {
-		//TODO
-	}
-	
 
 	/* METHODS */
 	
 	//TODO Method for erathostenes configuration
+	//trust score -> TMB
+	
+	//policy checking -> use the code in PolicyExample for requesting the policy 
 
 	// Method for formatting JSON
 	private String removeQuotesAndUnescape(String uncleanJson) {
