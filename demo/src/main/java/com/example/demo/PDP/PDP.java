@@ -1,5 +1,7 @@
 package com.example.demo.PDP;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Array;
@@ -120,11 +122,27 @@ public class PDP implements PDPInterface {
 	
 
 	/* METHODS */
+
+	public CapabilityToken verify(String authRequestJson) {
+		if(pip instanceof PIPTest && pap instanceof PAPTest) {
+			return verifyId(authRequestJson);
+		}else if(pip instanceof PIPErat && pap instanceof PAPErat) {
+			return verifyIdErat(authRequestJson);
+		}
+		return null;
+	}
 	
-	//TODO Method for erathostenes configuration
-	//trust score -> TMB
-	
-	//policy checking -> use the code in PolicyExample for requesting the policy 
+	private CapabilityToken verifyIdErat(String authRequestJson) {
+		//TODO Method for erathostenes configuration
+		CapabilityToken ct=null;
+		AuthRequestTango ar = null;
+		String goodJson = removeQuotesAndUnescape(authRequestJson);
+		//trust score -> TMB
+		
+		//policy checking -> use the code in PolicyExample for requesting the policy 
+
+		return null;
+	}
 
 	// Method for formatting JSON
 	private String removeQuotesAndUnescape(String uncleanJson) {

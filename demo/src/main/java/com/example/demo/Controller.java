@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.PAP.PAPErat;
 import com.example.demo.PAP.PAPInterface;
 import com.example.demo.PAP.PAPTest;
 import com.example.demo.PAP.PolicyStore;
 import com.example.demo.PDP.PDP;
 import com.example.demo.PEP.PEP;
+import com.example.demo.PIP.PIPErat;
 import com.example.demo.PIP.PIPInterface;
 import com.example.demo.PIP.PIPTest;
 import com.example.demo.PIP.TrustScoreStore;
@@ -35,7 +37,6 @@ public class Controller {
     private final String papConfig;
     private final String wallet;
     
-    //TODO: Mirar lo del patron factoria 
     PIPInterface pip;
     PAPInterface pap;
     PDP pdp;
@@ -64,8 +65,16 @@ public class Controller {
     	gson=new Gson();
         } 
         else if(pipConfig.equals("erathostenes") && papConfig.equals("erathostenes") && wallet.equals("erathostenes")){
-        	//create pip & pap
-        	//create PDP & PEP
+        	
+        	pip=new PIPErat();
+        	
+        	pap=new PAPErat();
+        	
+        	pdp=new PDP(pip,pap,wallet);
+        	
+        	pep=new PEP(pdp);
+        	
+        	gson=new Gson();
         } 
         else {
         	System.err.println("Not a valid configuration."); System.exit(0);
