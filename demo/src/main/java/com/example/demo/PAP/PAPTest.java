@@ -13,7 +13,7 @@ public class PAPTest implements PAPInterface{
 	}
 
 	@Override
-	public ArrayList<Policy> getPolicies(String didSP, String recursoSolicitado) {
+	public ArrayList<Policy> getPolicies(String didSP, String recursoSolicitado, String action) {
 		return policyStore.getPolicy(didSP, recursoSolicitado);
 	}
 

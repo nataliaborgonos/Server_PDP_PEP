@@ -22,7 +22,7 @@ public class PolicyStore {
 
 		// Create a policy for trying the Server
 		Policy policy=new Policy(1);
-		policy.setName("Student Information");
+		policy.setNombre("Student Information");
 		policy.setPurpose("Reveal id and name of the BachelorDegree's student in MIT.");
 		policy.setServiceProvider("did:serviceProvider:1");
 		SimpleAccessRight sar=new SimpleAccessRight("GET", "/temperatura");
