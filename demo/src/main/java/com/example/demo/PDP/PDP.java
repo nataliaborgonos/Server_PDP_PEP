@@ -138,6 +138,7 @@ public class PDP implements PDPInterface {
 		AuthRequest ar = null;
 		String goodJson = removeQuotesAndUnescape(authRequestJson);
 		
+		
 		//trust score -> TMB
 		
 		//policy checking -> use the code in PolicyExample for requesting the policy 
@@ -730,7 +731,7 @@ public class PDP implements PDPInterface {
 		
 		//TODO: This will be changing in order to the requester's wallet. This is just for testing.
 		// Call API for verify the VPresentation
-		idAgent.createWallet("natalia");
+		idAgent.createWallet(ar.getDidRequester());
 		boolean response = idAgent.verifyPresentation(VP);
 		if (!response) {
 			allMatches = false;
