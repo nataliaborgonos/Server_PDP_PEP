@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import javax.json.Json;
+import javax.json.JsonReaderFactory;
 import javax.net.ssl.SSLException;
 
 import com.example.client.PolicyResponseHandler;
 import com.example.client.PolicyServicesClient;
 import com.example.demo.models.Policy;
 import com.google.gson.Gson;
+
 
 import grpcEratosthenesAPI.GrpcEratosthenesAPI.PolicyMessage;
 
@@ -61,8 +64,9 @@ public class PAPErat implements PAPInterface{
 	@Override
 	public ArrayList<Policy> getPolicies(String didSP, String recursoSolicitado,String action) {
 		//Add the full access rights
-		String accessRightsJSON="\"accessRights\":[{\"resource\":"+recursoSolicitado+",\"action\":\""+action+"\"}]";
-		CompletableFuture<PolicyMessage> queryPolicyFuture = client.queryPolicy(didSP, accessRightsJSON);
+		String accessRightsJSON="[{\"resource\":\""+recursoSolicitado+"\",\"action\":\""+action+"\"}]";
+		String id = "123";
+		CompletableFuture<PolicyMessage> queryPolicyFuture = client.queryPolicy(id, accessRightsJSON);
 		PolicyMessage queryPolicyResponse = null;
 		try {
 			queryPolicyResponse = queryPolicyFuture.get();
