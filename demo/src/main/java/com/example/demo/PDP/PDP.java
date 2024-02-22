@@ -141,7 +141,7 @@ public class PDP implements PDPInterface {
 		
 		//trust score -> TMB
 		
-		//policy checking -> use the code in PolicyExample for requesting the policy 
+		//policy checking -> use the erathostenes architecture for requesting the policy for the resource and action
 		ar = gson.fromJson(goodJson, AuthRequest.class);
 		// Get policies needed to do the requested action in that resource
 		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),ar.getSar().getAction());
@@ -169,10 +169,10 @@ public class PDP implements PDPInterface {
 		
 		//TODO: This will be changing in order to the requester's wallet. This is just for testing.
 		// Call API for verify the VPresentation
-	//	idAgent.createWallet("natalia");
-	//	boolean response = idAgent.verifyPresentation(VP);
-	//	if (!response) {
-		//	allMatches = false;
+		//idAgent.createWallet("natalia");
+		//boolean response = idAgent.verifyPresentation(VP);
+		//if (!response) {
+			//allMatches = false;
 		//}
 
 		// Prove matching policies with requester's VP
