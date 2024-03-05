@@ -73,9 +73,7 @@ package com.example.demo;
 	        String deviceID = "123";
 	        float initialScore = 0.9f;
 
-	        CompletableFuture<DeviceMessage> readAfterUpdateFuture = client.readTrustScore(deviceID);
-	        DeviceMessage readAfterUpdateMessage = readAfterUpdateFuture.get();
-	        System.out.println("ReadTrustScore After Update Response: " + readAfterUpdateMessage.getScore());
+	 
 
 	        CompletableFuture<DeviceMessage> createFuture = client.createTrustScore(deviceID, initialScore);
 	        DeviceMessage createMessage = createFuture.get();
@@ -92,7 +90,9 @@ package com.example.demo;
 	        // client.updateTrustScore(deviceID, updatedScore);
 	        // DeviceMessage updateMessage = updateFuture.get();
 	        // System.out.println("UpdateTrustScore Response: " + updateMessage.getScore());
-
+	        CompletableFuture<DeviceMessage> readAfterUpdateFuture = client.readTrustScore(deviceID);
+	        DeviceMessage readAfterUpdateMessage = readAfterUpdateFuture.get();
+	        System.out.println("ReadTrustScore After Update Response: " + readAfterUpdateMessage.getScore());
 	        // Eliminar TrustScore
 	        // CompletableFuture<DeviceMessage> deleteFuture =
 	        // client.deleteTrustScore(deviceID);
@@ -106,5 +106,4 @@ package com.example.demo;
 	        readAfterDeleteMessage = readAfterDeleteFuture.get();
 	        System.out.println("ReadTrustScore After Delete Response: " + readAfterDeleteMessage.getScore());
 	    }
-	
 }

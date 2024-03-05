@@ -1,6 +1,9 @@
 package com.example.demo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import javax.net.ssl.SSLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.client.GRPCClient;
+import com.example.client.PolicyResponseHandler;
+import com.example.client.TrustScoreResponseHandler;
 import com.example.demo.PAP.PAPErat;
 import com.example.demo.PAP.PAPInterface;
 import com.example.demo.PAP.PAPTest;
@@ -28,6 +34,9 @@ import com.example.demo.models.SimpleAccessRight;
 import com.example.demo.models.CapabilityToken;
 import com.example.demo.requester.Requester;
 import com.google.gson.Gson;
+
+import grpcEratosthenesAPI.GrpcEratosthenesAPI.DeviceMessage;
+import grpcEratosthenesAPI.GrpcEratosthenesAPI.PolicyMessage;
 
 @RestController
 @RequestMapping("/api")
@@ -66,9 +75,58 @@ public class Controller {
         } 
         else if(pipConfig.equals("erathostenes") && papConfig.equals("erathostenes") && wallet.equals("erathostenes")){
         	
-        	pip=new PIPErat();
+        	  PolicyResponseHandler handler = new PolicyResponseHandler() {
+                @Override
+                public void handleAddPolicyResponse(CompletableFuture<PolicyMessage> future, PolicyMessage message) {
+
+                    System.out.println("AddPolicy Response: " + message.getPolicyJSON());
+                    future.complete(message);
+                }
+
+                @Override
+                public void handleQueryPolicyResponse(CompletableFuture<PolicyMessage> future, PolicyMessage message) {
+                    System.out.println("QueryPolicy Response: " + message.getPolicyJSON());
+                    future.complete(message);
+                }
+            };
+        	TrustScoreResponseHandler trustScoreHandler = new TrustScoreResponseHandler() {
+         @Override
+         public void handleCreateTrustScoreResponse(CompletableFuture<DeviceMessage> future, DeviceMessage message) {
+             System.out.println("CreateTrustScore Response: " + message.getScore());
+             future.complete(message);
+         }
+
+         @Override
+         public void handleReadTrustScoreResponse(CompletableFuture<DeviceMessage> future, DeviceMessage message) {
+             System.out.println("ReadTrustScore Response: " + message.getScore());
+             future.complete(message);
+         }
+
+         @Override
+         public void handleUpdateTrustScoreResponse(CompletableFuture<DeviceMessage> future, DeviceMessage message) {
+             System.out.println("UpdateTrustScore Response: " + message.getScore());
+             future.complete(message);
+         }
+
+         @Override
+         public void handleDeleteTrustScoreResponse(CompletableFuture<DeviceMessage> future, DeviceMessage message) {
+             System.out.println("DeleteTrustScore Response: " + message.getDeviceID());
+             future.complete(message);
+         }
+       };
+       
+       GRPCClient client=null;
+       
+      try {
+    	   client = new GRPCClient("localhost", 8080, false, handler, trustScoreHandler);
+	} catch (SSLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    
+        	pip=new PIPErat(client);
         	
-        	pap=new PAPErat();
+        	pap=new PAPErat(client);
         	
         	pdp=new PDP(pip,pap,wallet);
         	

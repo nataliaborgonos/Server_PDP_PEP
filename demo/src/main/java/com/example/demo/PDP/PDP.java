@@ -139,10 +139,13 @@ public class PDP implements PDPInterface {
 		String goodJson = removeQuotesAndUnescape(authRequestJson);
 		
 		
-		//trust score -> TMB
-		
 		//policy checking -> use the erathostenes architecture for requesting the policy for the resource and action
 		ar = gson.fromJson(goodJson, AuthRequest.class);
+		
+		//trust score -> TMB
+		double trustscore = pip.getTrustScore(ar.getDidRequester());
+		System.out.println("trustscore: "+trustscore);
+		
 		// Get policies needed to do the requested action in that resource
 		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),ar.getSar().getAction());
 		
