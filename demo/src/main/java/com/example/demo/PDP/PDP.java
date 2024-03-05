@@ -138,16 +138,24 @@ public class PDP implements PDPInterface {
 		AuthRequest ar = null;
 		String goodJson = removeQuotesAndUnescape(authRequestJson);
 		
+		boolean allMatches = true;
 		
 		//policy checking -> use the erathostenes architecture for requesting the policy for the resource and action
 		ar = gson.fromJson(goodJson, AuthRequest.class);
 		
 		//trust score -> TMB
 		double trustscore = pip.getTrustScore(ar.getDidRequester());
-		System.out.println("trustscore: "+trustscore);
 		
 		// Get policies needed to do the requested action in that resource
 		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),ar.getSar().getAction());
+		
+		for(Policy p : politicas) {
+			if(trustscore<p.getMinTrustScore()) {
+				allMatches=false;
+			}
+		}
+		
+		
 		
 		//Get the requester's VP
 		String VP=ar.getVerifiablePresentation();
@@ -167,7 +175,7 @@ public class PDP implements PDPInterface {
 			e.printStackTrace();
 		}
 		
-		boolean allMatches = true;
+
 
 		
 		//TODO: This will be changing in order to the requester's wallet. This is just for testing.
