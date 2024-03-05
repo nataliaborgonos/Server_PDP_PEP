@@ -133,29 +133,32 @@ public class PDP implements PDPInterface {
 	}
 	
 	private CapabilityToken verifyIdErat(String authRequestJson) {
-		//TODO Method for erathostenes configuration
+	
 		CapabilityToken ct=null;
 		AuthRequest ar = null;
 		String goodJson = removeQuotesAndUnescape(authRequestJson);
-		
 		boolean allMatches = true;
 		
-		//policy checking -> use the erathostenes architecture for requesting the policy for the resource and action
 		ar = gson.fromJson(goodJson, AuthRequest.class);
 		
-		//trust score -> TMB
+		// CHECK THE TRUST SCORE
+		
+		//Get trust score associated to the requester 
 		double trustscore = pip.getTrustScore(ar.getDidRequester());
 		
-		// Get policies needed to do the requested action in that resource
+		//Policy checking -> use the erathostenes architecture for requesting the policy for the resource and action
+		
+		//Get policies needed to do the requested action in that resource
 		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),ar.getSar().getAction());
 		
+		//Check if the requester's trust score is bigger than the one in the policy
 		for(Policy p : politicas) {
 			if(trustscore<p.getMinTrustScore()) {
 				allMatches=false;
 			}
 		}
 		
-		
+		//	VERIFY THE REQUESTER'S VERIFIABLE PRESENTATION
 		
 		//Get the requester's VP
 		String VP=ar.getVerifiablePresentation();
@@ -174,8 +177,6 @@ public class PDP implements PDPInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-
 
 		
 		//TODO: This will be changing in order to the requester's wallet. This is just for testing.
@@ -227,20 +228,11 @@ public class PDP implements PDPInterface {
                    listajsn.add(jsonObject1);
                }
     	 
-      }                                                                                                           
-      //presentationData.setVerifiableCredential(stringCred);         
-      
-      //for(VCredential v : presentationData.getVerifiableCredential()) {
-    	//  System.out.println(v.toString());
-      //}
-      
-    // System.out.println(presentationData.getVerifiableCredential());
-      
+      }                                                                                                             
 	
-
+      //	POLICY MATCHING
 		
 		// Verify if every path's element match the object CredentialSubject's fields 
-		boolean allFieldsMatch = true;
 
 		// True default, if there is a mismatch, finish the loop 
 		for (Policy p : politicas) {
@@ -284,8 +276,7 @@ public class PDP implements PDPInterface {
 						for (String parte : partes) {
 							String parte2 = new String(parte);
 							
-							//Comprobar que ese path de la politica esta indicado en la VP
-							
+							//Proof that the policy's path is in the VP
 							
 							for (javax.json.JsonObject obj1 : listajsn) {
 								   javax.json.JsonObject credentialSubject = obj1.getJsonObject("credentialSubject");		  
@@ -434,8 +425,11 @@ public class PDP implements PDPInterface {
 		CapabilityToken ct = null;
 		AuthRequestTango ar = null;
 		String goodJson = removeQuotesAndUnescape(authRequestJson);
-		System.out.println(goodJson);
+		
 		ar = gson.fromJson(goodJson, AuthRequestTango.class);
+		
+		boolean allMatches = true;
+		
 		// Get policies needed to do the requested action in that resource
 				ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),ar.getSar().getAction());
 
@@ -451,14 +445,12 @@ public class PDP implements PDPInterface {
 				//Get the requester's VP
 				String token=ar.getToken();
 			
-
-				System.out.println("token "+token);
 				//Deserialize JSON
 				  javax.json.JsonObject jsonObject;                                                       
 				  try (JsonReader reader = Json.createReader(new StringReader(token))) {
 				            jsonObject = reader.readObject();  
 				  } 
-					boolean allMatches = true;
+				
 					
 				  jsonObject.getString("issuer");
 				  jsonObject.getString("client_id");
@@ -802,8 +794,6 @@ public class PDP implements PDPInterface {
 
 		
 		// Verify if every path's element match the object CredentialSubject's fields 
-		boolean allFieldsMatch = true;
-
 		// True default, if there is a mismatch, finish the loop 
 		for (Policy p : politicas) {
 			// Find out if the policy is correctly formed 

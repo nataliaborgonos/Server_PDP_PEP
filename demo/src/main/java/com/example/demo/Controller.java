@@ -180,7 +180,6 @@ public class Controller {
 		//pep.parseRequest(req);
 		
 		//Process access request to obtain a Capability Token 
-		System.out.println("token received "+req);
     	CapabilityToken ct=processTokenTango(req);
     	String token = gson.toJson(ct);
     	if(ct==null) {
