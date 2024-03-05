@@ -60,13 +60,6 @@ public class DemoApplication {
 		        		+ "--pap [test | ] The app needs the policy store.\n"
 		        		+ "--wallet [test | ] The app needs the requester's wallet.\n");
 		        System.exit(0);
-		    //else if(args[i].equals("--requester")) {
-		    	//if (i < args.length - 1) {
-		          //  requester = args[i + 1];
-		            //System.setProperty("requester", requester);
-		        //} else {
-		         //   System.err.println("Missing value after '--requester'. You need a Policies Store.");
-		        //}
 		    }
 		}
 

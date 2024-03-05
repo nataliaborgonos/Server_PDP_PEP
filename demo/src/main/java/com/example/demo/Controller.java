@@ -52,6 +52,7 @@ public class Controller {
     PEP pep;
     Gson gson;
 
+    /*	CONSTRUCTOR	*/
     @Autowired
     public Controller(Environment env) {
         this.pipConfig = System.getProperty("pipConfig");
@@ -59,6 +60,7 @@ public class Controller {
         this.wallet=System.getProperty("wallet");
         		
       //Create the PAP,PIP according to the args
+        
         if(pipConfig.equals("test") && papConfig.equals("test") && wallet.equals("test")) {
     	
     	TrustScoreStore trustScores=new TrustScoreStore();
@@ -123,10 +125,9 @@ public class Controller {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-    
+      		pap=new PAPErat(client);
+      
         	pip=new PIPErat(client);
-        	
-        	pap=new PAPErat(client);
         	
         	pdp=new PDP(pip,pap,wallet);
         	
@@ -139,6 +140,7 @@ public class Controller {
         }
     }
 	
+    /*	METHODS	*/
     @PostMapping("/request-access")
     public String requestAccess(@RequestBody AuthRequest request) {
     	
@@ -177,7 +179,6 @@ public class Controller {
     	
     	//Create access request
 		String req=requester.requestAccessToken(request.getSar().getResource(), request.getSar().getAction(),request.getToken());
-		//pep.parseRequest(req);
 		
 		//Process access request to obtain a Capability Token 
     	CapabilityToken ct=processTokenTango(req);
