@@ -42,9 +42,7 @@ import grpcEratosthenesAPI.GrpcEratosthenesAPI.PolicyMessage;
 @RequestMapping("/api")
 public class Controller {
 
-    private final String pipConfig;
-    private final String papConfig;
-    private final String wallet;
+    private final String pdpConfig;
     
     PIPInterface pip;
     PAPInterface pap;
@@ -55,13 +53,11 @@ public class Controller {
     /*	CONSTRUCTOR	*/
     @Autowired
     public Controller(Environment env) {
-        this.pipConfig = System.getProperty("pipConfig");
-        this.papConfig = System.getProperty("papConfig");
-        this.wallet=System.getProperty("wallet");
+        this.pdpConfig = System.getProperty("pdpConfig");
         		
       //Create the PAP,PIP according to the args
         
-        if(pipConfig.equals("test") && papConfig.equals("test") && wallet.equals("test")) {
+        if(pdpConfig.equals("test")) {
     	
     	TrustScoreStore trustScores=new TrustScoreStore();
     	pip=new PIPTest(trustScores);
@@ -69,13 +65,13 @@ public class Controller {
     	PolicyStore policies=new PolicyStore();
     	pap=new PAPTest(policies);
 
-    	pdp=new PDP(pip,pap,wallet);
+    	pdp=new PDP(pip,pap);
     	
     	pep= new PEP(pdp);
 
     	gson=new Gson();
         } 
-        else if(pipConfig.equals("erathostenes") && papConfig.equals("erathostenes") && wallet.equals("erathostenes")){
+        else if(pdpConfig.equals("erathostenes") ){
         	
         	  PolicyResponseHandler handler = new PolicyResponseHandler() {
                 @Override
@@ -129,7 +125,7 @@ public class Controller {
       
         	pip=new PIPErat(client);
         	
-        	pdp=new PDP(pip,pap,wallet);
+        	pdp=new PDP(pip,pap);
         	
         	pep=new PEP(pdp);
         	

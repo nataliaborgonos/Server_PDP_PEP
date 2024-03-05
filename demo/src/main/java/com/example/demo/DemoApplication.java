@@ -12,7 +12,7 @@ public class DemoApplication {
 
 	//Default port used if there's no "--port" parameter
 	static int port=8080;
-	static String pipConfig;
+	static String pdpConfig;
 	static String papConfig;
 	static String requester;
 	static String wallet;
@@ -29,26 +29,12 @@ public class DemoApplication {
 		        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 		            System.err.println("Not a valid port.");
 		        }
-		    } else if (args[i].equals("--pip")) {
+		    } else if (args[i].equals("--pdp")) {
 		        if (i < args.length - 1) {
-		            pipConfig = args[i + 1];
-		            System.setProperty("pipConfig", pipConfig);
+		            pdpConfig = args[i + 1];
+		            System.setProperty("pdpConfig", pdpConfig);
 		        } else {
-		            System.err.println("Missing value after '--pip'. You need a Trust Scores Store.");
-		        }
-		    }else if(args[i].equals("--pap")) {
-		    	if (i < args.length - 1) {
-		            papConfig = args[i + 1];
-		            System.setProperty("papConfig", papConfig);
-		        } else {
-		            System.err.println("Missing value after '--pap'. You need a Policies Store.");
-		        }
-		    }else if(args[i].equals("--wallet")) {
-		    	if (i < args.length - 1) {
-		            wallet = args[i + 1];
-		            System.setProperty("wallet", wallet);
-		        } else {
-		            System.err.println("Missing value after '--wallet'. You need the requester's wallet.");
+		            System.err.println("Missing value after '--pdp'. You need a PDP configuration.");
 		        }
 		    	
 		    }
@@ -56,9 +42,8 @@ public class DemoApplication {
 		    else if (args[i].equals("--help")) {
 		        System.out.println("Arguments information: \n"
 		        		+ "--port [number] The port can be set manually adding this argument. If this is not set, the app will be running in port 8080.\n"
-		        		+ "--pip [test | ] The app needs the trust score store. \n"
-		        		+ "--pap [test | ] The app needs the policy store.\n"
-		        		+ "--wallet [test | ] The app needs the requester's wallet.\n");
+		        		+ "--pdp [test | erathostenes] The app needs the PDP configuration in order to apply policies and check trust scores. \n"
+		        		);
 		        System.exit(0);
 		    }
 		}

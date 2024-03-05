@@ -66,7 +66,7 @@ public class PDP implements PDPInterface {
 	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
 	private static final String ALIAS = "MiAliasPriv";
 
-	String wallet; // temporarily this is String
+
 	PIPInterface pip;
 	PAPInterface pap;
 	
@@ -102,7 +102,7 @@ public class PDP implements PDPInterface {
 		this.wallet=wallet;
 	}*/
 	
-	public PDP(PIPInterface pip,PAPInterface pap, String wallet) {
+	public PDP(PIPInterface pip,PAPInterface pap) {
 		//TODO
 		try {
 			schemaRequest = JsonLoader.fromPath(
@@ -117,7 +117,7 @@ public class PDP implements PDPInterface {
 		gson = new Gson();
 		this.pip = pip;
 		this.pap = pap;
-		this.wallet=wallet;
+		
 	}
 	
 
