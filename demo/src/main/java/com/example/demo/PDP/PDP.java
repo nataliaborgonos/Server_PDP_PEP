@@ -734,11 +734,11 @@ public class PDP implements PDPInterface {
 		
 		//TODO: This will be changing in order to the requester's wallet. This is just for testing.
 		// Call API for verify the VPresentation
-		idAgent.createWallet(ar.getDidRequester());
-		boolean response = idAgent.verifyPresentation(VP);
-		if (!response) {
-			allMatches = false;
-		}
+		//idAgent.createWallet(ar.getDidRequester());
+		//boolean response = idAgent.verifyPresentation(VP);
+		//if (!response) {
+			//allMatches = false;
+		//}
 
 		// Prove matching policies with requester's VP
 		

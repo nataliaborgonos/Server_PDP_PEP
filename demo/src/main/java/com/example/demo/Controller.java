@@ -42,7 +42,7 @@ import grpcEratosthenesAPI.GrpcEratosthenesAPI.PolicyMessage;
 @RequestMapping("/api")
 public class Controller {
 
-    private final String pdpConfig;
+    private String pdpConfig;
     
     PIPInterface pip;
     PAPInterface pap;
@@ -51,12 +51,12 @@ public class Controller {
     Gson gson;
 
     /*	CONSTRUCTOR	*/
-    @Autowired
+  
     public Controller(Environment env) {
         this.pdpConfig = System.getProperty("pdpConfig");
-        		
+        System.out.println(pdpConfig);
       //Create the PAP,PIP according to the args
-        
+       
         if(pdpConfig.equals("test")) {
     	
     	TrustScoreStore trustScores=new TrustScoreStore();
@@ -135,6 +135,7 @@ public class Controller {
         	System.err.println("Not a valid configuration."); System.exit(0);
         }
     }
+    
 	
     /*	METHODS	*/
     @PostMapping("/request-access")
