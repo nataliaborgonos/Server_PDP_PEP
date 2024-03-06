@@ -54,7 +54,7 @@ public class Controller {
   
     public Controller(Environment env) {
         this.pdpConfig = System.getProperty("pdpConfig");
-        System.out.println(pdpConfig);
+
       //Create the PAP,PIP according to the args
        
         if(pdpConfig.equals("test")) {

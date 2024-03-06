@@ -34,15 +34,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DemoApplicationTests {
 
 	 public DemoApplicationTests() {
-		 // Establece la propiedad del sistema
+		 // Arguments
 	        System.setProperty("pdpConfig", "test");
-	   
 	}
 	
 	String token;
 	
 	@Autowired
 	private TestRestTemplate restTemplate;
+	
+	//MISSING -> TEST ACCESS TOKEN TANGO ENDPOINT 
 	
 	@Test
 	void testRequestAccessEndpoint() {
