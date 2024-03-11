@@ -146,7 +146,7 @@ public class PDP implements PDPInterface {
 		//Get trust score associated to the requester 
 		double trustscore = pip.getTrustScore(ar.getDidRequester());
 		
-		//Policy checking -> use the erathostenes architecture for requesting the policy for the resource and action
+		//Policy checking -> use the eratosthenes architecture for requesting the policy for the resource and action
 		
 		//Get policies needed to do the requested action in that resource
 		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),ar.getSar().getAction());
@@ -181,11 +181,11 @@ public class PDP implements PDPInterface {
 		
 		//TODO: This will be changing in order to the requester's wallet. This is just for testing.
 		// Call API for verify the VPresentation
-		//idAgent.createWallet("natalia");
-		//boolean response = idAgent.verifyPresentation(VP);
-		//if (!response) {
-			//allMatches = false;
-		//}
+		idAgent.createWallet("natalia");
+		boolean response = idAgent.verifyPresentation(VP);
+		if (!response) {
+			allMatches = false;
+		}
 
 		// Prove matching policies with requester's VP
 		
@@ -469,6 +469,8 @@ public class PDP implements PDPInterface {
 				  jsonObject.getString("keyID");
 				  jsonObject.getString("expirationTime");
 				  
+				  //Verify the VP?? 
+				  
 				  //Verify that the token is not expired
 				  
 				  //Verify that the signing is correct
@@ -734,11 +736,11 @@ public class PDP implements PDPInterface {
 		
 		//TODO: This will be changing in order to the requester's wallet. This is just for testing.
 		// Call API for verify the VPresentation
-		//idAgent.createWallet(ar.getDidRequester());
-		//boolean response = idAgent.verifyPresentation(VP);
-		//if (!response) {
-			//allMatches = false;
-		//}
+		idAgent.createWallet(ar.getDidRequester());
+		boolean response = idAgent.verifyPresentation(VP);
+		if (!response) {
+			allMatches = false;
+		}
 
 		// Prove matching policies with requester's VP
 		
