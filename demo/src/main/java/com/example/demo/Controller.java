@@ -177,35 +177,14 @@ public class Controller {
     	
     	return ct;
     }
-    
-    @PostMapping("/access-token-tango")
-    public String accessTokenForTango(@RequestBody AuthRequestTango request) {
-    	
-    	//Create a requester with request data -> change the token tango instead VP
-    	Requester requester =new Requester(request.getDidSP(),request.getDidRequester(),request.getToken());
-    	
-    	//Create access request
-		String req=requester.requestAccessToken(request.getSar().getResource(), request.getSar().getAction(),request.getToken());
-		
-		//Process access request to obtain a Capability Token 
-    	CapabilityToken ct=processTokenTango(req);
-    	String token = gson.toJson(ct);
-    	if(ct==null) {
-    		System.out.println("Capability Token couldn't be issued, please revise the request and try again.\n");
-    		return "Capability Token couldn't be issued, please revise the request and try again.\n";
-    	}
-    	System.out.println("Capability Token successfully issued.\n");
-    	return token ;
-    }
-    
+        
     
     @PostMapping("/connector-access-token")
     public String trying(@RequestBody AuthRequestConnectorToken request) {
     	
     	        String jwtString = request.getAccessToken();
-    	        System.out.println(jwtString);
     	     
-    	        // Parsear el JWT
+    	        // Parse JWT
     	        JWT jwt=null;
 				try {
 					jwt = JWTParser.parse(jwtString);
@@ -214,7 +193,7 @@ public class Controller {
 					e.printStackTrace();
 				}
 
-    	        // Decodificar los claims del JWT
+    	        // Decode JWT claims
     	        JWTClaimsSet claimsSet=null;
 				try {
 					claimsSet = jwt.getJWTClaimsSet();
@@ -222,10 +201,8 @@ public class Controller {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-    	        System.out.println("Claims del JWT:");
-    	        System.out.println(claimsSet.toJSONObject());  
     	        
-    	        // Construir el string JSON
+    	        // Construct string JSON
     	        String jsonString=null;
     	        
     	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz uuuu", Locale.ENGLISH);
@@ -233,16 +210,13 @@ public class Controller {
     	        Object expClaim = claimsSet.getClaim("exp");
     	        String expString;
     	        if (expClaim instanceof Date) {
-    	            // Si es una Date, la convertimos a String con el formato adecuado
     	            expString = ((Date) expClaim).toString();
     	        } else {
-    	            // Si no, asumimos que es un String
     	            expString = (String) expClaim;
     	        }
 
     	        ZonedDateTime zonedDateTime = ZonedDateTime.parse(expString, formatter);
 
-    	        // Convertimos la fecha a UNIX Epoch (segundos desde el 1 de enero de 1970)
     	        long epochSeconds = zonedDateTime.toEpochSecond();
     	        
     	        Map<String, Object> jo = null;
@@ -253,9 +227,7 @@ public class Controller {
 					e.printStackTrace();
 				}
 				 String jsonString1 = gson.toJson(jo);
-				 System.out.println("cambio "+jsonString1);
-				 
-				 
+				
 				 JsonObject jsonObject = new JsonObject();
 				 jsonObject.addProperty("aud", claimsSet.getAudience().iterator().next());
 				 jsonObject.addProperty("sub", claimsSet.getSubject());
@@ -273,20 +245,14 @@ public class Controller {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				 jsonObject.addProperty("verifiableCredential", jsonString1); // Agregar directamente el objeto JSON como un campo
+				 jsonObject.addProperty("verifiableCredential", jsonString1); 
 
 
-String jsonString2 = gson.toJson(jsonObject); // Convertir el objeto JSON resultante a string
-System.out.println("string "+jsonString2);
+				 String jsonString2 = gson.toJson(jsonObject); 
 				 
-    	        // Imprimir el string JSON
-    	        System.out.println("Claims del JWT en formato JSON:");
-    	        System.out.println(jsonString);
     	        //Create a requester with request data -> change the token tango instead VP
     	    	Requester requester =new Requester(request.getDidSP(),request.getDidRequester(),jsonString2);
     	    	
-    	        System.out.println(requester.getVPJSON());
-    	        
     	      //Create access request
     		String req=requester.requestAccessToken(request.getSar().getResource(), request.getSar().getAction(),jsonString2);
     		//Process access request to obtain a Capability Token 
@@ -306,15 +272,6 @@ System.out.println("string "+jsonString2);
     	//Send request to PEP for issuing the Capability token -> change the PEP treatment 
     	String requestJson=gson.toJson(req);
     	CapabilityToken ct=pep.sendConnectorToken(requestJson);
-    	return ct;
-    }
-    
-    
-    public CapabilityToken processTokenTango(String req) {
-    	
-    	//Send request to PEP for issuing the Capability token -> change the PEP treatment 
-    	String requestJson=gson.toJson(req);
-    	CapabilityToken ct=pep.sendToken(requestJson);
     	return ct;
     }
     

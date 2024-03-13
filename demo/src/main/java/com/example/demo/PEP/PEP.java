@@ -86,13 +86,6 @@ public class PEP implements PEPInterface {
 		return ct;
 	}
 	
-	// Sends request to PDP for verifying requester's ID, matching policies and
-	// trust score
-	public CapabilityToken sendToken(String authRequestJson) {
-		CapabilityToken ct = pdp.verifyTokenTango(authRequestJson);
-		pbk = pdp.getPbk();
-		return ct;
-	}
 
 	// Sends request to PDP for verifying requester's ID, matching policies and
 		// trust score
