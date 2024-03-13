@@ -126,9 +126,7 @@ public class PolicyStore {
 				rec1.put(r,pols1);
 				policies.put("tangoUser", rec1);
 				
-				for(String s : policies.keySet()) {
-					System.out.println(s);
-				}
+				
 	}
 	
 	public ArrayList<Policy> getPolicy(String didSP, String recursoSolicitado) {

@@ -43,8 +43,6 @@ class DemoApplicationTests {
 	@Autowired
 	private TestRestTemplate restTemplate;
 	
-	//MISSING -> TEST ACCESS TOKEN TANGO ENDPOINT 
-	
 	@Test
 	void testRequestAccessEndpoint() {
 		String requestBody =  "{\n" +
