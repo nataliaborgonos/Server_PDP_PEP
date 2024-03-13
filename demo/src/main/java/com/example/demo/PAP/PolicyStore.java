@@ -80,6 +80,49 @@ public class PolicyStore {
 		HashMap<Resource,ArrayList<Policy>> rec=new HashMap<>();
 		rec.put(r,pols);
 		policies.put("natalia", rec);
+		
+		// Create a policy for trying the Server
+				Policy policy2=new Policy(2);
+				policy2.setNombre("Tango User Information");
+				policy2.setPurpose("Reveal id and last name of the user.");
+				policy2.setServiceProvider("did:serviceProvider:1");
+				SimpleAccessRight sar1=new SimpleAccessRight("GET", "/temperatura");
+				List<SimpleAccessRight> accessRights1=new ArrayList<>();
+				accessRights1.add(sar1);
+				policy2.setAccessRights(accessRights1);
+				policy2.setAuthTime(123123123);
+				policy2.setMinTrustScore(0.5);
+				
+				// Field for revealing id
+				Field field5=new Field();
+				List<String> path5=new ArrayList<String>();
+				path5.add("$.id");
+				field5.setPath(path5);
+				
+				// Field for matching last name with "IPS"
+				Field field6=new Field();
+				List<String> path6=new ArrayList<String>();
+				path6.add("$.lastName");
+				field6.setPath(path6);
+				Filter lastNameFilter=new Filter("string");
+				lastNameFilter.setPattern("IPS");
+				field6.setFilter(lastNameFilter);
+
+				Constraint constraints1=new Constraint();
+				
+				List<Field> fields1=new ArrayList<>();
+				fields1.add(field5);
+				fields1.add(field6);
+				
+				constraints1.setFields(fields1);
+			
+				policy2.setConstraints(constraints1);
+				
+				
+				ArrayList<Policy> pols1=new ArrayList<>();
+				pols1.add(policy2);
+				rec.put(r,pols1);
+				policies.put("tangoUser", rec);
 	}
 	
 	public ArrayList<Policy> getPolicy(String didSP, String recursoSolicitado) {
