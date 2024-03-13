@@ -81,6 +81,7 @@ public class PolicyStore {
 		rec.put(r,pols);
 		policies.put("natalia", rec);
 		
+		
 		// Create a policy for trying the Server
 				Policy policy2=new Policy(2);
 				policy2.setNombre("Tango User Information");
@@ -121,8 +122,13 @@ public class PolicyStore {
 				
 				ArrayList<Policy> pols1=new ArrayList<>();
 				pols1.add(policy2);
-				rec.put(r,pols1);
-				policies.put("tangoUser", rec);
+				HashMap<Resource,ArrayList<Policy>> rec1=new HashMap<>();
+				rec1.put(r,pols1);
+				policies.put("tangoUser", rec1);
+				
+				for(String s : policies.keySet()) {
+					System.out.println(s);
+				}
 	}
 	
 	public ArrayList<Policy> getPolicy(String didSP, String recursoSolicitado) {
