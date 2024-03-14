@@ -41,22 +41,23 @@ public class PEP implements PEPInterface {
 
 	public PEP(PDP pdp) {
 		this.pdp=pdp;
-		try {
-			schemaRequest = JsonLoader.fromPath(
-					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
-			schemaToken = JsonLoader.fromPath(
-					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaToken.json");
-			schemaAccess = JsonLoader.fromPath(
-					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaAccess.json");
-		} catch (IOException e) {
+	//	try {
+			//schemaRequest = JsonLoader.fromPath(
+				//	"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
+		//	schemaToken = JsonLoader.fromPath(
+			//		"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaToken.json");
+			//schemaAccess = JsonLoader.fromPath(
+				//	"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaAccess.json");
+		//} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			//e.printStackTrace();
+		//}
 		gson = new Gson();
 	}
 
 	/* METHODS */
 
+	/*
 	// Parse request according to the JSON Schema
 	public void parseRequest(String authRequestJson) {
 		JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
@@ -76,7 +77,7 @@ public class PEP implements PEPInterface {
 			e1.printStackTrace();
 		}
 
-	}
+	}*/
 
 	// Sends request to PDP for verifying requester's ID, matching policies and
 	// trust score
@@ -104,6 +105,7 @@ public class PEP implements PEPInterface {
 		boolean signatureVerified = false;
 		boolean simpleAccessRightsOk = false;
 
+		/*
 		// Parse request according to the Json Schema
 		JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
 		try {
@@ -115,7 +117,7 @@ public class PEP implements PEPInterface {
 				e.printStackTrace();
 			}
 			schemaReq.validate(request);
-
+*/
 			// Verifies the access rights that the Capability Token grants
 			AccessRequest acc = gson.fromJson(requestWithToken, AccessRequest.class);
 			List<SimpleAccessRight> simp = acc.getCt().getAr();
@@ -141,9 +143,20 @@ public class PEP implements PEPInterface {
 			byte[] signatureBytes = Base64.getDecoder().decode(acc.getCt().getSi());
 			
 			// Obtain a Signature's instance and configure for verifying with the Public Key
-			Signature signature = Signature.getInstance("SHA256withRSA");
+			Signature signature = null;
+			try {
+				signature = Signature.getInstance("SHA256withRSA");
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			pbk = pdp.getPbk();
-			signature.initVerify(pbk);
+			try {
+				signature.initVerify(pbk);
+			} catch (InvalidKeyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			// The signed message is every token's field except signature
 			String signature1 = null;
@@ -185,16 +198,16 @@ public class PEP implements PEPInterface {
 			}
 			
 
-		} catch (ProcessingException e1) {
+	//	} catch (ProcessingException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
+		//	e1.printStackTrace();
+		//} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
+			//e.printStackTrace();
+		//} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			//e.printStackTrace();
+		//}
 		return "ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n";
 	}
 

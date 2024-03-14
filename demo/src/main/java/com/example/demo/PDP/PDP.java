@@ -67,7 +67,8 @@ import org.mozilla.javascript.tools.shell.JSConsole;
 public class PDP implements PDPInterface {
 
 	/* KEYS */
-	private static final String KEYSTORE = "/home/natalia/Descargas/serverErat.ks";
+	//private static final String KEYSTORE = "/home/natalia/Descargas/serverErat.ks";
+	private static final String KEYSTORE = "/app/crypto/serverErat.ks";
 	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
 	private static final String ALIAS = "MiAliasPriv";
 
@@ -109,16 +110,16 @@ public class PDP implements PDPInterface {
 	
 	public PDP(PIPInterface pip,PAPInterface pap) {
 		//TODO
-		try {
-			schemaRequest = JsonLoader.fromPath(
-					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
-			schemaPolitica = JsonLoader.fromPath(
-					"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaPol.json");
+		//try {
+		//	schemaRequest = JsonLoader.fromPath(
+			//		"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaRequest.json");
+			//schemaPolitica = JsonLoader.fromPath(
+				//	"/home/natalia/git/local_repo/demo/src/main/java/com/example/demo/models/JSONSchemaPol.json");
 
-		} catch (IOException e) {
+		//} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			//e.printStackTrace();
+		//}
 		gson = new Gson();
 		this.pip = pip;
 		this.pap = pap;
@@ -548,7 +549,7 @@ public class PDP implements PDPInterface {
 						for (Policy p : politicas) {
 							// Find out if the policy is correctly formed 
 							String politicaJSON = gson.toJson(p);
-
+							/*
 							JsonSchemaFactory factory1 = JsonSchemaFactory.byDefault();
 							try {
 								JsonSchema schemaReq = factory1.getJsonSchema(schemaRequest);
@@ -563,7 +564,7 @@ public class PDP implements PDPInterface {
 							} catch (ProcessingException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
-							}
+							}*/
 
 							// Matching
 

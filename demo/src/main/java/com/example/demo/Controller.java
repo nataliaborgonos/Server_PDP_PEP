@@ -156,7 +156,7 @@ public class Controller {
     	
     	//Create access request
 		String req=requester.requestAccess(request.getSar().getResource(), request.getSar().getAction());
-		pep.parseRequest(req);
+		//pep.parseRequest(req);
 		
 		//Process access request to obtain a Capability Token 
     	CapabilityToken ct=process(req);
