@@ -55,11 +55,12 @@ import com.google.gson.reflect.TypeToken;
 
 import javax.json.*;
 
+/*
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.utils.JsonUtils;
+import com.github.jsonldjava.utils.JsonUtils;*/
 
-import org.apache.commons.*;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.mozilla.javascript.tools.shell.JSConsole;
 
@@ -166,7 +167,7 @@ public class PDP implements PDPInterface {
 		
 		//Get the requester's VP
 		String VP=ar.getVerifiablePresentation();
-	
+	/*
 		//Validate if the VP is well formed -> Put the not null fields (context,holder,proof,VCredential)
 		try {
 			Map<String, Object> presentation = (Map<String, Object>) JsonUtils.fromString(VP);
@@ -180,7 +181,7 @@ public class PDP implements PDPInterface {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 
 		
 		//TODO: This will be changing in order to the requester's wallet. This is just for testing.
@@ -764,7 +765,7 @@ public class PDP implements PDPInterface {
 
 		//Get the requester's VP
 		String VP=ar.getVerifiablePresentation();
-	
+	/*
 		//Validate if the VP is well formed -> Put the not null fields (context,holder,proof,VCredential)
 		try {
 			Map<String, Object> presentation = (Map<String, Object>) JsonUtils.fromString(VP);
@@ -778,7 +779,7 @@ public class PDP implements PDPInterface {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		boolean allMatches = true;
 
