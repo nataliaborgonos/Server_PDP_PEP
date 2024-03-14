@@ -15,20 +15,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DemoApplication {
 
 	//Default port used if there's no "--port" parameter
-	static int port=8080;
-	static String pdpConfig;
+	//static int port=8080;
+	//static String pdpConfig;
 	  // Lee la variable de entorno SERVER_PORT o usa el valor predeterminado 8080
-   // @Value("${SERVER_PORT:8080}")
-    //static int port;
+   @Value("${SERVER_PORT:8080}")
+    static int port;
     
     // Lee la variable de entorno PDP_CONFIG o usa el valor predeterminado "test"
-    //@Value("${PDP_CONFIG:test}")
-    //static String pdpConfig;
+    @Value("${PDP_CONFIG:test}")
+    static String pdpConfig;
     
 	public static void main(String[] args) {
-		  // System.setProperty("server.port", System.getenv("SERVER_PORT"));
-		   //System.setProperty("pdpConfig", System.getenv("PDP_CONFIG"));
-		for (int i = 0; i < args.length; i++) {
+		   System.setProperty("server.port", System.getenv("SERVER_PORT"));
+		   System.setProperty("pdpConfig", System.getenv("PDP_CONFIG"));
+	/*	for (int i = 0; i < args.length; i++) {
 		    if (args[i].equals("--port")) {
 		        try {
 		            port = Integer.parseInt(args[i + 1]);
@@ -55,7 +55,7 @@ public class DemoApplication {
 		    }
 		}
 		
-
+*/
 
 		
 		System.out.println("PDP and PEP REST Server are listening in port " + port);
