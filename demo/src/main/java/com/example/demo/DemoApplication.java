@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -16,9 +17,17 @@ public class DemoApplication {
 	//Default port used if there's no "--port" parameter
 	static int port=8080;
 	static String pdpConfig;
-	
+	  // Lee la variable de entorno SERVER_PORT o usa el valor predeterminado 8080
+   // @Value("${SERVER_PORT:8080}")
+    //static int port;
+    
+    // Lee la variable de entorno PDP_CONFIG o usa el valor predeterminado "test"
+    //@Value("${PDP_CONFIG:test}")
+    //static String pdpConfig;
+    
 	public static void main(String[] args) {
-			
+		  // System.setProperty("server.port", System.getenv("SERVER_PORT"));
+		   //System.setProperty("pdpConfig", System.getenv("PDP_CONFIG"));
 		for (int i = 0; i < args.length; i++) {
 		    if (args[i].equals("--port")) {
 		        try {
@@ -45,6 +54,8 @@ public class DemoApplication {
 		        System.exit(0);
 		    }
 		}
+		
+
 
 		
 		System.out.println("PDP and PEP REST Server are listening in port " + port);

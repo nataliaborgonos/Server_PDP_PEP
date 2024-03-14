@@ -245,7 +245,7 @@ public class PDP implements PDPInterface {
 			// Find out if the policy is correctly formed 
 			String politicaJSON = gson.toJson(p);
 
-			JsonSchemaFactory factory1 = JsonSchemaFactory.byDefault();
+			/*JsonSchemaFactory factory1 = JsonSchemaFactory.byDefault();
 			try {
 				JsonSchema schemaReq = factory1.getJsonSchema(schemaRequest);
 				try {
@@ -259,7 +259,7 @@ public class PDP implements PDPInterface {
 			} catch (ProcessingException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
+			}*/
 
 			// Matching
 

@@ -13,6 +13,9 @@ COPY crypto/serverErat.ks /app/crypto/serverErat.ks
 # Expone el puerto 8080
 EXPOSE 8080
 
+ENV SERVER_PORT=8080
+ENV PDP_CONFIG=test
+
 # Ejecuta la aplicación cuando se inicie el contenedor
-CMD ["java", "-jar", "demo.jar", "--pdp", "test"]
+CMD ["java", "-jar", "demo.jar"]
 
