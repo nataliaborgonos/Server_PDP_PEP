@@ -28,7 +28,7 @@ public class DemoApplication {
 	public static void main(String[] args) {
 		   System.setProperty("server.port", System.getenv("SERVER_PORT"));
 		   System.setProperty("pdpConfig", System.getenv("PDP_CONFIG"));
-	/*	for (int i = 0; i < args.length; i++) {
+		/*for (int i = 0; i < args.length; i++) {
 		    if (args[i].equals("--port")) {
 		        try {
 		            port = Integer.parseInt(args[i + 1]);
@@ -53,9 +53,9 @@ public class DemoApplication {
 		        		);
 		        System.exit(0);
 		    }
-		}
+		}*/
 		
-*/
+
 
 		
 		System.out.println("PDP and PEP REST Server are listening in port " + port);

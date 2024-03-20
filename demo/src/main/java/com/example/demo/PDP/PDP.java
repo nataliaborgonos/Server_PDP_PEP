@@ -67,7 +67,7 @@ import org.mozilla.javascript.tools.shell.JSConsole;
 public class PDP implements PDPInterface {
 
 	/* KEYS */
-	//private static final String KEYSTORE = "/home/natalia/Descargas/serverErat.ks";
+	//private static final String KEYSTORE = "./serverErat.ks";
 	private static final String KEYSTORE = "/app/crypto/serverErat.ks";
 	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
 	private static final String ALIAS = "MiAliasPriv";
@@ -733,24 +733,24 @@ public class PDP implements PDPInterface {
 		VPresentation vp = null;
 		CapabilityToken ct = null;
 		JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
-		try {
-			JsonSchema schemaReq = factory.getJsonSchema(schemaRequest);
-			try {
-				request = JsonLoader.fromString(authRequestJson);
-			} catch (IOException e) {
+		//try {
+			//JsonSchema schemaReq = factory.getJsonSchema(schemaRequest);
+			//try {
+				//request = JsonLoader.fromString(authRequestJson);
+			//} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			schemaReq.validate(request);
+				//e.printStackTrace();
+			//}
+			//schemaReq.validate(request);
 
 			String goodJson = removeQuotesAndUnescape(authRequestJson);
 
 			ar = gson.fromJson(goodJson, AuthRequest.class);
 
-		} catch (ProcessingException e1) {
+		//} catch (ProcessingException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		//	e1.printStackTrace();
+		//}
 
 		// Get policies needed to do the requested action in that resource
 		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),ar.getSar().getAction());
@@ -853,7 +853,7 @@ public class PDP implements PDPInterface {
 			String politicaJSON = gson.toJson(p);
 
 			JsonSchemaFactory factory1 = JsonSchemaFactory.byDefault();
-			try {
+		/*	try {
 				JsonSchema schemaReq = factory1.getJsonSchema(schemaRequest);
 				try {
 					request = JsonLoader.fromString(authRequestJson);
@@ -866,7 +866,7 @@ public class PDP implements PDPInterface {
 			} catch (ProcessingException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
+			}*/
 
 			// Matching
 
