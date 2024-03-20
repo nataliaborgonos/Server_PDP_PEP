@@ -63,7 +63,7 @@ public class Controller {
     /*	CONSTRUCTOR	*/
   
     public Controller(Environment env) {
-        this.pdpConfig = System.getProperty("pdpConfig");
+     //   this.pdpConfig = System.getProperty("pdpConfig");
 
       //Create the PAP,PIP according to the args
        
