@@ -67,8 +67,8 @@ import org.mozilla.javascript.tools.shell.JSConsole;
 public class PDP implements PDPInterface {
 
 	/* KEYS */
-	private static final String KEYSTORE = "/home/natalia/git/local_repo/demo/crypto/serverErat.ks";
-	//private static final String KEYSTORE = "/app/crypto/serverErat.ks";
+	//private static final String KEYSTORE = "/home/natalia/git/local_repo/demo/crypto/serverErat.ks";
+	private static final String KEYSTORE = "/app/crypto/serverErat.ks";
 	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
 	private static final String ALIAS = "MiAliasPriv";
 

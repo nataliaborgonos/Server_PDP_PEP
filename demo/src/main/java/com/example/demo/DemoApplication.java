@@ -18,16 +18,50 @@ public class DemoApplication {
 	//static int port=8080;
 	//static String pdpConfig;
 	  // Lee la variable de entorno SERVER_PORT o usa el valor predeterminado 8080
- // @Value("${SERVER_PORT:8080}")
-    static int port;
+ @Value("${app.PDP_PORT:8088}")
+     static int port;
     
+ 
     // Lee la variable de entorno PDP_CONFIG o usa el valor predeterminado "test"
-   // @Value("${PDP_CONFIG:test}")
-    static String pdpConfig;
+    @Value("${app.PDP_CONFIG:erathostenes}")
+   static  String pdpConfig;
     
 	public static void main(String[] args) {
-		//   System.setProperty("server.port", System.getenv("SERVER_PORT"));
-		  // System.setProperty("pdpConfig", System.getenv("PDP_CONFIG"));
+		
+		 /// Si la variable de entorno SERVER_PORT está configurada, utiliza su valor para el puerto
+        String serverPortEnv = System.getenv("PDP_PORT");
+        if (serverPortEnv != null && !serverPortEnv.isEmpty()) {
+            port = Integer.parseInt(serverPortEnv);
+        }
+         // Establece el puerto del servidor Spring Boot
+        System.setProperty("server.port", String.valueOf(port));
+        
+        
+        String pdpconf=System.getenv("PDP_CONFIG");
+        if (pdpconf != null && !pdpconf.isEmpty()) {
+            pdpConfig = pdpconf;
+        }
+        
+       System.setProperty("pdpConfig", pdpConfig);
+	
+		/*
+	   System.setProperty("server.port", String.valueOf(port));
+	   System.setProperty("pdpConfig", pdpConfig);
+		String serverPort = System.getenv("PDP_PORT");
+		if (serverPort != null) {
+		    System.setProperty("server.port", serverPort);
+		} else {
+		    System.setProperty("server.port", "8080"); // Valor por defecto si la variable de entorno no está definida
+		}
+
+		String pdpConfig = System.getenv("PDP_CONFIG");
+		if (pdpConfig != null) {
+		    System.setProperty("pdpConfig", pdpConfig);
+		} else {
+		    System.err.println("No se ha proporcionado una configuración PDP. Por favor, asegúrese de definir la variable de entorno PDP_CONFIG.");
+	
+		}	*/
+		/*
 		for (int i = 0; i < args.length; i++) {
 		    if (args[i].equals("--port")) {
 		        try {
@@ -54,12 +88,11 @@ public class DemoApplication {
 		        System.exit(0);
 		    }
 		}
-		
+		*/
 
 
 		
-		System.out.println("PDP and PEP REST Server are listening in port " + port);
-		
+       System.out.println(pdpConfig+"PDP and PEP REST Server are listening in port " + port);
 		SpringApplication.run(DemoApplication.class, args);
 	}
 	

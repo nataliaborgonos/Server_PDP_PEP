@@ -1,0 +1,14 @@
+version: '3.5'
+services:
+  myapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    network_mode: host
+    volumes:
+      - ./build/libs:/app/build/libs
+      - ./crypto:/app/crypto
+      - ./ec-cakey.jks:/app/ec-cakey.jks
+      - ./ec-cacert.pem:/app/ec-cacert.pem
+    env_file:
+      - .env

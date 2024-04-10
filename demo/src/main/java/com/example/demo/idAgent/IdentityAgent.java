@@ -29,7 +29,8 @@ import com.google.gson.JsonParser;
 public class IdentityAgent {
 	
 	
-	private static final String KEYSTORE = "/home/natalia/eclipse-workspace/TFG_/ec-cakey.jks";
+	//private static final String KEYSTORE = "/home/natalia/eclipse-workspace/TFG_/ec-cakey.jks";
+	private static final String KEYSTORE = "/app/crypto/ec-cakey.jks";
 	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
     private static final String ALIAS="myserver";
     
@@ -46,12 +47,12 @@ public class IdentityAgent {
 		
 		//Create a wallet for the requester
 		
-		System.setProperty("javax.net.ssl.trustStore", "/home/natalia/eclipse-workspace/TFG_/ec-cakey.jks");
+		System.setProperty("javax.net.ssl.trustStore", "/app/crypto/ec-cakey.jks");
 		System.setProperty("javax.net.ssl.trustStorePassword", "hola123");
 
 		CertificateFactory certificateFactory=null;
 	    
-        Path certificatePath = Paths.get("/home/natalia/eclipse-workspace/TFG_/ec-cacert.pem");
+        Path certificatePath = Paths.get("/app/crypto/ec-cacert.pem");
         try {
 		 certificateFactory = CertificateFactory.getInstance("X.509");
 		} catch (CertificateException e) {
@@ -181,12 +182,12 @@ public class IdentityAgent {
 	public boolean verifyPresentation(String VPjson) {
 	
 		// Verify the requester's Verifiable Presentation 
-		System.setProperty("javax.net.ssl.trustStore", "/home/natalia/eclipse-workspace/TFG_/ec-cakey.jks");
+		System.setProperty("javax.net.ssl.trustStore", "/app/crypto/ec-cakey.jks");
 		System.setProperty("javax.net.ssl.trustStorePassword", "hola123");
 
 		CertificateFactory certificateFactory=null;
 	    
-        Path certificatePath = Paths.get("/home/natalia/eclipse-workspace/TFG_/ec-cacert.pem");
+        Path certificatePath = Paths.get("/app/crypto/ec-cacert.pem");
         try {
 		 certificateFactory = CertificateFactory.getInstance("X.509");
 		} catch (CertificateException e) {

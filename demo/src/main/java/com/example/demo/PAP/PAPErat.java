@@ -31,15 +31,20 @@ public class PAPErat implements PAPInterface{
 		String id = "123";
 		String accessRightsJSON = "[{\"resource\":\"/temperatura\",\"action\":\"GET\"}]";
 		CompletableFuture<PolicyMessage> addPolicyFuture = client.addPolicy(jsonExample);
+	
 		PolicyMessage addPolicyResponse = null;
 		try {
 			addPolicyResponse = addPolicyFuture.get();
+			System.out.println(addPolicyFuture.get());
+			if(addPolicyResponse.getPolicyJSON()!=null) {
+				System.out.println("AddPolicy Response received: " + addPolicyResponse.getPolicyJSON());
+				}
 		} catch (InterruptedException | ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	
 		System.out.println("AddPolicy Response received: " + addPolicyResponse.getPolicyJSON());
-		
 	}
 	
 	/*		METHODS		*/
