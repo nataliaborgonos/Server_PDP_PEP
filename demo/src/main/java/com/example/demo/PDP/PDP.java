@@ -421,6 +421,7 @@ public class PDP implements PDPInterface {
 	
 	//Method for verifying the connector token and issuing the Capability Token
 		public CapabilityToken verifyConnectorToken(String authRequestJson) {
+			System.out.println("PDP receives the information and starts the verifying process...\n");
 			CapabilityToken ct = null;
 			AuthRequestTango ar = null;
 			boolean isVP=false;
@@ -439,6 +440,7 @@ public class PDP implements PDPInterface {
 					for (Policy p : politicas) {
 						if (trustScore > p.getMinTrustScore()) {
 							trustScoreOK = true;
+							System.out.println("Trust Score successfully checked.\n");
 						}
 					}
 
@@ -563,7 +565,7 @@ public class PDP implements PDPInterface {
 							Constraint constraints = p.getConstraints();
 							List<Field> fields = constraints.getFields();
 							
-							System.out.println("Starting matching policies process...");
+							System.out.println("Starting matching policies process...\n");
 							for (Field f : fields) {
 								List<String> path = f.getPath();
 								// Look for hierarchy ( $.credentialSubject. )

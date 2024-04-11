@@ -63,9 +63,7 @@ public class Controller {
     /*	CONSTRUCTOR	*/
   
     public Controller() {
-    	System.out.println("empiezo a construir el controller");
         this.pdpConfig = System.getProperty("pdpConfig");
-        System.out.println("pdpconfig: "+pdpConfig);
 
       //Create the PAP,PIP according to the args
        
@@ -84,7 +82,7 @@ public class Controller {
     	gson=new Gson();
         } 
         else if(pdpConfig.equals("erathostenes") ){
-        	System.out.println("entro");
+        
         	  PolicyResponseHandler handler = new PolicyResponseHandler() {
                 @Override
                 public void handleAddPolicyResponse(CompletableFuture<PolicyMessage> future, PolicyMessage message) {
@@ -134,9 +132,8 @@ public class Controller {
 		e.printStackTrace();
 	}
       
-      System.out.println("llego");
       		pap=new PAPErat(client);
-      System.out.println("pap creado");
+    
         	pip=new PIPErat(client);
         	
         	pdp=new PDP(pip,pap);

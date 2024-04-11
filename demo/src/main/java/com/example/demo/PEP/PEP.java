@@ -91,8 +91,10 @@ public class PEP implements PEPInterface {
 	// Sends request to PDP for verifying requester's ID, matching policies and
 		// trust score
 		public CapabilityToken sendConnectorToken(String authRequestJson) {
+			System.out.println("\nPEP recieves Requester's query for accessing an asset.\n");
 			CapabilityToken ct = pdp.verifyConnectorToken(authRequestJson);
 			pbk = pdp.getPbk();
+			System.out.println("PEP send the Capability Token to the Requester.\n");
 			return ct;
 		}
 
@@ -100,7 +102,7 @@ public class PEP implements PEPInterface {
 	// expiration and signature
 	@Override
 	public String validateCapabilityToken(String requestWithToken) {
-
+		System.out.println("PEP validating the Capability Token...\n");
 		boolean notExpired = false;
 		boolean signatureVerified = false;
 		boolean simpleAccessRightsOk = false;
@@ -121,13 +123,15 @@ public class PEP implements PEPInterface {
 			// Verifies the access rights that the Capability Token grants
 			AccessRequest acc = gson.fromJson(requestWithToken, AccessRequest.class);
 			List<SimpleAccessRight> simp = acc.getCt().getAr();
+			
 			for (SimpleAccessRight s : simp) {
 				if (s.getAction().equals(acc.getSar().getAction())
 						&& s.getResource().equals(acc.getSar().getResource())) {
 					simpleAccessRightsOk = true;
+					System.out.println("This Capability Token allows the Requester to do the desired action.\n");
+				}else {	System.out.println("This Capability Token doesn't allow the Requester to do the desired action.\n");
 				}
 			}
-
 			// Verifies that the Capability Token is not expired
 			Date nb = new Date(acc.getCt().getNb());
 			Date na = new Date(acc.getCt().getNa());
@@ -137,7 +141,7 @@ public class PEP implements PEPInterface {
 			} else {
 				notExpired = false;
 			}
-
+			System.out.println("This Capability Token is not expired.\n");
 			// Verify the token's signature
 			// Decode from Base64
 			byte[] signatureBytes = Base64.getDecoder().decode(acc.getCt().getSi());
@@ -189,7 +193,8 @@ public class PEP implements PEPInterface {
 			} else {
 				signatureVerified = false;
 			}
-
+			System.out.println("The signature of this Capability Token is correct.\n");
+			
 			// If everything matches, access to the resource is granted
 			if (notExpired && signatureVerified && simpleAccessRightsOk) {
 				System.out.println("SUCCESS: Capability Token has been successfully validated.The requester could access to the resource.\n");

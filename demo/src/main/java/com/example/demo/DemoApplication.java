@@ -92,7 +92,7 @@ public class DemoApplication {
 
 
 		
-       System.out.println(pdpConfig+"PDP and PEP REST Server are listening in port " + port);
+      // System.out.println(pdpConfig+"PDP and PEP REST Server are listening in port " + port);
 		SpringApplication.run(DemoApplication.class, args);
 	}
 	
