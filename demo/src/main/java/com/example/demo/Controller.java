@@ -92,7 +92,7 @@ public class Controller {
 			pep = new PEP(pdp);
 
 			gson = new Gson();
-		} else if (pdpConfig.equals("erathostenes")) {
+		} else if (pdpConfig.equals("eratosthenes")) {
 
 			PolicyResponseHandler handler = new PolicyResponseHandler() {
 				@Override
