@@ -52,6 +52,13 @@ import grpcEratosthenesAPI.GrpcEratosthenesAPI.PolicyMessage;
 @RequestMapping("/api")
 public class Controller {
 
+	@Value("${app.DLT_IP:localhost}")
+	static String dlt_ip;
+	
+	@Value("${app.DLT_PORT:8080}")
+	static int dlt_port;
+	
+	//Default 
     private String pdpConfig="test";
     
     PIPInterface pip;

@@ -63,14 +63,25 @@ import com.github.jsonldjava.utils.JsonUtils;*/
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.mozilla.javascript.tools.shell.JSConsole;
+import org.springframework.beans.factory.annotation.Value;
 
 public class PDP implements PDPInterface {
 
+	@Value("${app.PDP_KS: \"/app/crypto/serverErat.ks\"}")
+	static String keystore;
+	
+	@Value("${app.PDP_PW:hola123}")
+	static String keystorepwd;
+	
+	@Value("${app.PDP_ALIAS:MiAliasPriv}")
+	static String alias;
+	
+	
 	/* KEYS */
 	//private static final String KEYSTORE = "/home/natalia/git/local_repo/demo/crypto/serverErat.ks";
-	private static final String KEYSTORE = "/app/crypto/serverErat.ks";
-	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
-	private static final String ALIAS = "MiAliasPriv";
+	//private static final String KEYSTORE = "/app/crypto/serverErat.ks";
+	//private static final char[] KEYSTOREPWD = "hola123".toCharArray();
+	//private static final String ALIAS = "MiAliasPriv";
 
 
 	PIPInterface pip;
@@ -120,6 +131,9 @@ public class PDP implements PDPInterface {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 		//}
+	    keystore = System.getenv("PDP_KS");
+	    keystorepwd=System.getenv("PDP_PW");
+	    alias=System.getenv("PDP_ALIAS");
 		gson = new Gson();
 		this.pip = pip;
 		this.pap = pap;
@@ -177,10 +191,10 @@ public class PDP implements PDPInterface {
 
 		// Call API for verify the VPresentation
 		if(!createdWallet) {
-			idAgent.createWallet("natalia");
+			idAgent.createWallet(ar.getDidRequester());
 			createdWallet=true;
 		}
-		boolean response = idAgent.verifyPresentation(VP);
+		boolean response = idAgent.verifyPresentation(VP,ar.getDidRequester());
 		if (!response) {
 			allMatches = false;
 		}
@@ -403,7 +417,7 @@ public class PDP implements PDPInterface {
 
 		if (allMatches == true) {
 			System.out.println("The matching process has been successfully finished. Issuing Capability Token for requester...\n");
-			ct = new CapabilityToken(KEYSTORE, KEYSTOREPWD, ALIAS, ar.getDidRequester(), ar.getDidSP(), ar.getSar());
+			ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(), ar.getSar());
 			pbk = ct.getPublicKey();
 		}else {
 			System.out.println("The matching process failed...\n");
@@ -708,7 +722,7 @@ public class PDP implements PDPInterface {
 
 						if (allMatches == true) {
 							System.out.println("The matching process has been successfully finished. Issuing Capability Token for requester...\n");
-							ct = new CapabilityToken(KEYSTORE, KEYSTOREPWD, ALIAS, ar.getDidRequester(), ar.getDidSP(), ar.getSar());
+							ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(), ar.getSar());
 							pbk = ct.getPublicKey();
 						}else {
 							System.out.println("The matching process failed...\n");

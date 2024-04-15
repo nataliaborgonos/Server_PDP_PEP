@@ -21,6 +21,8 @@ import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.example.demo.models.VPresentation;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -28,11 +30,22 @@ import com.google.gson.JsonParser;
 
 public class IdentityAgent {
 	
+	@Value("${app.IDAGENT_KS:\"/app/crypto/ec-cakey.jks\"}")
+	static String keystore;
+	
+	@Value("${app.IDAGENT_PW:hola123}")
+	static String keystorepwd;
+	
+	@Value("${app.IDAGENT_ALIAS:myserver}")
+	static String alias;
+	
+	@Value("${app.IDAGENT_CERT:\"/app/crypto/ec-cacert.pem\"}")
+	static String certificate;
 	
 	//private static final String KEYSTORE = "/home/natalia/eclipse-workspace/TFG_/ec-cakey.jks";
-	private static final String KEYSTORE = "/app/crypto/ec-cakey.jks";
-	private static final char[] KEYSTOREPWD = "hola123".toCharArray();
-    private static final String ALIAS="myserver";
+	//private static final String KEYSTORE = "/app/crypto/ec-cakey.jks";
+	//private static final char[] KEYSTOREPWD = "hola123".toCharArray();
+    //private static final String ALIAS="myserver";
     
 	Gson gson = new Gson();
 	
@@ -40,19 +53,22 @@ public class IdentityAgent {
 	String authToken="token"; 
 	
 	public IdentityAgent() {
-		
+		keystore=System.getenv("IDAGENT_KS");
+		keystorepwd=System.getenv("IDAGENT_PW");
+		alias=System.getenv("IDAGENT_ALIAS");
+		certificate=System.getenv("IDAGENT_CERT");
 	}
 	
 	public void createWallet(String user) {  
 		
 		//Create a wallet for the requester
 		
-		System.setProperty("javax.net.ssl.trustStore", "/app/crypto/ec-cakey.jks");
-		System.setProperty("javax.net.ssl.trustStorePassword", "hola123");
+		System.setProperty("javax.net.ssl.trustStore", keystore);
+		System.setProperty("javax.net.ssl.trustStorePassword", keystorepwd);
 
 		CertificateFactory certificateFactory=null;
 	    
-        Path certificatePath = Paths.get("/app/crypto/ec-cacert.pem");
+        Path certificatePath = Paths.get(certificate);
         try {
 		 certificateFactory = CertificateFactory.getInstance("X.509");
 		} catch (CertificateException e) {
@@ -78,7 +94,7 @@ public class IdentityAgent {
 			e.printStackTrace();
 		}
         try {
-			keyStore.load(new FileInputStream(KEYSTORE), KEYSTOREPWD);
+			keyStore.load(new FileInputStream(keystore), keystorepwd.toCharArray());
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,7 +137,7 @@ public class IdentityAgent {
 		    try {
 	            String url = "https://localhost:8082/vcwallet/create-profile";
 	            String requestBody = "{\r\n" +
-	                    "    \"userID\":\"natalia\",\r\n" +
+	                    "    \"userID\":\""+ user+"\",\r\n" +
 	                    "    \"localKMSPassphrase\":\"pass\"\r\n" +
 	                    "}";
 
@@ -148,7 +164,7 @@ public class IdentityAgent {
 		    try {
 	            String url = "https://localhost:8082/vcwallet/open";
 	            String requestBody = "{\r\n" +
-	                    "    \"userID\":\"natalia\",\r\n" +
+	                    "    \"userID\":\""+user+"\",\r\n" +
 	                    "    \"localKMSPassphrase\":\"pass\"\r\n" +
 	                    "}";
 
@@ -179,15 +195,15 @@ public class IdentityAgent {
 		    
 	    }
 	
-	public boolean verifyPresentation(String VPjson) {
+	public boolean verifyPresentation(String VPjson,String user) {
 	
 		// Verify the requester's Verifiable Presentation 
-		System.setProperty("javax.net.ssl.trustStore", "/app/crypto/ec-cakey.jks");
-		System.setProperty("javax.net.ssl.trustStorePassword", "hola123");
+		System.setProperty("javax.net.ssl.trustStore", keystore);
+		System.setProperty("javax.net.ssl.trustStorePassword", keystorepwd);
 
 		CertificateFactory certificateFactory=null;
 	    
-        Path certificatePath = Paths.get("/app/crypto/ec-cacert.pem");
+        Path certificatePath = Paths.get(certificate);
         try {
 		 certificateFactory = CertificateFactory.getInstance("X.509");
 		} catch (CertificateException e) {
@@ -214,7 +230,7 @@ public class IdentityAgent {
 			e.printStackTrace();
 		}
         try {
-			keyStore.load(new FileInputStream(KEYSTORE), KEYSTOREPWD);
+			keyStore.load(new FileInputStream(keystore), keystorepwd.toCharArray());
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -260,7 +276,7 @@ public class IdentityAgent {
 			String requestBody="{\n"
 					+ "    \"auth\":\""+authToken+"\",\n"
 					+ "    \"presentation\":"+VPjson+",\n"
-					+ "    \"userid\":\"natalia\"\n"
+					+ "    \"userid\":\""+user+"\"\n"
 					+ "  }";
 			HttpClient client = HttpClient.newBuilder()
                     .sslContext(sslContext)
