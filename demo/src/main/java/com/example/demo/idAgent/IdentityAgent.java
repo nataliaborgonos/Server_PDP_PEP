@@ -51,9 +51,25 @@ public class IdentityAgent {
 
 	public IdentityAgent() {
 		keystore = System.getenv("IDAGENT_KS");
+		if(System.getenv("IDAGENT_KS")==null) {
+			keystore="/home/natalia/git/local_repo/demo/crypto/ec-cakey.jks";
+		}
+		
 		keystorepwd = System.getenv("IDAGENT_PW");
+		if(System.getenv("IDAGENT_PW")==null) {
+			keystorepwd="hola123";
+		}
+		
 		alias = System.getenv("IDAGENT_ALIAS");
+		if(System.getenv("IDAGENT_ALIAS")==null) {
+			alias="myserver";
+		}
+		
 		certificate = System.getenv("IDAGENT_CERT");
+		if(System.getenv("IDAGENT_CERT")==null) {
+			certificate="/home/natalia/git/local_repo/demo/crypto/ec-cacert.pem";
+		}
+		
 	}
 
 	/* METHODS */
@@ -147,7 +163,7 @@ public class IdentityAgent {
 			System.out.println("\nCreated wallet profile for the requester " + user + ".");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 
 		// Unlock that wallet and get a token
@@ -262,7 +278,9 @@ public class IdentityAgent {
 					.header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(requestBody))
 					.build();
 
-			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+				HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+			
+			
 			int responseCode = response.statusCode();
 
 			String responseBody = response.body();
@@ -282,9 +300,10 @@ public class IdentityAgent {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Identity Agent component is not avaliable. Please restart it and try again.\n");
 		}
 		return false;
 	}
 
+	
 }

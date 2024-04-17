@@ -69,13 +69,16 @@ public class Controller {
 
 	public Controller() {
 		this.pdpConfig = System.getProperty("pdpConfig");
-
+		
 		dlt_ip = System.getenv("DLT_IP");
-
+		if(dlt_ip==null) {
+			dlt_ip="localhost";
+		}
+		
 		String dltPortEnv = System.getenv("DLT_PORT");
 		if (dltPortEnv != null && !dltPortEnv.isEmpty()) {
 			dlt_port = Integer.parseInt(dltPortEnv);
-		}
+		}else {dlt_port=8080;}
 
 		// Create the PAP,PIP according to the args
 

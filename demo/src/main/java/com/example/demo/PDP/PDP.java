@@ -91,8 +91,20 @@ public class PDP implements PDPInterface {
 
 	public PDP(PIPInterface pip, PAPInterface pap) {
 		keystore = System.getenv("PDP_KS");
+		if( System.getenv("PDP_KS")==null) {
+			keystore="/home/natalia/git/local_repo/demo/crypto/serverErat.ks";
+		}
+		
 		keystorepwd = System.getenv("PDP_PW");
+		if(System.getenv("PDP_PW")==null) {
+			keystorepwd="hola123";
+		}
+		
 		alias = System.getenv("PDP_ALIAS");
+		if(System.getenv("PDP_ALIAS")==null) {
+			alias="MiAliasPriv";
+		}
+
 		gson = new Gson();
 		this.pip = pip;
 		this.pap = pap;
@@ -132,7 +144,7 @@ public class PDP implements PDPInterface {
 
 		// Get the requester's VP
 		String VP = ar.getVerifiablePresentation();
-
+	
 		// Call API for verifying the VPresentation
 		if (!createdWallet) {
 			idAgent.createWallet(ar.getDidRequester());
@@ -369,7 +381,6 @@ public class PDP implements PDPInterface {
 		AuthRequestTango ar = null;
 		boolean isVP = false;
 		String goodJson = removeQuotesAndUnescape(authRequestJson);
-
 		ar = gson.fromJson(goodJson, AuthRequestTango.class);
 
 		boolean allMatches = true;
@@ -643,6 +654,8 @@ public class PDP implements PDPInterface {
 		return pbk;
 	}
 
+	
+	
 	@Override
 	public CapabilityToken verifyId(String id) {
 		// TODO Auto-generated method stub

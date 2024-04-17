@@ -82,6 +82,7 @@ public class PEP implements PEPInterface {
 				simpleAccessRightsOk = true;
 				System.out.println("This Capability Token allows the Requester to do the desired action.\n");
 			} else {
+				simpleAccessRightsOk = false;
 				System.out.println("This Capability Token doesn't allow the Requester to do the desired action.\n");
 			}
 		}
