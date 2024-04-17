@@ -32,7 +32,7 @@ public class DemoApplicationEratosthenesFailComponentTest {
 			@Test
 			void testRequestAccessEndpoint() {
 				
-				System.out.println("Test 1 for Eratosthenes: Request access for doing action GET in the resource /temperatura and the Identity Agent fails \n" );
+				System.out.println("Test 5 for Eratosthenes: Request access for doing action GET in the resource /temperatura and the Identity Agent fails \n" );
 				
 				 RestTemplate restTemplate = new RestTemplate();
 				 
