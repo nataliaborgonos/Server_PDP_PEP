@@ -1,21 +1,29 @@
-# Usa una imagen de Java como base
+# Stage 1: Build stage
+FROM gradle:jdk17 AS builder
+
+# Copy app files and Gradle dependencies
+COPY --chown=gradle:gradle . /home/gradle/project
+WORKDIR /home/gradle/project
+RUN ./gradlew assemble
+
+# Stage 2: Prepare the container
 FROM openjdk:17-jdk-alpine
 
-# Establece el directorio de trabajo en /app
+# Set up workspace in /app
 WORKDIR /app
 
-# Copia el archivo JAR de la aplicación al contenedor en el directorio /app
-COPY build/libs/demo-0.0.1-SNAPSHOT.jar /app/demo.jar
+# Copy app JAR built in stage 1
+COPY --from=builder /home/gradle/project/build/libs/demo-0.0.1-SNAPSHOT.jar /app/demo.jar
 
-# Copia el archivo serverErat.ks al contenedor en el directorio /app/crypto
+# Copy files to the container in /app/crypto
 COPY crypto/serverErat.ks /app/crypto/serverErat.ks
 COPY crypto/ec-cacert.pem /app/crypto/ec-cacert-pem
 COPY crypto/ec-cakey.jks /app/crypto/ec-cakey.jks
 
-# Expone el puerto 5000
+# Expose port 5000
 EXPOSE 5000
 
-# Define los argumentos de construcción
+# Define building args
 ARG PDP_PORT
 ARG PDP_CONFIG
 ARG PDP_KS
@@ -28,7 +36,7 @@ ARG IDAGENT_PW
 ARG IDAGENT_ALIAS
 ARG IDAGENT_CERT
 
-# Establece las variables de entorno
+# Set up environment variables
 ENV PDP_PORT=${PDP_PORT}
 ENV PDP_CONFIG=${PDP_CONFIG}
 ENV PDP_KS=${PDP_KS}
@@ -41,5 +49,5 @@ ENV IDAGENT_PW=${IDAGENT_PW}
 ENV IDAGENT_ALIAS=${IDAGENT_ALIAS}
 ENV IDAGENT_CERT=${IDAGENT_CERT}
 
-# Establece el punto de entrada para la aplicación
+# Set up app entrypoint
 CMD ["java", "-jar", "demo.jar"]

@@ -52,7 +52,7 @@ public class IdentityAgent {
 	public IdentityAgent() {
 		keystore = System.getenv("IDAGENT_KS");
 		if(System.getenv("IDAGENT_KS")==null) {
-			keystore="/home/natalia/git/local_repo/demo/crypto/ec-cakey.jks";
+			keystore="crypto/ec-cakey.jks";
 		}
 		
 		keystorepwd = System.getenv("IDAGENT_PW");
@@ -67,7 +67,7 @@ public class IdentityAgent {
 		
 		certificate = System.getenv("IDAGENT_CERT");
 		if(System.getenv("IDAGENT_CERT")==null) {
-			certificate="/home/natalia/git/local_repo/demo/crypto/ec-cacert.pem";
+			certificate="crypto/ec-cacert-pem";
 		}
 		
 	}

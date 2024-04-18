@@ -92,7 +92,7 @@ public class PDP implements PDPInterface {
 	public PDP(PIPInterface pip, PAPInterface pap) {
 		keystore = System.getenv("PDP_KS");
 		if( System.getenv("PDP_KS")==null) {
-			keystore="/home/natalia/git/local_repo/demo/crypto/serverErat.ks";
+			keystore="crypto/serverErat.ks";
 		}
 		
 		keystorepwd = System.getenv("PDP_PW");

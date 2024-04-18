@@ -3,6 +3,9 @@ services:
   myapp:
     network_mode: host
     image: myapp_img
+    build:
+      context: .
+      dockerfile: Dockerfile   
     volumes:
       - ./build/libs:/app/build/libs
       - ./crypto:/app/crypto
@@ -10,3 +13,4 @@ services:
       - ./ec-cacert.pem:/app/ec-cacert.pem
     env_file:
       - .env
+
