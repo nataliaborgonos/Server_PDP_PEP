@@ -72,7 +72,7 @@ public class Controller {
 
 		dlt_ip = System.getenv("DLT_IP");
 		if(dlt_ip==null) {
-			dlt_ip="localhost";
+			dlt_ip="155.54.99.68";
 		}
 		
 		String dltPortEnv = System.getenv("DLT_PORT");
@@ -149,7 +149,6 @@ public class Controller {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 			pap = new PAPErat(client);
 
 			pip = new PIPErat(client);

@@ -42,6 +42,12 @@ public class IdentityAgent {
 	@Value("${app.IDAGENT_CERT:\"/app/crypto/ec-cacert.pem\"}")
 	static String certificate;
 
+	@Value("${app.IDAGENT_IP:localhost}")
+	static String ipIdAgent;
+	
+	@Value("${app.IDAGENT_PORT:8082}")
+	static String portIdAgent; 
+	
 	Gson gson = new Gson();
 
 	// Initialize token for the wallet's operations
@@ -67,9 +73,18 @@ public class IdentityAgent {
 		
 		certificate = System.getenv("IDAGENT_CERT");
 		if(System.getenv("IDAGENT_CERT")==null) {
-			certificate="crypto/ec-cacert-pem";
+			certificate="crypto/ec-cacert.pem";
 		}
 		
+		ipIdAgent=System.getenv("IDAGENT_IP");
+		if(System.getenv("IDAGENT_IP")==null) {
+			ipIdAgent="localhost";
+		}
+		
+		portIdAgent=System.getenv("IDAGENT_PORT");
+		if(System.getenv("IDAGENT_PORT")==null) {
+			portIdAgent="8082";
+		}
 	}
 
 	/* METHODS */
@@ -148,7 +163,7 @@ public class IdentityAgent {
 		}
 
 		try {
-			String url = "https://localhost:8082/vcwallet/create-profile";
+			String url = "https://"+ipIdAgent+":"+portIdAgent+"/vcwallet/create-profile";
 			String requestBody = "{\r\n" + "    \"userID\":\"" + user + "\",\r\n"
 					+ "    \"localKMSPassphrase\":\"pass\"\r\n" + "}";
 
@@ -169,7 +184,7 @@ public class IdentityAgent {
 		// Unlock that wallet and get a token
 
 		try {
-			String url = "https://localhost:8082/vcwallet/open";
+			String url = "https://"+ipIdAgent+":"+portIdAgent+"/vcwallet/open";
 			String requestBody = "{\r\n" + "    \"userID\":\"" + user + "\",\r\n"
 					+ "    \"localKMSPassphrase\":\"pass\"\r\n" + "}";
 
@@ -270,7 +285,7 @@ public class IdentityAgent {
 		}
 
 		try {
-			String url = "https://localhost:8082/vcwallet/verify";
+			String url = "https://"+ipIdAgent+":"+portIdAgent+"/vcwallet/verify";
 			String requestBody = "{\n" + "    \"auth\":\"" + authToken + "\",\n" + "    \"presentation\":" + VPjson
 					+ ",\n" + "    \"userid\":\"" + user + "\"\n" + "  }";
 			HttpClient client = HttpClient.newBuilder().sslContext(sslContext).build();
@@ -300,6 +315,7 @@ public class IdentityAgent {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Identity Agent component is not avaliable. Please restart it and try again.\n");
 		}
 		return false;
