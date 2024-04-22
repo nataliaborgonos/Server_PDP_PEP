@@ -25,6 +25,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
+
+import com.example.demo.PEP.PEP;
+import com.example.demo.idAgent.IdentityAgent;
+
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 
@@ -35,6 +39,8 @@ import org.junit.jupiter.api.Order;
 
 public class DemoApplicationErathostenes {
 		String token=null;
+		IdentityAgent idAg=new IdentityAgent();
+		
 		public DemoApplicationErathostenes() {
 			 // Arguments
 		        System.setProperty("pdpConfig", "eratosthenes");
@@ -134,16 +140,16 @@ public class DemoApplicationErathostenes {
 		@Test
 		void testAccessWithWrongToken() {
 			System.out.println("Test 3 for Eratosthenes: Trying to do action POST in the resource /temperatura with the Capability Token received \n" );
-			
+			String requestBody = "{\n" + "    \"ct\": " + token + ",\n" + "     \"sar\":{\n"
+					+ "        \"action\":\"POST\",\n" + "        \"resource\":\"/temperatura\"\n" + "    }\n" + "}";
+
 			RestTemplate restTemplate = new RestTemplate();
 			 
 			 
 			  // Construye la URL con el puerto específico asignado
 	        String url = "http://localhost:" + port + "/api/access-with-token";
 
-			String requestBody = "{\n" + "    \"ct\": " + token + ",\n" + "     \"sar\":{\n"
-					+ "        \"action\":\"POST\",\n" + "        \"resource\":\"/temperatura\"\n" + "    }\n" + "}";
-
+			
 	        // Define las cabeceras de la solicitud
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.APPLICATION_JSON);
@@ -210,6 +216,22 @@ public class DemoApplicationErathostenes {
 			assertEquals("Capability Token couldn't be issued, please revise the request and try again.\n", responseEntity.getBody());
 
 		}
+		 
+		 @Order(5)
+		 @Test
+			void testIdAg() {
+				System.out.println("Test 5 for Eratosthenes: Identity Agent fails. \n" );
+				IdentityAgent.setPortIdAgent("9999");
+		        // Ejecutar el método createWallet
+		        try {
+		            idAg.createWallet("user");
+		            // Si no se lanza ninguna excepción, el test pasa
+		        } catch (Exception e) {
+		        	   // Verificar el mensaje de la excepción
+		            assertEquals("Identity Agent component is not avaliable. Please restart it and try again.\n", e.getMessage());
+		    
+		        }
+			}
 		
 	
 	}
