@@ -301,4 +301,14 @@ public class Controller {
 
 		return response;
 	}
+
+	public PDP getPdp() {
+		return pdp;
+	}
+
+	public void setPdp(PDP pdp) {
+		this.pdp = pdp;
+	}
+	
+	
 }

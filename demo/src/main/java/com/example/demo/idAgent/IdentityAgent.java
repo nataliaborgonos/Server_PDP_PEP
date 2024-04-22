@@ -89,6 +89,7 @@ public class IdentityAgent {
 
 	/* METHODS */
 
+	
 	public void createWallet(String user) {
 		System.setProperty("javax.net.ssl.trustStore", keystore);
 		System.setProperty("javax.net.ssl.trustStorePassword", keystorepwd);
@@ -178,7 +179,7 @@ public class IdentityAgent {
 			System.out.println("\nCreated wallet profile for the requester " + user + ".");
 
 		} catch (Exception e) {
-			
+			System.out.println("Identity Agent component is not avaliable. Please restart it and try again.\n");
 		}
 
 		// Unlock that wallet and get a token
@@ -321,5 +322,12 @@ public class IdentityAgent {
 		return false;
 	}
 
-	
+	public static String getPortIdAgent() {
+		return portIdAgent;
+	}
+
+	public static void setPortIdAgent(String portIdAgent) {
+		IdentityAgent.portIdAgent = portIdAgent;
+	}
+
 }
