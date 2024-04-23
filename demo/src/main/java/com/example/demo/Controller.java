@@ -72,7 +72,7 @@ public class Controller {
 
 		dlt_ip = System.getenv("DLT_IP");
 		if(dlt_ip==null) {
-			dlt_ip="155.54.99.68";
+			dlt_ip="localhost";
 		}
 		
 		String dltPortEnv = System.getenv("DLT_PORT");

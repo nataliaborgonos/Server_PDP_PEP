@@ -31,6 +31,7 @@ import com.example.demo.idAgent.IdentityAgent;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -49,6 +50,7 @@ public class DemoApplicationErathostenes {
 		    private int port=8088;
 	
 		 @Order(1)
+		 @Tag("erat") 
 		@Test
 		void testRequestAccessEndpoint() {
 			
@@ -96,6 +98,7 @@ public class DemoApplicationErathostenes {
 		}
 
 		 @Order(2)
+		 @Tag("erat") 
 		@Test
 		void testAccessWithToken() {
 			
@@ -137,6 +140,7 @@ public class DemoApplicationErathostenes {
 		}
 		 
 		 @Order(3)
+		 @Tag("erat") 
 		@Test
 		void testAccessWithWrongToken() {
 			System.out.println("Test 3 for Eratosthenes: Trying to do action POST in the resource /temperatura with the Capability Token received \n" );
@@ -174,6 +178,7 @@ public class DemoApplicationErathostenes {
 		}
 		
 		 @Order(4)
+		 @Tag("erat") 
 		@Test
 		void testNotMatchingPolicy() {
 			System.out.println("Test 4 for Eratosthenes: Request access for doing action GET in the resource /temperatura and not getting the Capability Token because the policy matching failed \n" );
@@ -218,6 +223,7 @@ public class DemoApplicationErathostenes {
 		}
 		 
 		 @Order(5)
+		 @Tag("erat") 
 		 @Test
 			void testIdAg() {
 				System.out.println("Test 5 for Eratosthenes: Identity Agent fails. \n" );
