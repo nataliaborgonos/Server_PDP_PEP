@@ -1,7 +1,11 @@
 package com.example.demo.PEP;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -23,6 +27,7 @@ import com.github.fge.jackson.JsonLoader;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import com.google.common.io.Files;
 import com.google.gson.Gson;
 
 public class PEP implements PEPInterface {
@@ -37,9 +42,14 @@ public class PEP implements PEPInterface {
 	PDP pdp;
 	ArrayList<Resource> resources;
 
+	String serverResources;
 	/* CONSTRUCTOR */
 
 	public PEP(PDP pdp) {
+		serverResources=System.getenv("RESOURCES");
+		if(System.getenv("RESOURCES")==null) {
+			serverResources="resources";
+		}
 		this.pdp = pdp;
 		gson = new Gson();
 	}
@@ -152,9 +162,38 @@ public class PEP implements PEPInterface {
 
 		// If everything matches, access to the resource is granted
 		if (notExpired && signatureVerified && simpleAccessRightsOk) {
+			  // Especifica la ruta del archivo JSON en el sistema de archivos
+	        String rutaArchivo = serverResources+acc.getSar().getResource();
+	        
+	        // StringBuilder para almacenar el contenido del archivo
+	        StringBuilder contenido = new StringBuilder();
+	        
+	        // Lee el contenido del archivo línea por línea
+	        BufferedReader br = null;
+			try {
+				br = new BufferedReader(new FileReader(rutaArchivo));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				System.err.println("That resource doesn't exist.");
+			}
+	        String linea;
+	        try {
+				while ((linea = br.readLine()) != null) {
+				    contenido.append(linea).append("\n");
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println(
-					"SUCCESS: Capability Token has been successfully validated.The requester could access to the resource.\n");
-			return "SUCCESS: Capability Token has been successfully validated. The requester could access to the resource.\n";
+					"SUCCESS: Capability Token has been successfully validated.The requester could access to the resource.\n"+ contenido.toString());
+			return "SUCCESS: Capability Token has been successfully validated. The requester could access to the resource.\n"+ contenido.toString();
 		} else {
 			System.out.println(
 					"ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n");

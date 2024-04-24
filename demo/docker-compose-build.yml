@@ -11,6 +11,8 @@ services:
       - ./crypto:/app/crypto
       - ./ec-cakey.jks:/app/ec-cakey.jks
       - ./ec-cacert.pem:/app/ec-cacert.pem
+      - ./resources:/app/resources
+      - ./temperatura:/app/temperatura
     env_file:
       - .env
 

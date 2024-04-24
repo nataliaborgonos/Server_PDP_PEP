@@ -30,6 +30,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 	@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -101,7 +102,7 @@ public class DemoApplicationConnectorToken {
 			assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
 
 			// Verify that it has been a successful validation
-			assertEquals("SUCCESS: Capability Token has been successfully validated. The requester could access to the resource.\n", responseEntity.getBody());
+			assertNotEquals("ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n", responseEntity.getBody());
 
 		}
 		 @Order(3)

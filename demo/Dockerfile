@@ -19,6 +19,7 @@ COPY --from=builder /home/gradle/project/build/libs/demo-0.0.1-SNAPSHOT.jar /app
 COPY crypto/serverErat.ks /app/crypto/serverErat.ks
 COPY crypto/ec-cacert.pem /app/crypto/ec-cacert-pem
 COPY crypto/ec-cakey.jks /app/crypto/ec-cakey.jks
+COPY src/main/resources/temperatura /app/resources/temperatura
 
 # Expose port 5000
 EXPOSE 5000
@@ -35,7 +36,9 @@ ARG IDAGENT_KS
 ARG IDAGENT_PW
 ARG IDAGENT_ALIAS
 ARG IDAGENT_CERT
-
+ARG IDAGENT_PORT
+ARG IDAGENT_IP
+ARG RESOURCES
 # Set up environment variables
 ENV PDP_PORT=${PDP_PORT}
 ENV PDP_CONFIG=${PDP_CONFIG}
@@ -48,6 +51,8 @@ ENV IDAGENT_KS=${IDAGENT_KS}
 ENV IDAGENT_PW=${IDAGENT_PW}
 ENV IDAGENT_ALIAS=${IDAGENT_ALIAS}
 ENV IDAGENT_CERT=${IDAGENT_CERT}
-
+ENV IDAGENT_PORT=${IDAGENT_PORT}
+ENV IDAGENT_IP=${IDAGENT_IP}
+ENV RESOURCES=${RESOURCES}
 # Set up app entrypoint
 CMD ["java", "-jar", "demo.jar"]

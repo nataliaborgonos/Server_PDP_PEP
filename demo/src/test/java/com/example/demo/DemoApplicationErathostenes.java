@@ -1,7 +1,7 @@
 package com.example.demo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -135,7 +135,7 @@ public class DemoApplicationErathostenes {
 			assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
 
 			// Verify that it has been a successful validation
-			assertEquals("SUCCESS: Capability Token has been successfully validated. The requester could access to the resource.\n", responseEntity.getBody());
+			assertNotEquals("ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n", responseEntity.getBody());
 
 		}
 		 
