@@ -14,6 +14,9 @@ import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Base64;
 
 import com.example.demo.PDP.PDP;
@@ -42,7 +45,9 @@ public class PEP implements PEPInterface {
 	PDP pdp;
 	ArrayList<Resource> resources;
 
+	@Value("${app.RESOURCES:/app/resources}")
 	String serverResources;
+	
 	/* CONSTRUCTOR */
 
 	public PEP(PDP pdp) {
@@ -162,24 +167,20 @@ public class PEP implements PEPInterface {
 
 		// If everything matches, access to the resource is granted
 		if (notExpired && signatureVerified && simpleAccessRightsOk) {
-			  // Especifica la ruta del archivo JSON en el sistema de archivos
-	        String rutaArchivo = serverResources+acc.getSar().getResource();
-	        
-	        // StringBuilder para almacenar el contenido del archivo
-	        StringBuilder contenido = new StringBuilder();
-	        
-	        // Lee el contenido del archivo línea por línea
+			  // Location of the requested resource
+	        String resource = serverResources+acc.getSar().getResource();
+	        StringBuilder content = new StringBuilder();
 	        BufferedReader br = null;
 			try {
-				br = new BufferedReader(new FileReader(rutaArchivo));
+				br = new BufferedReader(new FileReader(resource));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				System.err.println("That resource doesn't exist.");
 			}
-	        String linea;
+	        String line;
 	        try {
-				while ((linea = br.readLine()) != null) {
-				    contenido.append(linea).append("\n");
+				while ((line = br.readLine()) != null) {
+				    content.append(line).append("\n");
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -192,8 +193,8 @@ public class PEP implements PEPInterface {
 				e.printStackTrace();
 			}
 			System.out.println(
-					"SUCCESS: Capability Token has been successfully validated.The requester could access to the resource.\n"+ contenido.toString());
-			return "SUCCESS: Capability Token has been successfully validated. The requester could access to the resource.\n"+ contenido.toString();
+					"SUCCESS: Capability Token has been successfully validated.The requester could access to the resource.\n"+ content.toString());
+			return "SUCCESS: Capability Token has been successfully validated. The requester could access to the resource.\n"+ content.toString();
 		} else {
 			System.out.println(
 					"ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n");
