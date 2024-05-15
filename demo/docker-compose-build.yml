@@ -1,11 +1,13 @@
 version: '3.5'
 services:
   myapp:
-    network_mode: host
-    image: myapp_img
+    image: cysec-docker.eng.it/eratosthenes/mudmanager:deploy-1.0.0-beta
     build:
       context: .
-      dockerfile: Dockerfile   
+      dockerfile: Dockerfile 
+    networks: 
+      - net
+  
     volumes:
       - ./build/libs:/app/build/libs
       - ./crypto:/app/crypto
@@ -15,4 +17,27 @@ services:
       - ./temperatura:/app/temperatura
     env_file:
       - .env
+    environment:
+      - PDP_PORT=${PDP_PORT}
+      - PDP_CONFIG=${PDP_CONFIG}
+      - PDP_KS=${PDP_KS}
+      - PDP_PW=${PDP_PW}
+      - PDP_ALIAS=${PDP_ALIAS}
+      - DLT_IP=${DLT_IP}
+      - DLT_PORT=${DLT_PORT}
+      - IDAGENT_KS=${IDAGENT_KS}
+      - IDAGENT_PW=${IDAGENT_PW}
+      - IDAGENT_ALIAS=${IDAGENT_ALIAS}
+      - IDAGENT_CERT=${IDAGENT_CERT}
+      - IDAGENT_PORT=${IDAGENT_PORT}
+      - IDAGENT_IP=${IDAGENT_IP}
+      - RESOURCES=${RESOURCES}
+    ports:
+      - ${PDP_PORT}:${PDP_PORT}
+
+networks:
+    net:
+        external: true
+        name: eratosthenes-network
+
 
