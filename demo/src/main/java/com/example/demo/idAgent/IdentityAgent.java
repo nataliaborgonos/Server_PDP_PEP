@@ -42,7 +42,7 @@ public class IdentityAgent {
 	@Value("${app.IDAGENT_CERT:\"/app/crypto/ec-cacert.pem\"}")
 	static String certificate;
 
-	@Value("${app.IDAGENT_IP:localhost}")
+	@Value("${app.IDAGENT_IP:127.21.0.3}")
 	static String ipIdAgent;
 	
 	@Value("${app.IDAGENT_PORT:8082}")
@@ -78,7 +78,7 @@ public class IdentityAgent {
 		
 		ipIdAgent=System.getenv("IDAGENT_IP");
 		if(System.getenv("IDAGENT_IP")==null) {
-			ipIdAgent="localhost";
+			ipIdAgent="127.21.0.3";
 		}
 		
 		portIdAgent=System.getenv("IDAGENT_PORT");
