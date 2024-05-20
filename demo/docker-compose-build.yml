@@ -1,12 +1,15 @@
 version: '3.5'
 services:
   myapp:
-    image: cysec-docker.eng.it/eratosthenes/mudmanager:deploy-1.0.0-beta
+    network_mode: host
+     build: .	
+    image: myapp_img
+    #image: cysec-docker.eng.it/eratosthenes/mudmanager:deploy-1.0.0-beta
     build:
       context: .
       dockerfile: Dockerfile 
-    networks: 
-      - net
+   # networks: 
+   #   - net
   
     volumes:
       - ./build/libs:/app/build/libs
@@ -32,12 +35,12 @@ services:
       - IDAGENT_PORT=${IDAGENT_PORT}
       - IDAGENT_IP=${IDAGENT_IP}
       - RESOURCES=${RESOURCES}
-    ports:
-      - ${PDP_PORT}:${PDP_PORT}
+   # ports:
+    #  - ${PDP_PORT}:${PDP_PORT}
 
-networks:
-    net:
-        external: true
-        name: eratosthenes-network
+#networks:
+    #net:
+    #    external: true
+    #    name: eratosthenes-network
 
 

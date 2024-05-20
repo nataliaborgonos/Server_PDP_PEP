@@ -65,6 +65,24 @@ public class CapabilityToken {
 		this.na = time + 60 * 60 * 1000;
 		this.si = getPrivKey(keyStore, keyStorePWD, alias);
 	}
+	
+	public CapabilityToken(String keyStore, char[] keyStorePWD, String alias, String didRequester, String didSP,
+			SimpleAccessRight sar, String expiration ) {
+		this.id = UUID.randomUUID().toString().substring(0, 8);
+		long time = System.currentTimeMillis();
+		this.ii = String.valueOf(time);
+		this.is = "erat";
+		this.su = didRequester;
+		this.de = didSP;
+		ArrayList<SimpleAccessRight> ar = new ArrayList<>();
+		SimpleAccessRight sarAdd = new SimpleAccessRight(sar.getAction(), sar.getResource());
+		ar.add(sarAdd);
+		this.ar = ar;
+		this.nb = time;
+		// 60 min TTL
+		this.na = time + Long.parseLong(expiration);
+		this.si = getPrivKey(keyStore, keyStorePWD, alias);
+	}
 
 	public CapabilityToken() {
 	}

@@ -74,6 +74,10 @@ public class PDP implements PDPInterface {
 
 	@Value("${app.PDP_ALIAS:MiAliasPriv}")
 	static String alias;
+	
+	@Value("${app.CT_EXPIRATION:3600000}")
+	static String expiration;
+	long expirationInPolicy;
 
 	PIPInterface pip;
 	PAPInterface pap;
@@ -103,6 +107,10 @@ public class PDP implements PDPInterface {
 		alias = System.getenv("PDP_ALIAS");
 		if(System.getenv("PDP_ALIAS")==null) {
 			alias="MiAliasPriv";
+		}
+		expiration = System.getenv("CT_EXPIRATION");
+		if(System.getenv("CT_EXPIRATION")==null) {
+			expiration="360000";
 		}
 
 		gson = new Gson();
@@ -490,6 +498,9 @@ public class PDP implements PDPInterface {
 		// True default, if there is a mismatch, finish the loop
 		for (Policy p : politicas) {
 			// Find out if the policy is correctly formed
+			
+			expirationInPolicy=p.getAuthTime();
+			System.out.println("expiration in the policy: "+expirationInPolicy);
 			String politicaJSON = gson.toJson(p);
 
 			// Matching
@@ -641,9 +652,20 @@ public class PDP implements PDPInterface {
 		if (allMatches == true) {
 			System.out.println(
 					"The matching process has been successfully finished. Issuing Capability Token for requester...\n");
+			if(expirationInPolicy==0) { 
+				//default value
+			System.out.println("the capabilitytoken will be available for "+ expiration);
 			ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),
-					ar.getSar());
+					ar.getSar(), expiration);
 			pbk = ct.getPublicKey();
+			}else {
+				//value "authtime" in the policy
+				String expstring=Long.toString(expirationInPolicy);
+				System.out.println("the capabilitytoken will be available for "+ expstring);
+				ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),
+						ar.getSar(), expstring);
+				pbk = ct.getPublicKey();
+			}
 		} else {
 			System.out.println("The matching process failed...\n");
 		}
