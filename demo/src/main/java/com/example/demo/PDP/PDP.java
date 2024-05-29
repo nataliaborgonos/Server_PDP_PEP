@@ -142,7 +142,9 @@ public class PDP implements PDPInterface {
 				ar.getSar().getAction());
 
 		// Check if the requester's trust score is bigger than the one in the policy
-		for (Policy p : politicas) {
+		for (Policy p : politicas) {	
+			expirationInPolicy=p.getAuthTime();
+		System.out.println("expiration in the policy: "+expirationInPolicy);
 			if (trustscore < p.getMinTrustScore()) {
 				allMatches = false;
 			}
@@ -366,9 +368,20 @@ public class PDP implements PDPInterface {
 		if (allMatches == true) {
 			System.out.println(
 					"The matching process has been successfully finished. Issuing Capability Token for requester...\n");
+			if(expirationInPolicy==0) { 
+				//default value
+			System.out.println("the capabilitytoken will be available for "+ expiration);
 			ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),
-					ar.getSar());
+					ar.getSar(), expiration);
 			pbk = ct.getPublicKey();
+			}else {
+				//value "authtime" in the policy
+				String expstring=Long.toString(expirationInPolicy);
+				System.out.println("the capabilitytoken will be available for "+ expstring);
+				ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),
+						ar.getSar(), expstring);
+				pbk = ct.getPublicKey();
+			}
 		} else {
 			System.out.println("The matching process failed...\n");
 		}
