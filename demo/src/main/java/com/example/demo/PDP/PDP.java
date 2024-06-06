@@ -66,6 +66,15 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class PDP implements PDPInterface {
 
+	@Value("${app.VERIFIER_IP:localhost}")
+	static String ipVerifier;
+
+	@Value("${app.VERIFIER_PORT:8082}")
+	static String portVerifier;
+	
+	@Value("${app.VERIFIER_ENDPOINT:\"/.well-known/jwks\"}")
+	static String endpointVerifier;
+	
 	@Value("${app.PDP_KS: \"/app/crypto/serverErat.ks\"}")
 	static String keystore;
 
@@ -467,8 +476,7 @@ public class PDP implements PDPInterface {
 
 		}
 
-		jsonObject.getString("kid");
-
+	
 		// Verify that the token is not expired
 		long expTimestamp = jsonObject.getJsonNumber("exp").longValue();
 		Instant expInstant = Instant.ofEpochSecond(expTimestamp);
@@ -479,6 +487,7 @@ public class PDP implements PDPInterface {
 		}
 
 		// Verify that the signing is correct -> NEED PUBLIC KEY
+		jsonObject.getString("kid");
 
 		// POLICY MATCHING
 
