@@ -523,6 +523,21 @@ public class PDP implements PDPInterface {
 			  String responseBody = response.body();
 			  System.out.println("Response Code: " + responseCode);
 			  System.out.println("Response Body: " + responseBody);
+			    // Deserializar la respuesta JSON a un JsonObject
+				JsonObject jsonObject;
+				try (JsonReader reader = Json.createReader(new StringReader(responseBody))) {
+					jsonObject = reader.readObject();
+				}
+	
+				// Acceder a los datos deserializados
+				for (JsonObject key : jsonObject.getJsonArray("keys").getValuesAs(JsonObject.class)) {
+					System.out.println("Key ID: " + key.getString("kid"));
+					System.out.println("Curve: " + key.getString("crv"));
+					System.out.println("Type: " + key.getString("kty"));
+					System.out.println("X Coordinate: " + key.getString("x"));
+					System.out.println("Y Coordinate: " + key.getString("y"));
+					System.out.println();
+				}
 		} catch (Exception e) {
             System.err.println("Verifier couldn't issue the JWKS");
         }
