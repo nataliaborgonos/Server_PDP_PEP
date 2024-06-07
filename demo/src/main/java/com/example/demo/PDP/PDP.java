@@ -505,8 +505,8 @@ public class PDP implements PDPInterface {
 			// allMatches=false;
 		}
 
-		// Verify that the signing is correct -> NEED PUBLIC KEY
-		jsonObject.getString("kid");
+		// Verify that the signing is correct
+		String kid = jsonObject.getString("kid");
 		//Make a request to the Verifier to get the JWKS
 		String url = "http://"+ipVerifier+":"+portVerifier+endpointVerifier;
 		System.out.println("The verifier is in: "+url);
@@ -528,18 +528,21 @@ public class PDP implements PDPInterface {
 				try (JsonReader reader = Json.createReader(new StringReader(responseBody))) {
 					jsonObjectJWKS = reader.readObject();
 				}
-	
+				
 				// Acceder a los datos deserializados
 				for (javax.json.JsonObject key : jsonObjectJWKS.getJsonArray("keys").getValuesAs(javax.json.JsonObject.class)) {
+					System.out.println("Key ID from verifier: " + key.getString("kid"));
+					System.out.println("Key ID from jwt: " + kid);
+					if(kid.equals(key.getString("kid"))){
 					System.out.println("Key ID: " + key.getString("kid"));
 					System.out.println("Curve: " + key.getString("crv"));
 					System.out.println("Type: " + key.getString("kty"));
 					System.out.println("X Coordinate: " + key.getString("x"));
 					System.out.println("Y Coordinate: " + key.getString("y"));
-					System.out.println();
+					}else{System.out.println("Kid from the verifier not matching with JWT's kid. Not a Public Key available.\n");}
 				}
 		} catch (Exception e) {
-            System.err.println("Verifier couldn't issue the JWKS");
+            System.err.println("Verifier couldn't get the JWKS");
         }
 
 		// POLICY MATCHING
