@@ -530,7 +530,7 @@ public class PDP implements PDPInterface {
 				}
 	
 				// Acceder a los datos deserializados
-				for (JsonObject key : jsonObjectJWKS.getJsonArray("keys").getValuesAs(JsonObject.class)) {
+				for (javax.json.JsonObject key : jsonObjectJWKS.getJsonArray("keys").getValuesAs(javax.json.JsonObject.class)) {
 					System.out.println("Key ID: " + key.getString("kid"));
 					System.out.println("Curve: " + key.getString("crv"));
 					System.out.println("Type: " + key.getString("kty"));
