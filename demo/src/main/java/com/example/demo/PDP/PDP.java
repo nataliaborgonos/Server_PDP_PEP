@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Base64;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import com.example.demo.PAP.PAPErat;
 import com.example.demo.PAP.PAPInterface;
@@ -421,7 +425,6 @@ public class PDP implements PDPInterface {
 
 	// Method for verifying the connector token and issuing the Capability Token
 	public CapabilityToken verifyConnectorToken(String authRequestJson) {
-		System.out.println("valor ip verifier "+ ipVerifier);
 		System.out.println("PDP receives the information and starts the verifying process...\n");
 		CapabilityToken ct = null;
 		AuthRequestTango ar = null;
@@ -504,6 +507,25 @@ public class PDP implements PDPInterface {
 
 		// Verify that the signing is correct -> NEED PUBLIC KEY
 		jsonObject.getString("kid");
+		//Make a request to the Verifier to get the JWKS
+		String url = "https://"+ipVerifier+":"+portVerifier+endpointVerifier;
+		System.out.println("The verifier is in: "+url);
+		try{
+			  HttpClient client = HttpClient.newBuilder().build();
+			  HttpRequest request = HttpRequest.newBuilder()
+											   .uri(URI.create(url))
+											   .header("Content-Type", "application/json")
+											   .GET()
+											   .build();
+  
+			  HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+			  int responseCode = response.statusCode();
+			  String responseBody = response.body();
+			  System.out.println("Response Code: " + responseCode);
+			  System.out.println("Response Body: " + responseBody);
+		} catch (Exception e) {
+            System.err.println("Verifier couldn't issue the JWKS");
+        }
 
 		// POLICY MATCHING
 
