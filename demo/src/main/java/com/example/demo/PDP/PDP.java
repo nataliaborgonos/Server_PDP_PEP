@@ -103,6 +103,21 @@ public class PDP implements PDPInterface {
 	/* CONSTRUCTOR */
 
 	public PDP(PIPInterface pip, PAPInterface pap) {
+		ipVerifier = System.getenv("VERIFIER_IP");
+		if( System.getenv("VERIFIER_IP")==null) {
+			ipVerifier="localhost";
+		}
+		
+		portVerifier = System.getenv("VERIFIER_PORT");
+		if( System.getenv("VERIFIER_PORT")==null) {
+			portVerifier="8082";
+		}
+
+		endpointVerifier= System.getenv("VERIFIER_ENDPOINT");
+		if( System.getenv("VERIFIER_ENDPOINT")==null) {
+			endpointVerifier="/.well-known/jwks";
+		}
+
 		keystore = System.getenv("PDP_KS");
 		if( System.getenv("PDP_KS")==null) {
 			keystore="crypto/serverErat.ks";
@@ -406,6 +421,7 @@ public class PDP implements PDPInterface {
 
 	// Method for verifying the connector token and issuing the Capability Token
 	public CapabilityToken verifyConnectorToken(String authRequestJson) {
+		System.out.println("valor ip verifier "+ ipVerifier);
 		System.out.println("PDP receives the information and starts the verifying process...\n");
 		CapabilityToken ct = null;
 		AuthRequestTango ar = null;
