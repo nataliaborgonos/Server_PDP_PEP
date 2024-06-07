@@ -508,7 +508,7 @@ public class PDP implements PDPInterface {
 		// Verify that the signing is correct -> NEED PUBLIC KEY
 		jsonObject.getString("kid");
 		//Make a request to the Verifier to get the JWKS
-		String url = "https://"+ipVerifier+":"+portVerifier+endpointVerifier;
+		String url = "http://"+ipVerifier+":"+portVerifier+endpointVerifier;
 		System.out.println("The verifier is in: "+url);
 		try{
 			  HttpClient client = HttpClient.newBuilder().build();
