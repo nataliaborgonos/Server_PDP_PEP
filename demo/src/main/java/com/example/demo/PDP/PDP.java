@@ -524,13 +524,13 @@ public class PDP implements PDPInterface {
 			  System.out.println("Response Code: " + responseCode);
 			  System.out.println("Response Body: " + responseBody);
 			    // Deserializar la respuesta JSON a un JsonObject
-				JsonObject jsonObject;
+				JsonObject jsonObjectJWKS;
 				try (JsonReader reader = Json.createReader(new StringReader(responseBody))) {
-					jsonObject = reader.readObject();
+					jsonObjectJWKS = reader.readObject();
 				}
 	
 				// Acceder a los datos deserializados
-				for (JsonObject key : jsonObject.getJsonArray("keys").getValuesAs(JsonObject.class)) {
+				for (JsonObject key : jsonObjectJWKS.getJsonArray("keys").getValuesAs(JsonObject.class)) {
 					System.out.println("Key ID: " + key.getString("kid"));
 					System.out.println("Curve: " + key.getString("crv"));
 					System.out.println("Type: " + key.getString("kty"));
