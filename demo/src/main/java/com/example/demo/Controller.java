@@ -40,11 +40,14 @@ import com.example.demo.models.AuthRequestConnectorToken;
 import com.example.demo.models.AuthRequestTango;
 import com.example.demo.models.SimpleAccessRight;
 import com.example.demo.models.CapabilityToken;
+import com.example.demo.models.Policy;
+import com.example.demo.models.PolicyRequest;
 import com.example.demo.requester.Requester;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nimbusds.jwt.*;
 
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import grpcEratosthenesAPI.GrpcEratosthenesAPI.DeviceMessage;
 import grpcEratosthenesAPI.GrpcEratosthenesAPI.PolicyMessage;
 
@@ -303,6 +306,19 @@ public class Controller {
 
 		return response;
 	}
+	
+	@PostMapping("/new-policy")
+	public void newPolicy(@RequestBody PolicyRequest request) {
+	if(pdpConfig.equals("test")) {
+			Policy p=gson.fromJson(request.getPolicy(), Policy.class);
+			pap.addPolicy(request.getDidSP(), p, request.getResource());
+			System.out.println("Policy: " + request.getPolicy()+ " added to the Policy Administration Point for the "+request.getDidSP()+ " and the resource "+request.getResource());
+		}else if(pdpConfig.equals("eratosthenes")) {}
+		
+		
+
+	}
+	
 
 	public PDP getPdp() {
 		return pdp;

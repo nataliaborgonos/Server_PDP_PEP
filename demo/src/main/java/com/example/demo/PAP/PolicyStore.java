@@ -17,6 +17,8 @@ public class PolicyStore {
 	/* ASOCIA didSP CON RECURSO Y POL�TICAS */
 	public  HashMap<String,HashMap<Resource,ArrayList<Policy>>> policies;
 	
+	int resourceCounter=0;
+	
 	public PolicyStore() {
 		this.policies=new HashMap<String,HashMap<Resource,ArrayList<Policy>>>();
 
@@ -73,7 +75,8 @@ public class PolicyStore {
 	
 		policy.setConstraints(constraints);
 		
-		Resource r=new Resource(1, "/temperatura");
+		resourceCounter++;
+		Resource r=new Resource(resourceCounter, "/temperatura");
 		
 		ArrayList<Policy> pols=new ArrayList<>();
 		pols.add(policy);
@@ -143,7 +146,22 @@ public class PolicyStore {
 		return politicas;
 	}
 	
-
+	public Resource createResource(String resource) {
+		for(HashMap<Resource,ArrayList<Policy>> map : policies.values()) {
+			for(Resource r : map.keySet()) {
+				if(r.getNombre().equals(resource)) {
+					Resource r1=new Resource(r.getId(), resource);
+					return r1;
+				}else {
+					resourceCounter++;
+					Resource r1=new Resource(resourceCounter, resource);
+					return r1;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public void newPolicy(String didSP, Policy politica, Resource recurso) {
 		if(policies.isEmpty()) {
 			ArrayList<Policy> politicas=new ArrayList<>();

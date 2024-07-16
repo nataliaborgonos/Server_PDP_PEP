@@ -72,4 +72,10 @@ public class PAPErat implements PAPInterface{
 		return policies;
 	}
 
+	@Override
+	public void addPolicy(String didSP, Policy policy, String resource) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
