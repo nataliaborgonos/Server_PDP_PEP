@@ -95,7 +95,17 @@ public class PDP implements PDPInterface {
 	PIPInterface pip;
 	PAPInterface pap;
 
-	PEP pep;
+	String jwtString;
+
+	public String getJwtString() {
+		return jwtString;
+	}
+
+	public void setJwtString(String jwtString) {
+		this.jwtString = jwtString;
+	}
+	
+	JWTVerifier verifier = new JWTVerifier();
 	IdentityAgent idAgent = new IdentityAgent();
 	boolean createdWallet;
 	Gson gson = new Gson();
@@ -440,12 +450,11 @@ public class PDP implements PDPInterface {
 
 		// Get trust score associated with the requester
 		double trustScore = pip.getTrustScore(ar.getDidRequester());
-		boolean trustScoreOK;
+		
 		for (Policy p : politicas) {
 			if (trustScore > p.getMinTrustScore()) {
-				trustScoreOK = true;
 				System.out.println("Trust Score successfully checked.\n");
-			}
+			}else {allMatches=false;}
 		}
 
 		// Get the requester's VP
@@ -502,49 +511,23 @@ public class PDP implements PDPInterface {
 		LocalDateTime expDateTime = LocalDateTime.ofInstant(expInstant, ZoneId.systemDefault());
 		LocalDateTime now = LocalDateTime.now();
 		if (expDateTime.isBefore(now)) {
-			// allMatches=false;
+			 allMatches=false;
+			 System.out.println("The access token is expired.\n");
+		}else {
+			System.out.println("The access token is not expired.\n");
 		}
 
 		// Verify that the signing is correct
 		String kid = jsonObject.getString("kid");
+		
 		//Make a request to the Verifier to get the JWKS
 		String url = "http://"+ipVerifier+":"+portVerifier+endpointVerifier;
-		System.out.println("The verifier is in: "+url);
-		try{
-			  HttpClient client = HttpClient.newBuilder().build();
-			  HttpRequest request = HttpRequest.newBuilder()
-											   .uri(URI.create(url))
-											   .header("Content-Type", "application/json")
-											   .GET()
-											   .build();
-  
-			  HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-			  int responseCode = response.statusCode();
-			  String responseBody = response.body();
-			  System.out.println("Response Code: " + responseCode);
-			  System.out.println("Response Body: " + responseBody);
-			    // Deserializar la respuesta JSON a un JsonObject
-				javax.json.JsonObject jsonObjectJWKS;
-				try (JsonReader reader = Json.createReader(new StringReader(responseBody))) {
-					jsonObjectJWKS = reader.readObject();
-				}
-				
-				// Acceder a los datos deserializados
-				for (javax.json.JsonObject key : jsonObjectJWKS.getJsonArray("keys").getValuesAs(javax.json.JsonObject.class)) {
-					System.out.println("Key ID from verifier: " + key.getString("kid"));
-					System.out.println("Key ID from jwt: " + kid);
-					if(kid.equals(key.getString("kid"))){
-					System.out.println("Key ID: " + key.getString("kid"));
-					System.out.println("Curve: " + key.getString("crv"));
-					System.out.println("Type: " + key.getString("kty"));
-					System.out.println("X Coordinate: " + key.getString("x"));
-					System.out.println("Y Coordinate: " + key.getString("y"));
-					}else{System.out.println("Kid from the verifier not matching with JWT's kid. Not a Public Key available.\n");}
-				}
-		} catch (Exception e) {
-            System.err.println("Verifier couldn't get the JWKS");
-        }
-
+					
+		    boolean verificationResult = verifier.verifyJwt(jwtString, url);
+		    if(verificationResult) {
+		    	System.out.println("Access token signature has been successfully verified.\n");
+		    }else {System.out.println("There was an error verifying Access token signature.\n"); allMatches=false;}
+		 
 		// POLICY MATCHING
 
 		// Take the verifiable presentation or credential values
@@ -578,7 +561,7 @@ public class PDP implements PDPInterface {
 			// Find out if the policy is correctly formed
 			
 			expirationInPolicy=p.getAuthTime();
-			System.out.println("expiration in the policy: "+expirationInPolicy);
+			//System.out.println("expiration in the policy: "+expirationInPolicy);
 			String politicaJSON = gson.toJson(p);
 
 			// Matching

@@ -200,7 +200,9 @@ public class Controller {
 	public String trying(@RequestBody AuthRequestConnectorToken request) {
 
 		String jwtString = request.getAccessToken();
-
+		
+		pep.setJwtString(jwtString);
+		
 		// Parse JWT
 		JWT jwt = null;
 		try {

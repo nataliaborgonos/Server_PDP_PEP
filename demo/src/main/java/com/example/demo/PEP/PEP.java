@@ -41,6 +41,16 @@ public class PEP implements PEPInterface {
 	JsonNode schemaAccess;
 	JsonNode request;
 	PublicKey pbk;
+	
+	String jwtString;
+
+	public String getJwtString() {
+		return jwtString;
+	}
+
+	public void setJwtString(String jwtString) {
+		this.jwtString = jwtString;
+	}
 
 	PDP pdp;
 	ArrayList<Resource> resources;
@@ -73,6 +83,7 @@ public class PEP implements PEPInterface {
 	// trust score
 	public CapabilityToken sendConnectorToken(String authRequestJson) {
 		System.out.println("\nPEP recieves Requester's query for accessing an asset.\n");
+		pdp.setJwtString(jwtString);
 		CapabilityToken ct = pdp.verifyConnectorToken(authRequestJson);
 		pbk = pdp.getPbk();
 		System.out.println("PEP send the Capability Token to the Requester.\n");
