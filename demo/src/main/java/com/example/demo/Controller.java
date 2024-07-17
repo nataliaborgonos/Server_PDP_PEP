@@ -313,9 +313,13 @@ public class Controller {
 			Policy p=gson.fromJson(request.getPolicy(), Policy.class);
 			pap.addPolicy(request.getDidSP(), p, request.getResource());
 			System.out.println("Policy: " + request.getPolicy()+ " added to the Policy Administration Point for the "+request.getDidSP()+ " and the resource "+request.getResource());
-		}else if(pdpConfig.equals("eratosthenes")) {}
-		
-		
+		}else if(pdpConfig.equals("eratosthenes")) {
+			/*
+			 * Policy p=gson.fromJson(request.getPolicy(), Policy.class);
+			 * pap.addPolicy(request.getDidSP(), p, request.getResource());
+			 * */
+			
+		}
 
 	}
 	

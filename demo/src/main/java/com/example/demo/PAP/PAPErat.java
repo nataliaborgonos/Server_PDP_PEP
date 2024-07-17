@@ -75,7 +75,22 @@ public class PAPErat implements PAPInterface{
 	@Override
 	public void addPolicy(String didSP, Policy policy, String resource) {
 		// TODO Auto-generated method stub
-		
+		String json=gson.toJson(policy);
+		CompletableFuture<PolicyMessage> addPolicyFuture = client.addPolicy(json);
+	
+		PolicyMessage addPolicyResponse = null;
+		try {
+			addPolicyResponse = addPolicyFuture.get();
+			System.out.println(addPolicyFuture.get());
+			if(addPolicyResponse.getPolicyJSON()!=null) {
+				System.out.println("AddPolicy Response received: " + addPolicyResponse.getPolicyJSON());
+				}
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		System.out.println("AddPolicy Response received: " + addPolicyResponse.getPolicyJSON());
 	}
 
 }
