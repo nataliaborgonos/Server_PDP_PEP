@@ -11,6 +11,7 @@ import com.nimbusds.jwt.*;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
 
@@ -21,6 +22,7 @@ public class JWTVerifier {
 	            // Obtain JWKS
 	            JWKSource<SecurityContext> keySource = new RemoteJWKSet<>(new URL(jwksUrl));
 
+	            
 	            // Parse the JWT
 	            SignedJWT jwt = SignedJWT.parse(jwtString);
 	            
@@ -39,7 +41,7 @@ public class JWTVerifier {
 
 	        } catch (Exception e) {
 	            // If there is an error
-	            e.printStackTrace();
+	            System.err.println("The access token is expired or couldn't be verified. Please check it and try again.");
 	            return false;
 	        }
 	    }

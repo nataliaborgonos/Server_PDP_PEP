@@ -70,7 +70,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class PDP implements PDPInterface {
 
-	@Value("${app.VERIFIER_IP:localhost}")
+	@Value("${app.VERIFIER_IP:ips-verifier.testing1.k8s-cluster.tango.rid-intrasoft.eu}")
 	static String ipVerifier;
 
 	@Value("${app.VERIFIER_PORT:8082}")
@@ -521,9 +521,10 @@ public class PDP implements PDPInterface {
 		String kid = jsonObject.getString("kid");
 		
 		//Make a request to the Verifier to get the JWKS
-		String url = "http://"+ipVerifier+":"+portVerifier+endpointVerifier;
-					
+		String url = "https://"+ipVerifier+endpointVerifier;
+			
 		    boolean verificationResult = verifier.verifyJwt(jwtString, url);
+		    
 		    if(verificationResult) {
 		    	System.out.println("Access token signature has been successfully verified.\n");
 		    }else {System.out.println("There was an error verifying Access token signature.\n"); allMatches=false;}
