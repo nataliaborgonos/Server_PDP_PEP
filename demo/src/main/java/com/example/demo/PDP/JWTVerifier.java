@@ -1,19 +1,15 @@
 package com.example.demo.PDP;
 
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
+import java.net.URL;
+
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
-import com.nimbusds.jose.proc.*;
-import com.nimbusds.jwt.*;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.interfaces.RSAPublicKey;
 
 public class JWTVerifier {
 	//Method for verifying JWT using the public key
@@ -34,13 +30,22 @@ public class JWTVerifier {
 	            jwtProcessor.setJWSKeySelector(selector);
 
 	            // Verify the JWT
-	            JWTClaimsSet jwtClaims = jwtProcessor.process(jwtString, null);
+	            try {
+	            	JWTClaimsSet jwtClaims = jwtProcessor.process(jwtString, null);
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.err.println("The process of verifying JWT failed.");
+					return false;
+				}
+	            
+	            
 
 	            // If the verification is successful
 	            return true;
 
 	        } catch (Exception e) {
 	            // If there is an error
+	        	e.printStackTrace();
 	            System.err.println("The access token is expired or couldn't be verified. Please check it and try again.");
 	            return false;
 	        }

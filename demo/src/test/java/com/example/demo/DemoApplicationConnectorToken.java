@@ -60,7 +60,7 @@ public class DemoApplicationConnectorToken {
 				    "        \"resource\":\"/temperatura\"\n" +
 				    "    },\n" +
 				    "    \"didRequester\": \"did\",\n" +
-				    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6Ik9XOFdKcDJRREtyRldUNVpPZ2IzWWd2eXRNVGR6RWFMNU93bm5MWkVTVUEiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsiMTAuNjQuNDUuNTg6NTAwMCJdLCJjbGllbnRfaWQiOiJkaWQ6d2ViOmlwcy5kc2JhLmF3cy5uaXRsYWIuaW86ZGlkIiwiZXhwIjoxNzA3ODM2MDU1LCJpc3MiOiJkaWQ6d2ViOmlwcy5kc2JhLmF3cy5uaXRsYWIuaW86ZGlkIiwia2lkIjoiT1c4V0pwMlFES3JGV1Q1Wk9nYjNZZ3Z5dE1UZHpFYUw1T3dubkxaRVNVQSIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiODJmZDA0MDUtNGFmMC00ZjM5LWEyNzQtOGU4MjM3NGY0N2I1IiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5kc2JhLmF3cy5uaXRsYWIuaW86ZGlkIn1dLCJ0eXBlIjoiZ3g6TmF0dXJhbFBhcnRpY2lwYW50In0sImlkIjoidXJuOnV1aWQ6OTVmN2QwYTgtYjliNi00ZWIwLTgwNjYtZDUwYjk2ZTc4NjkzIiwiaXNzdWFuY2VEYXRlIjoiMjAyNC0wMi0xM1QxNDowNjo1MloiLCJpc3N1ZWQiOiIyMDI0LTAyLTEzVDE0OjA2OjUyWiIsImlzc3VlciI6ImRpZDp3ZWI6aXBzLmRzYmEuYXdzLm5pdGxhYi5pbzpkaWQiLCJwcm9vZiI6eyJjcmVhdGVkIjoiMjAyNC0wMi0xM1QxNDowNjo1MloiLCJqd3MiOiJleUppTmpRaU9tWmhiSE5sTENKamNtbDBJanBiSW1JMk5DSmRMQ0poYkdjaU9pSlFVekkxTmlKOS4ubnpBdzlZM00wMHVDRG1uemtEVUtfMkdDSU5GNEFPYmJmakMwWWVCSE4wTmhOaERDX2xZMHZPYVVGbkNEaGZCakg3OE1rWmNvaDhjYWYtYXEzcWRYaXRDS2VDbm9OQS1rdXI0azNYNmV0M1JWQkJSQUp2LXJWRXZHVmprcExjVV9YdXN2ZjhOZzVLOU8xRElESHNJOFR2ZDJ1WFRuWEc3ZUpILTgzZnRDZ0VfYzZ1blFQLTNuR1hBdkliSmQxeENQbTgxUlU0clkzRC1VMi0tQzlYbzhLaTJ6bHNNSVFHNVJlSm5XNG02dmNFQzh6a21nQkdURlE3MkhqTWZQdUs3QjV1SndIdXhXTUpWRVZOQ3hPZDdxTFZYMEF2N1NpZDZDZ1VpdTFNWjl6YlN5UnVFdDdrdDFYZVRNRmlkMEx4NDIyMnhydWxnY1VQbHMwSEhjcjJMQTk4cV9lem1fY2ZLWmRUT2pFRWJhZzdWX1BlMjVsbjVSRzBaZnNEYk01WVBFSnlzNDBpMGcyd0lBWEVVVW5CY1pRMmh5SnhPalhaMVBtNGtlcW0ydEFNQXZtUnA3amkzVDhJelJNQU9NT2RRSFJtTE1ENW5idDhfY2lOYlJrVUtDbnBxcjlRQXhSa0NEa0s5Z3B0RzNIV3AydkVwNzVzZWhjbV9DVE9NZ1RTRzJ6UkNBb3E5YmRtNDN4bmpBalNyck5tWHJmRkVuQmxGY3R4TTloekRNMUxMNHBHc1Z1TVJIWFJvUlZIOE9Rbm4zQnVMVWRmNUVQeFFsZTdfanB0ekgxSnBsWDFRMmlfQnBvQVVSWDFKZnVMazViVF9hbktLTmctUXprMGoyNlNETU5uTTl0Qm80ZXVZckVIQV9WVXJYbmVxSm5hMTdVanN2R0lUMzFXaUtWZmsiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5kc2JhLmF3cy5uaXRsYWIuaW86ZGlkIzM4OWUxOTNlYzI5ZTQ0ODVhMjljOWYyYTMzY2Q0NDYwIn0sInR5cGUiOlsiRW1wbG95ZWVDcmVkZW50aWFsIl0sInZhbGlkRnJvbSI6IjIwMjQtMDItMTNUMTQ6MDY6NTJaIn19.eKqz-eduU-SDkvuPYFu6UvVM7Ga5Xa6VsNDk4L_S113ugIBLEb_QXbxyWlxdP4XXSuBbQTiDz0FAx15wgmFXvQ\"\n" +
+				    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3Mjc4NzczMjksImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiZDMzMzUxZDgtODQyNC00NjA1LWEyMDQtODZkNGYzNjQ0YjZiIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjI4YzBkODMyLTRkYjAtNGRjZS05NGZmLWE2MDJmOWRmMGRmYyIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTAtMDJUMTM6MjQ6NDBaIiwiaXNzdWVkIjoiMjAyNC0xMC0wMlQxMzoyNDo0MFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTEwLTAyVDEzOjI0OjQwWiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5yT01vSVdqYmFIQjBzS2FCaEZ2X2NqSHJLb1RGZC02OXd5NVJ3SFFDTDFhRVRHUUk5VW5RUE9tOExiNTNMT21xMkNqYmV4eUJHNkF4bDBLLVNYblRyVEYzTXJ4V2MxZDNIczdqcEhBRGFWT0RaYTV2dV81Zjc3NHNuaElwOVAzazg0T1hqOU0tbDFERWhTWUZOaFM1UjJRSEh3ZlhBUDA4NUt1WUVrSnNCT1d4c29KS1duRU9MeEpsc2VBTkp3TGh0djEybmlFZWdFRHVPZVc0cXhIbm02XzBManZ4d2NxNjQ4SjZSY1pVNkMxbnBqbjA4V1BoYWZWbk80TUMyY2MtU245dlNXUm5ka2JpNGRkemJNN1N4RWpSb0Z2SjFtZHR2UjR4NUlfd0R5QWJNUTRRb1dlbUFjM1dxNnVBNUdNb1llM0ExRVhCZGk1QUhDamhncDFhMEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTEwLTAyVDEzOjI0OjQwWiJ9fQ.kk9s8Cmzocm-h1kkGWFuipFinYBqMl0U6gGFgiT7LX6aOdgqM-_xZ3BDmjh8Y50T4Mqkqtkm5HrRwAOd00szng\"\n" +
 				    "}";
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -88,8 +88,10 @@ public class DemoApplicationConnectorToken {
 			
 			
 			String requestBody = "{\n" + "    \"ct\": " + token + ",\n" + "     \"sar\":{\n"
-					+ "        \"action\":\"GET\",\n" + "        \"resource\":\"/temperatura\"\n" + "    }\n" + "}";
-
+					+ "        \"action\":\"GET\",\n" + "        \"resource\":\"/temperatura\"\n" + "    },\n"+"     \"queryParameters\": {\n	\"temperature\": 23.5,\n	\"unit\": \"Celsius\",\n	\"sensor\": \"sensor123\",\n"
+			        + "	\"timestamp\": \"2024-09-09T12:34:56Z\"\n"
+			        + "	}\n "+ "}";
+			System.out.println(requestBody);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -110,8 +112,11 @@ public class DemoApplicationConnectorToken {
 		void testAccessWithWrongToken() {
 			System.out.println("Test 3 for TANGO: Trying to do action POST in the resource /temperatura with the Capability Token received \n" );
 			
+
 			String requestBody = "{\n" + "    \"ct\": " + token + ",\n" + "     \"sar\":{\n"
-					+ "        \"action\":\"POST\",\n" + "        \"resource\":\"/temperatura\"\n" + "    }\n" + "}";
+					+ "        \"action\":\"POST\",\n" + "        \"resource\":\"/temperatura\"\n" + "    },\n"+"     \"queryParameters\": {\n	\"temperature\": 23.5,\n	\"unit\": \"Celsius\",\n	\"sensor\": \"sensor123\",\n"
+			        + "	\"timestamp\": \"2024-09-09T12:34:56Z\"\n"
+			        + "	}\n "+ "}";
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -129,7 +134,7 @@ public class DemoApplicationConnectorToken {
 		 @Order(4)
 			@Test
 			void testNotMatchingPolicy() {
-				System.out.println("Test 4 for TANGO: Request access for doing action GET in the resource /temperatura and not getting the Capability Token because the policy matching failed \n" );
+				System.out.println("Test 4 for TANGO: Request access for doing action GET in the resource /temperatura and not getting the Capability Token because the token is expired and the policy matching failed \n" );
 				
 				
 				String requestBody =  "{\n" +
@@ -158,5 +163,36 @@ public class DemoApplicationConnectorToken {
 				assertEquals("Capability Token couldn't be issued, please revise the request and try again.\n", responseEntity.getBody());
 			}
 		 
-		 //MISSING TEST WHERE THE SIGNATURE IS NOT VERIFIED -> WAITING FOR THE PUBLIC KEY
+		 @Order(5)
+			@Test
+			void testNotVerifyingSignature() {
+				System.out.println("Test 5 for TANGO: Request access for doing action GET in the resource /temperatura and not getting the Capability Token because access token signature couldn't be verified \n" );
+				
+				
+				String requestBody =  "{\n" +
+					    "    \"didSP\": \"tangoUser\",\n" +
+					    "    \"sar\": {\n" +
+					    "        \"action\":\"GET\",\n" +
+					    "        \"resource\":\"/temperatura\"\n" +
+					    "    },\n" +
+					    "    \"didRequester\": \"did\",\n" +
+					    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3MjY2NzE0NzIsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGU3ZGE3NGUtYTFmYi00YmY2LTkzZTYtOWM4ZWUzYzYzZDlhIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjllZWY3ODYxLTJjNjUtNDE0My1hZDc0LTg5NjQ0YzdiNTkwMyIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMDktMThUMTQ6MjY6MjRaIiwiaXNzdWVkIjoiMjAyNC0wOS0xOFQxNDoyNjoyNFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTA5LTE4VDE0OjI2OjI0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5EclZUS1l3blRySnIxUGs1cUpqdW5BM0g5ZFNCWS1pSy1nNThnWXBGUDlzRF9OVWJ5QmNMekMtdXpaamNEaVFtR00zRW9UYWlpOTQ3V21TdWo5V3hQZTcyRXJxRnFqSHBaN3ZYd1RrN3pzX3duWXphZTdZZEZ6ekJLcnpmRTNOc09TclZZQ1lUSm5pdnVsSkI3ME1Ca1U2eEUtTGcwZzk4QzRqQ3RIT2dac1BOOHEyRDRBbnRyOVhXb0s3ME02Rnl4UmhLVDJhT2lRYVIyMG4zLVA4blNHZ0tCX2RNd0tNOGlsbE1PdTFaU292NlpkWlRoU1pHczRHbUdRazNQSTNlc2pfVzItYjNwWDAxYTdYT2doQXpIckpuRzZ4dTRpRDhrX21DREVxN1VjaWJtYUtJZkgzUDNBZ3c5YUF1QkxYbVJxOXI2WFc0bEhoR1JmTjBtUGotcWciLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTA5LTE4VDE0OjI2OjI0WiJ9fQ.nosignature\"\n" +
+					    "}";
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+
+				HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+		
+				ResponseEntity<String> responseEntity = restTemplate.exchange("/api/connector-access-token", HttpMethod.POST,
+						requestEntity, String.class);
+
+				// Token issued for requester
+				token = responseEntity.getBody();
+
+				// Verify that there's a CapabilityToken and is not null
+				assertNotNull(responseEntity.getBody());
+				assertTrue(!responseEntity.getBody().isEmpty());
+				assertEquals("Capability Token couldn't be issued, please revise the request and try again.\n", responseEntity.getBody());
+			}
+		 
 }

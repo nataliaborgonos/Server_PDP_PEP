@@ -115,12 +115,7 @@ public class Requester {
 		return json;
 	}
 
-	public String accesoRecurso(CapabilityToken ct, SimpleAccessRight sar) {
-		AccessRequest acc=new AccessRequest(ct, sar);
-		String json=gson.toJson(acc);
-		return json;
-	}
-
+	
 	
 	
 }

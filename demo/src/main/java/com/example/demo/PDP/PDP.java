@@ -119,7 +119,7 @@ public class PDP implements PDPInterface {
 	public PDP(PIPInterface pip, PAPInterface pap) {
 		ipVerifier = System.getenv("VERIFIER_IP");
 		if( System.getenv("VERIFIER_IP")==null) {
-			ipVerifier="localhost";
+			ipVerifier="ips-verifier.testing1.k8s-cluster.tango.rid-intrasoft.eu";
 		}
 		
 		portVerifier = System.getenv("VERIFIER_PORT");
@@ -522,12 +522,11 @@ public class PDP implements PDPInterface {
 		
 		//Make a request to the Verifier to get the JWKS
 		String url = "https://"+ipVerifier+endpointVerifier;
-			
 		    boolean verificationResult = verifier.verifyJwt(jwtString, url);
 		    
 		    if(verificationResult) {
 		    	System.out.println("Access token signature has been successfully verified.\n");
-		    }else {System.out.println("There was an error verifying Access token signature.\n"); allMatches=false;}
+		    }else {System.out.println("There was an error verifying Access token signature.\n"); allMatches=false; }
 		 
 		// POLICY MATCHING
 

@@ -102,6 +102,7 @@ public class PEP implements PEPInterface {
 		// Verifies the access rights that the Capability Token grants
 		AccessRequest acc = gson.fromJson(requestWithToken, AccessRequest.class);
 		List<SimpleAccessRight> simp = acc.getCt().getAr();
+		System.out.println("parameters:"+acc.getQueryParameters());
 
 		for (SimpleAccessRight s : simp) {
 			if (s.getAction().equals(acc.getSar().getAction()) && s.getResource().equals(acc.getSar().getResource())) {
@@ -178,6 +179,9 @@ public class PEP implements PEPInterface {
 
 		// If everything matches, access to the resource is granted
 		if (notExpired && signatureVerified && simpleAccessRightsOk) {
+			
+			//API call
+			
 			  // Location of the requested resource
 	        String resource = serverResources+acc.getSar().getResource();
 	        StringBuilder content = new StringBuilder();
