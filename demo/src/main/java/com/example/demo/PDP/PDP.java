@@ -9,6 +9,7 @@ import java.security.PublicKey;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -447,6 +448,7 @@ public class PDP implements PDPInterface {
 		// Get policies needed to do the requested action in that resource
 		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),
 				ar.getSar().getAction());
+		if(politicas==null) {System.out.println("There are no policies registered for this request.");}
 
 		// Get trust score associated with the requester
 		double trustScore = pip.getTrustScore(ar.getDidRequester());
@@ -715,14 +717,51 @@ public class PDP implements PDPInterface {
 					"The matching process has been successfully finished. Issuing Capability Token for requester...\n");
 			if(expirationInPolicy==0) { 
 				//default value
-			System.out.println("the capabilitytoken will be available for "+ expiration);
+			
+				// El tiempo de expiración del token en milisegundos (ejemplo: 3600000 ms = 1 hora)
+		        long expirationTimeInMillis = 123123123; // 
+
+		        // Obtener el tiempo actual en milisegundos desde la época (1970-01-01T00:00:00Z)
+		        long currentTimeInMillis = System.currentTimeMillis();
+		        
+		        // Calcular el tiempo de expiración sumando los milisegundos de expiración
+		        long expirationInMillis = currentTimeInMillis + expirationTimeInMillis;
+
+		        // Convertir milisegundos a LocalDateTime
+		        LocalDateTime expirationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(expirationInMillis), ZoneId.systemDefault());
+
+		        // Formatear la fecha de expiración
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		        String formattedExpiration = expirationDateTime.format(formatter);
+
+		        // Imprimir el mensaje con la fecha de expiración
+		        System.out.println("The Capability Token will be available until " + formattedExpiration);
+				
 			ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),
 					ar.getSar(), expiration);
 			pbk = ct.getPublicKey();
 			}else {
 				//value "authtime" in the policy
 				String expstring=Long.toString(expirationInPolicy);
-				System.out.println("the capabilitytoken will be available for "+ expstring);
+				
+
+
+		        // Obtener el tiempo actual en milisegundos desde la época (1970-01-01T00:00:00Z)
+		        long currentTimeInMillis = System.currentTimeMillis();
+		        
+		        // Calcular el tiempo de expiración sumando los milisegundos de expiración
+		        long expirationInMillis = currentTimeInMillis + expirationInPolicy;
+
+		        // Convertir milisegundos a LocalDateTime
+		        LocalDateTime expirationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(expirationInMillis), ZoneId.systemDefault());
+
+		        // Formatear la fecha de expiración
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		        String formattedExpiration = expirationDateTime.format(formatter);
+
+		        // Imprimir el mensaje con la fecha de expiración
+		        System.out.println("The Capability Token will be available until " + formattedExpiration + "\n");
+				
 				ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),
 						ar.getSar(), expstring);
 				pbk = ct.getPublicKey();

@@ -302,7 +302,7 @@ public class Controller {
 
 		// Verify capability token
 		String requestJson = gson.toJson(request);
-		System.out.println(requestJson);
+		//System.out.println(requestJson);
 		String response = pep.validateCapabilityToken(requestJson);
 
 		return response;

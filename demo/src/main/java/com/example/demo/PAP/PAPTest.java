@@ -15,13 +15,20 @@ public class PAPTest implements PAPInterface{
 
 	@Override
 	public ArrayList<Policy> getPolicies(String didSP, String recursoSolicitado, String action) {
-		return policyStore.getPolicy(didSP, recursoSolicitado);
+		return policyStore.getPolicy(didSP, recursoSolicitado,action);
+	}
+
+	@Override
+	public void addPolicy(String didSP, Policy policy, String resource) {
+		// TODO Auto-generated method stub
+		
 	}
 	
+	/*
 	@Override
 	public void addPolicy(String didSP, Policy policy, String resource) {
 		Resource r=policyStore.createResource(resource);
 		policyStore.newPolicy(didSP, policy, r);
-	}
+	}*/
 
 }
