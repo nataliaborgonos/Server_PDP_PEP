@@ -19,11 +19,13 @@ public class PAPTest implements PAPInterface{
 	}
 
 	@Override
-	public void addPolicy(String didSP, Policy policy, String resource) {
-		// TODO Auto-generated method stub
-		
+	public void addPolicy(Policy policy, String resource) {
+		policyStore.addPolicy(policy, resource);
 	}
-	
+
+	public int getPolicyCounter() {
+		return policyStore.getPolicyCounter();
+	}
 	/*
 	@Override
 	public void addPolicy(String didSP, Policy policy, String resource) {

@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+
 import java.text.ParseException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,15 +17,20 @@ import javax.net.ssl.SSLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.client.GRPCClient;
 import com.example.client.PolicyResponseHandler;
 import com.example.client.TrustScoreResponseHandler;
+import com.example.demo.JWTManager.JWTGenerator;
+import com.example.demo.JWTManager.JWTVerifier;
 import com.example.demo.PAP.PAPErat;
 import com.example.demo.PAP.PAPInterface;
 import com.example.demo.PAP.PAPTest;
@@ -35,6 +42,7 @@ import com.example.demo.PIP.PIPInterface;
 import com.example.demo.PIP.PIPTest;
 import com.example.demo.PIP.TrustScoreStore;
 import com.example.demo.models.AccessRequest;
+import com.example.demo.models.AuthPolicyRequest;
 import com.example.demo.models.AuthRequest;
 import com.example.demo.models.AuthRequestConnectorToken;
 import com.example.demo.models.AuthRequestTango;
@@ -68,11 +76,15 @@ public class Controller {
 	PEP pep;
 	Gson gson;
 
+	JWTGenerator jwtGenerator;
+	JWTVerifier jwtVerifier;
+	
 	/* CONSTRUCTOR */
 
 	public Controller() {
 		this.pdpConfig = System.getProperty("pdpConfig");
-
+		jwtGenerator=new JWTGenerator();
+		jwtVerifier=new JWTVerifier();
 		dlt_ip = System.getenv("DLT_IP");
 		if(dlt_ip==null) {
 			dlt_ip="localhost";
@@ -98,6 +110,8 @@ public class Controller {
 			pep = new PEP(pdp);
 
 			gson = new Gson();
+			String long_lived_jwt=jwtGenerator.generateLongLivedJWT();
+			System.out.println("The long-lived jwt that has been generated is: "+long_lived_jwt);
 		} else if (pdpConfig.equals("eratosthenes")) {
 
 			PolicyResponseHandler handler = new PolicyResponseHandler() {
@@ -308,6 +322,7 @@ public class Controller {
 		return response;
 	}
 	
+	/*
 	@PostMapping("/new-policy")
 	public void newPolicy(@RequestBody PolicyRequest request) {
 	if(pdpConfig.equals("test")) {
@@ -320,8 +335,62 @@ public class Controller {
 			 * pap.addPolicy(request.getDidSP(), p, request.getResource());
 			 * */
 			
-		}
+	//	}
 
+	//}*/
+	
+
+@PostMapping("/auth")
+public String handleAuthPolicyRequest(@RequestHeader("Authorization") String authorizationHeader, @RequestBody AuthPolicyRequest request) {  
+       // header token Bearer
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            // Process token -> verify signature
+            boolean isValid=jwtVerifier.verifyJwtLived(token);
+            if(isValid==true) {
+            	System.out.println("Verified signature of Bearer Token");
+            	// Generate short-lived JWT
+                String short_lived_jwt=jwtGenerator.generateShortLivedJWT(request.getSub(), request.getScope());
+                System.out.println("Generated short-lived JWT for requester: "+short_lived_jwt);
+                return  short_lived_jwt;
+            }
+            else {System.out.println("Signature of Bearer Token couldn't be verified.");}
+      
+        } else {
+          return "Authorization header not found.";
+        }
+        return "The Authorization process couldn't be completed";
+    }
+
+@PostMapping("/new-policy")
+public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
+	if(pdpConfig.equals("test")) {
+		int policyCounter=((PAPTest) pap).getPolicyCounter();
+		policyCounter++;
+		String policyID= "did:politica:"+String.valueOf(policyCounter);
+		System.out.println("Policy will be added with internal ID: "+policyID);
+		 // Process short lived token -> verify signature
+        boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth());
+		if(isValid) {
+			try {
+			Policy p=gson.fromJson(request.getPolicy(), Policy.class);
+			p.setId(policyID);
+			pap.addPolicy(p, request.getResource());
+			System.out.println("Policy: " + request.getPolicy() + " added to the Policy Administration Point for the resource "+request.getResource());
+			return ResponseEntity.status(HttpStatus.OK).body("\"Policy: \"" + request.getPolicy() +" \" added to the Policy Administration Point for the resource \""+request.getResource() +" \" ");
+			
+			} catch (Exception e) {
+				System.out.println("Error: 400 Bad Request");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: 400 Bad Request");
+			}
+		}else {System.out.println("Error: 403 Forbidden"); return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: 403 Forbidden");}
+	}else if(pdpConfig.equals("eratosthenes")) {
+			/*
+			 * Policy p=gson.fromJson(request.getPolicy(), Policy.class);
+			 * pap.addPolicy(request.getDidSP(), p, request.getResource());
+			 * */
+		}
+	return null;
 	}
 	
 

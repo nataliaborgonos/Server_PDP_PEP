@@ -117,7 +117,6 @@ public class PEP implements PEPInterface {
 			for (Map.Entry<String, String> param : queryParams.entrySet()) {
 				urlWithParams.append(param.getKey()).append("=").append(param.getValue()).append("&");
 			}
-			// Elimina el último '&'
 			urlWithParams.setLength(urlWithParams.length() - 1);
 		}
 		return urlWithParams.toString();

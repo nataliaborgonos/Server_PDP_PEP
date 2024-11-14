@@ -2,21 +2,15 @@ package com.example.demo.models;
 
 public class PolicyRequest {
 	/* ATTRIBUTES */
-	private String didSP;
+	private String jwtAuth; 
 	private String policy;
 	private String resource;
 	
 	public PolicyRequest() {}
-	public PolicyRequest(String didSP,String policy, String resource) {
-		this.didSP=didSP;
+	public PolicyRequest(String jwtAuth, String policy, String resource) {
+		this.jwtAuth=jwtAuth;
 		this.policy=policy;
 		this.resource=resource;
-	}
-	public String getDidSP() {
-		return didSP;
-	}
-	public void setDidSP(String didSP) {
-		this.didSP = didSP;
 	}
 	public String getPolicy() {
 		return policy;
@@ -31,5 +25,10 @@ public class PolicyRequest {
 		this.resource = resource;
 	}
 	
-
+	public String getJwtAuth() {
+		return jwtAuth;
+	}
+	public void setJwtAuth(String jwtAuth) {
+		this.jwtAuth = jwtAuth;
+	}
 }

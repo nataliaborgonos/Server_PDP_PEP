@@ -210,6 +210,59 @@ public class PolicyStore {
 		return null;
 	}
 	
+	
+	public void addPolicy(Policy policy, String resource) {
+		boolean resourceFound=false;
+		//There are no policies in the system, add the first one
+		if(policies.isEmpty()) {
+			resourceCounter++;
+			Resource r=new Resource(resourceCounter, resource);
+			resources.add(r);
+			ArrayList<Policy> politicas=new ArrayList<>();
+			politicas.add(policy);
+			policies.put(r,politicas);
+		}else {
+		//Searchs if the resource already has policies associated
+		     for(Resource r : policies.keySet()){
+		     //The resource have policies, so the new policy is added in its list
+		     	if(r.getNombre()==resource){
+		     		resourceFound=true;
+		     		ArrayList<Policy> pols=new ArrayList<>();
+		     		pols=policies.get(r);
+		     		pols.add(policy);
+		     		policies.put(r,pols);
+		     	}
+		     }
+		     //The resource doesn't have policies associated in the system
+		     if(resourceFound==false){
+		     	resourceCounter++;
+			Resource r=new Resource(resourceCounter, resource);
+			resources.add(r);
+			ArrayList<Policy> politicas=new ArrayList<>();
+			politicas.add(policy);
+			policies.put(r,politicas);
+		     }
+		}
+		System.out.println("LIST OF POLICIES HAS BEEN UPDATED: ");
+		// Recorremos el Map<String, ArrayList<Policy>>
+		for (Map.Entry<Resource, ArrayList<Policy>> outerEntry : policies.entrySet()) {
+		    Resource resource1 = outerEntry.getKey(); // Muestra el recurso (la clave del mapa)
+		    ArrayList<Policy> policyList = outerEntry.getValue(); // Obtiene la lista de políticas asociada al recurso
+
+		    System.out.println("Resource: " + resource1.getNombre()); // Muestra el nombre del recurso
+
+		    // Recorremos la lista de políticas
+		    for (Policy policy1 : policyList) {
+		        System.out.println("  Policy: " + policy1); // Muestra la descripción de la política
+		    }
+		}
+
+	}	
+	
+	public int getPolicyCounter() {
+		return policyCounter;
+	}
+
 	/*
 	public Resource createResource(String resource) {
 		for(HashMap<Resource,ArrayList<Policy>> map : policies.values()) {

@@ -73,7 +73,7 @@ public class PAPErat implements PAPInterface{
 	}
 
 	@Override
-	public void addPolicy(String didSP, Policy policy, String resource) {
+	public void addPolicy(Policy policy, String resource) {
 		// TODO Auto-generated method stub
 		String json=gson.toJson(policy);
 		CompletableFuture<PolicyMessage> addPolicyFuture = client.addPolicy(json);
