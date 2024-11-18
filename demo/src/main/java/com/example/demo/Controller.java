@@ -40,6 +40,7 @@ import com.example.demo.PEP.PEP;
 import com.example.demo.PIP.PIPErat;
 import com.example.demo.PIP.PIPInterface;
 import com.example.demo.PIP.PIPTest;
+import com.example.demo.PIP.TrustScoreManager;
 import com.example.demo.PIP.TrustScoreStore;
 import com.example.demo.models.AccessRequest;
 import com.example.demo.models.AuthPolicyRequest;
@@ -47,12 +48,15 @@ import com.example.demo.models.AuthRequest;
 import com.example.demo.models.AuthRequestConnectorToken;
 import com.example.demo.models.AuthRequestTango;
 import com.example.demo.models.SimpleAccessRight;
+import com.example.demo.models.TSMConfigRequest;
+import com.example.demo.models.TSMConfigResponse;
 import com.example.demo.models.CapabilityToken;
 import com.example.demo.models.Policy;
 import com.example.demo.models.PolicyRequest;
 import com.example.demo.requester.Requester;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jwt.*;
 
 import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
@@ -100,7 +104,8 @@ public class Controller {
 		if (pdpConfig.equals("test")) {
 
 			TrustScoreStore trustScores = new TrustScoreStore();
-			pip = new PIPTest(trustScores);
+			TrustScoreManager trustScoreManager=new TrustScoreManager("https://tsm-test.k8s-cluster.tango.rid-intrasoft.eu/api/docs");
+			pip = new PIPTest(trustScoreManager);
 
 			PolicyStore policies = new PolicyStore();
 			pap = new PAPTest(policies);
@@ -393,6 +398,22 @@ public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
 	return null;
 	}
 	
+
+@PostMapping("/trust-score-config")
+public String trustScoreConfig(@RequestBody TSMConfigRequest request) {
+	//String requestJson = gson.toJson(request);
+	String response=((PIPTest) pip).createConfig(request);
+	
+	TSMConfigResponse resp=gson.fromJson(response, TSMConfigResponse.class);
+    // Extraer los valores de los campos entity_did y config_id
+    String entityDid = resp.getEntity_did();
+    int configId = resp.getConfig_id();
+    ((PIPTest)pip).addConfig(entityDid,configId);
+    // Imprimir los valores extraídos
+    System.out.println("entity_did: " + entityDid);
+    System.out.println("config_id: " + configId);
+	return response;
+}
 
 	public PDP getPdp() {
 		return pdp;
