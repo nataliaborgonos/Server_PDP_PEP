@@ -50,12 +50,16 @@ import com.example.demo.models.AuthRequestTango;
 import com.example.demo.models.SimpleAccessRight;
 import com.example.demo.models.TSMConfigRequest;
 import com.example.demo.models.TSMConfigResponse;
+import com.example.demo.models.TSMPOSRequest;
 import com.example.demo.models.CapabilityToken;
 import com.example.demo.models.Policy;
 import com.example.demo.models.PolicyRequest;
 import com.example.demo.requester.Requester;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jwt.*;
 
@@ -286,7 +290,26 @@ public class Controller {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		jsonObject.addProperty("verifiableCredential", jsonString1);
+	
+		if (claimsSet.getClaim("verifiablePresentation") != null) {
+            // Obtener el claim como un array de objetos JSON
+            Object claim = claimsSet.getClaim("verifiablePresentation");
+
+            if (claim instanceof List) {
+                @SuppressWarnings("unchecked")
+                List<Object> vpList = (List<Object>) claim;
+                JsonArray verifiablePresentationJsonArray = new JsonArray();
+
+                // Convertir cada objeto de la lista a un JsonElement y añadir al JsonArray
+                for (Object vpObject : vpList) {
+                    JsonElement jsonElement = JsonParser.parseString(vpObject.toString());
+                    verifiablePresentationJsonArray.add(jsonElement);
+                }
+
+                // Agregar el JsonArray al jsonObject
+                jsonObject.add("verifiablePresentation", verifiablePresentationJsonArray);
+            }
+        }else if(claimsSet.getClaim("verifiableCredential") != null) {jsonObject.addProperty("verifiableCredential", jsonString1);}
 
 		String jsonString2 = gson.toJson(jsonObject);
 
@@ -412,6 +435,13 @@ public String trustScoreConfig(@RequestBody TSMConfigRequest request) {
     // Imprimir los valores extraídos
     System.out.println("entity_did: " + entityDid);
     System.out.println("config_id: " + configId);
+	return response;
+}
+
+@PostMapping("/add-protective-objectives")
+public String trustScoreObjectives(@RequestBody TSMPOSRequest request) {
+	//String requestJson = gson.toJson(request);
+	String response=((PIPTest) pip).addProtectiveObjectives(request);
 	return response;
 }
 

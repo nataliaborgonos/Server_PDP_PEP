@@ -455,12 +455,12 @@ public class PDP implements PDPInterface {
 
 		// Get trust score associated with the requester
 		//double trustScore = pip.getTrustScore(ar.getDidRequester());
-		
+		/*
 
 		String response=((PIPTest) pip).calculateTrustScore(ar.getDidRequester());
 		TSMScoreResponse resp=gson.fromJson(response, TSMScoreResponse.class);
 	    // Extraer los valores de los campos entity_did y config_id
-	    int trustScore = resp.getScore();
+	    double trustScore = resp.getScore();
 	   	    
 	    // Imprimir los valores extraídos
 	    System.out.println("score received for the user: " + trustScore);
@@ -468,9 +468,9 @@ public class PDP implements PDPInterface {
 		for (Policy p : politicas) {
 			if (trustScore > p.getMinTrustScore()) {
 				System.out.println("Trust Score successfully checked.\n");
-			}else {allMatches=false;}
+			}//else {allMatches=false;}
 		}
-		
+		*/
 		
 		
 		// Get the requester's VP
@@ -485,12 +485,12 @@ public class PDP implements PDPInterface {
 		List<JsonValue> vcredential = null;
 		javax.json.JsonObject singleVcredential = null;
 		JsonObject verifiableCredentialJsonObject = null;
-
+		
 		jsonObject.getString("iss");
 		jsonObject.getString("client_id");
 		jsonObject.getString("sub");
 		jsonObject.getString("aud");
-
+		
 		// If there's more than 1 verifiable credential is a verifiable presentation
 		if (jsonObject.getJsonArray("verifiablePresentation") != null) {
 			isVP = true;
@@ -510,13 +510,13 @@ public class PDP implements PDPInterface {
 				}
 
 			}
-		} else if (jsonObject.getString("verifiableCredential") != null) {
-
+		} else if (!jsonObject.getString("verifiableCredential").equals(null)) {
 			String vc = jsonObject.getString("verifiableCredential");
-
+			
 			// Parse string JSON
-			JsonParser jsonp = new JsonParser();
-			verifiableCredentialJsonObject = jsonp.parse(vc).getAsJsonObject();
+			//JsonParser jsonp = new JsonParser();
+			//verifiableCredentialJsonObject = jsonp.parse(vc).getAsJsonObject();
+			 verifiableCredentialJsonObject = JsonParser.parseString(vc).getAsJsonObject();
 
 		}
 

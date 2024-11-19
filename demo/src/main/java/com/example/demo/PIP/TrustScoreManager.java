@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.example.demo.models.TSMConfigRequest;
+import com.example.demo.models.TSMPOSRequest;
 import com.example.demo.models.TSMScoreRequest;
 import com.google.gson.Gson;
 import com.nimbusds.jose.shaded.json.JSONObject;
@@ -76,6 +77,30 @@ public class TrustScoreManager {
          }
      
  		return null;
+    }
+    
+    public String addProtectiveObjectives(TSMPOSRequest req) {
+    	try {
+            HttpClient client = HttpClient.newBuilder()
+                    .build();
+            String input = gson.toJson(req);
+            System.out.println(input);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://tsm-development.k8s-cluster.tango.rid-intrasoft.eu/api/tsm/pos"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(input, StandardCharsets.UTF_8))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+           if(response.statusCode()==200) {System.out.println("Protective Objectives for the user have been successfully added.");}
+            return response.body();
+
+        } catch (Exception e) {
+        	System.out.println("Something went wrong adding the Protective Objectives for the user.");
+            e.printStackTrace();
+        }
+    
+		return null;
     }
 }
 	

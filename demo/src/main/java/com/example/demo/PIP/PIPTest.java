@@ -8,6 +8,7 @@ import java.util.Map;
 import com.example.demo.models.Policy;
 import com.example.demo.models.Resource;
 import com.example.demo.models.TSMConfigRequest;
+import com.example.demo.models.TSMPOSRequest;
 import com.example.demo.models.TSMScoreRequest;
 import com.nimbusds.jose.shaded.json.JSONObject;
 
@@ -37,6 +38,11 @@ public class PIPTest implements PIPInterface{
 		int config_id=trustScores.get(did);
 		TSMScoreRequest tsmScoreReq= new TSMScoreRequest(did, config_id);
 		return tsm.calculateTrustScore(tsmScoreReq);
+	}
+	
+
+	public String addProtectiveObjectives(TSMPOSRequest req){
+		return tsm.addProtectiveObjectives(req);
 	}
 	
 	@Override

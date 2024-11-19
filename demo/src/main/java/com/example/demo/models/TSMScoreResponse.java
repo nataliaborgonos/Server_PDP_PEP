@@ -7,11 +7,11 @@ public class TSMScoreResponse {
 	 private int config_id;
 	 private JSONArray characteristic_score; 
 	 private double minimum_value;
-	 int score;
+	 double score;
 	 
 	 public TSMScoreResponse() {}
 		public TSMScoreResponse(String entity_did, int config_id, JSONArray characteristic_score, double minimum_value,
-				int score) {
+				double score) {
 			this.entity_did = entity_did;
 			this.config_id = config_id;
 			this.characteristic_score = characteristic_score;
@@ -43,10 +43,10 @@ public class TSMScoreResponse {
 	public void setMinimum_value(double minimum_value) {
 		this.minimum_value = minimum_value;
 	}
-	public int getScore() {
+	public double getScore() {
 		return score;
 	}
-	public void setScore(int score) {
+	public void setScore(double score) {
 		this.score = score;
 	}
 

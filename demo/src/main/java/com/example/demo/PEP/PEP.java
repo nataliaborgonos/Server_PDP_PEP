@@ -222,7 +222,7 @@ public class PEP implements PEPInterface {
 
 				// Request does not contain query parameters
 				if (acc.getQueryParameters() == null) {
-					url_string = "http://localhost:5000" + acc.getCt().getAr().get(0).getResource();
+					url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/" + acc.getCt().getAr().get(0).getResource();
 					URL url = new URL(url_string);
 					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 					connection.setRequestMethod(acc.getCt().getAr().get(0).getAction());
@@ -244,7 +244,8 @@ public class PEP implements PEPInterface {
 					
 					//POST request 
 					if (acc.getCt().getAr().get(0).getAction().equals("POST")) {
-						url_string = "http://localhost:5000/resource";
+						//url_string = "http://localhost:5000/resource";
+						url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/" + acc.getCt().getAr().get(0).getResource();
 						HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
 						connection.setRequestMethod("POST");
 						
@@ -276,7 +277,7 @@ public class PEP implements PEPInterface {
 
 					} else { //GET request 
 						Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
-						url_string = "http://localhost:5000" + acc.getCt().getAr().get(0).getResource();
+						url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/" + acc.getCt().getAr().get(0).getResource();
 						//Generate URL including the query parameters
 						url_string = buildUrlWithQueryParameters(url_string, queryParams);
 						
