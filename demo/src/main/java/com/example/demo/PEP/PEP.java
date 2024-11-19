@@ -245,7 +245,8 @@ public class PEP implements PEPInterface {
 					//POST request 
 					if (acc.getCt().getAr().get(0).getAction().equals("POST")) {
 						//url_string = "http://localhost:5000/resource";
-						url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/" + acc.getCt().getAr().get(0).getResource();
+						url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource";
+						//url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/" + acc.getCt().getAr().get(0).getResource();
 						HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
 						connection.setRequestMethod("POST");
 						

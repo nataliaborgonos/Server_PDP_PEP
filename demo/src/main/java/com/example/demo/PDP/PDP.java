@@ -455,7 +455,7 @@ public class PDP implements PDPInterface {
 
 		// Get trust score associated with the requester
 		//double trustScore = pip.getTrustScore(ar.getDidRequester());
-		/*
+		
 
 		String response=((PIPTest) pip).calculateTrustScore(ar.getDidRequester());
 		TSMScoreResponse resp=gson.fromJson(response, TSMScoreResponse.class);
@@ -468,9 +468,9 @@ public class PDP implements PDPInterface {
 		for (Policy p : politicas) {
 			if (trustScore > p.getMinTrustScore()) {
 				System.out.println("Trust Score successfully checked.\n");
-			}//else {allMatches=false;}
+			}else {allMatches=false;}
 		}
-		*/
+		
 		
 		
 		// Get the requester's VP

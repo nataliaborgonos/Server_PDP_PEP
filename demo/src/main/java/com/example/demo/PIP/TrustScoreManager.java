@@ -32,11 +32,12 @@ public class TrustScoreManager {
 	
     // Crear el JSON de entrada para el request
     public String createConfig(TSMConfigRequest inputRequest) {
+
         try {
             HttpClient client = HttpClient.newBuilder()
                     .build();
             String input = gson.toJson(inputRequest);
-            System.out.println(input);
+            System.out.println("input: "+input);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("https://tsm-development.k8s-cluster.tango.rid-intrasoft.eu/api/tsm/config"))
                     .header("Content-Type", "application/json")
