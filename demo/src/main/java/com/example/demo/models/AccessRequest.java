@@ -9,6 +9,15 @@ public class AccessRequest {
 	private CapabilityToken ct;
 	private SimpleAccessRight sar;
 	private JSONObject queryParameters;
+	private JSONObject jsonBody;
+
+	public JSONObject getJsonBody() {
+		return jsonBody;
+	}
+
+	public void setJsonBody(JSONObject jsonBody) {
+		this.jsonBody = jsonBody;
+	}
 
 	/* CONSTRUCTORS */
 	public AccessRequest() {

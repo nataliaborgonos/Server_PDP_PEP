@@ -220,9 +220,9 @@ public class PEP implements PEPInterface {
 
 			try {
 
-				// Request does not contain query parameters
-				if (acc.getQueryParameters() == null) {
-					url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/" + acc.getCt().getAr().get(0).getResource();
+				// Request does not contain query parameters -> GET /resource y POST /resource
+				if ((acc.getQueryParameters() == null) && (acc.getJsonBody()==null)) {
+					url_string = acc.getCt().getAr().get(0).getResource();
 					URL url = new URL(url_string);
 					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 					connection.setRequestMethod(acc.getCt().getAr().get(0).getAction());
@@ -240,13 +240,15 @@ public class PEP implements PEPInterface {
 						System.out.println("Request not worked. Response code: " + responseCode);
 					}
 					
-				} else { //Request contains query parameters
+				}  else if((acc.getQueryParameters() != null) && (acc.getJsonBody()==null)) { //Request only contains query parameters -> GET /resource?id=1 and POST /resource?id=1 
 					
 					//POST request 
 					if (acc.getCt().getAr().get(0).getAction().equals("POST")) {
-						//url_string = "http://localhost:5000/resource";
-						url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource";
-						//url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/" + acc.getCt().getAr().get(0).getResource();
+						Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
+						url_string = acc.getCt().getAr().get(0).getResource();
+						url_string = buildUrlWithQueryParameters(url_string, queryParams);
+						
+						System.out.println("resource: "+url_string);
 						HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
 						connection.setRequestMethod("POST");
 						
@@ -278,9 +280,11 @@ public class PEP implements PEPInterface {
 
 					} else { //GET request 
 						Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
-						url_string = "http://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/" + acc.getCt().getAr().get(0).getResource();
+						url_string = acc.getCt().getAr().get(0).getResource();
 						//Generate URL including the query parameters
 						url_string = buildUrlWithQueryParameters(url_string, queryParams);
+						
+						System.out.println("resource: "+url_string);
 						
 						HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
 						connection.setRequestMethod(acc.getCt().getAr().get(0).getAction());
@@ -298,8 +302,79 @@ public class PEP implements PEPInterface {
 							System.out.println(responseCode);
 							System.out.println("Request not worked. Response code: " + responseCode);
 						}
+					
 					}
-				}
+				} else if((acc.getQueryParameters() == null) && (acc.getJsonBody()!=null)){ //POST /resource {jsonBody} 
+					url_string = acc.getCt().getAr().get(0).getResource();
+					
+					System.out.println("resource: "+url_string);
+					
+					HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
+					connection.setRequestMethod("POST"); //only the POST can attach a jsonBody
+					
+					//Attach JSON body
+					connection.setRequestProperty("Content-Type", "application/json");
+					connection.setDoOutput(true); 
+
+					JSONObject jsonBody = acc.getJsonBody();
+					String jsonRequestBody = jsonBody.toJSONString();
+
+					try (OutputStream os = connection.getOutputStream()) {
+						byte[] input = jsonRequestBody.getBytes("utf-8");
+						os.write(input, 0, input.length);
+					}
+					
+					//201 CREATED Response
+					int responseCode = connection.getResponseCode();
+					if (responseCode == HttpURLConnection.HTTP_CREATED) {
+						BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+						String inputLine;
+						while ((inputLine = in.readLine()) != null) {
+							response.append(inputLine);
+						}
+						in.close();
+					} else {
+						found = false;
+						System.out.println("Request not worked. Response code: " + responseCode);
+					}
+	
+		} else if((acc.getQueryParameters() != null) && (acc.getJsonBody()!=null)){ //POST /resource?id=1 {jsonBody} 
+					Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
+					url_string =  acc.getCt().getAr().get(0).getResource();
+					url_string = buildUrlWithQueryParameters(url_string, queryParams);
+					
+					System.out.println("resource: "+url_string);
+					
+					HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
+					connection.setRequestMethod("POST"); //only the POST can attach a jsonBody
+					
+					//Attach JSON body
+					connection.setRequestProperty("Content-Type", "application/json");
+					connection.setDoOutput(true); 
+
+					JSONObject jsonBody = acc.getJsonBody();
+					String jsonRequestBody = jsonBody.toJSONString();
+
+					try (OutputStream os = connection.getOutputStream()) {
+						byte[] input = jsonRequestBody.getBytes("utf-8");
+						os.write(input, 0, input.length);
+					}
+					
+					//201 CREATED Response
+					int responseCode = connection.getResponseCode();
+					if (responseCode == HttpURLConnection.HTTP_CREATED) {
+						BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+						String inputLine;
+						while ((inputLine = in.readLine()) != null) {
+							response.append(inputLine);
+						}
+						in.close(); 
+					} else {
+						found = false;
+						 System.out.println("Conflict: " + response.toString());
+						System.out.println("Request not worked. Response code: " + responseCode);
+					}
+		}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
