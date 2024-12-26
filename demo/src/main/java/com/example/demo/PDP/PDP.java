@@ -463,11 +463,11 @@ public class PDP implements PDPInterface {
 	    double trustScore = resp.getScore();
 	   	    
 	    // Imprimir los valores extraídos
-	    System.out.println("score received for the user: " + trustScore);
+	    System.out.println("Trust Score received for the user: " + trustScore);
 		
 		for (Policy p : politicas) {
 			if (trustScore > p.getMinTrustScore()) {
-				System.out.println("Trust Score successfully checked.\n");
+				System.out.println("Trust Score successfully checked for the policy: "+p.getId()+"\n");
 			}else {allMatches=false;}
 		}
 		
@@ -572,26 +572,28 @@ public class PDP implements PDPInterface {
 			listajsn.add(convertedJsonObject);
 		}
 
+		System.out.println("Starting matching policies process...\n");
 		// True default, if there is a mismatch, finish the loop
 		for (Policy p : politicas) {
 			// Find out if the policy is correctly formed
-			
+
 			expirationInPolicy=p.getAuthTime();
 			//System.out.println("expiration in the policy: "+expirationInPolicy);
 			String politicaJSON = gson.toJson(p);
-
+			System.out.println("Applying policy:  \n");
+			System.out.println(politicaJSON);
 			// Matching
 
 			Constraint constraints = p.getConstraints();
 			List<Field> fields = constraints.getFields();
 
-			System.out.println("Starting matching policies process...\n");
+			
 			for (Field f : fields) {
 				List<String> path = f.getPath();
 				// Look for hierarchy ( $.credentialSubject. )
 
 				javax.json.JsonObject objGlobal = null;
-
+				javax.json.JsonArray arrayGlobal = null;
 				if (f.getFilter() == null) {
 					for (String i : path) {
 						String[] partes = i.split("\\.");
@@ -644,18 +646,24 @@ public class PDP implements PDPInterface {
 										javax.json.JsonObject credentialSubject = obj1
 												.getJsonObject("credentialSubject");
 										javax.json.JsonObject currentObj = obj1;
+								
 										// If the field is present, we take its value
 										if (!parte1.equals("$")) {
 											if (credentialSubject.containsKey(parte1)) {
 												String parte11 = new String(parte1);
+											
 												JsonValue e = credentialSubject.get(parte11);
 												if (e.getValueType() == JsonValue.ValueType.OBJECT) {
 
 													if (e.asJsonObject() != null) {
 														objGlobal = e.asJsonObject();
 													}
-												}
-
+												} else if(e.getValueType()==JsonValue.ValueType.ARRAY) {
+												
+													arrayGlobal=e.asJsonArray();
+													
+													}
+												
 											} else if (objGlobal != null && objGlobal.containsKey(parte2)) {
 
 												JsonValue valor = objGlobal.get(parte2);
@@ -666,7 +674,22 @@ public class PDP implements PDPInterface {
 												} else {
 													allMatches = false;
 												}
-											} else {
+											}else if(arrayGlobal!=null) {
+												for(JsonValue v : arrayGlobal) {
+													
+													if(v.getValueType()== JsonValue.ValueType.OBJECT) {
+														if (v.asJsonObject() != null) {
+															objGlobal = v.asJsonObject();
+														}
+													}
+													else if(v.getValueType()==JsonValue.ValueType.ARRAY) {
+														arrayGlobal=v.asJsonArray();
+														
+													}
+												}
+											} 
+											
+											else {
 												allMatches = false;
 											}
 										}
@@ -781,6 +804,7 @@ public class PDP implements PDPInterface {
 				pbk = ct.getPublicKey();
 			}
 		} else {
+			
 			System.out.println("The matching process failed...\n");
 		}
 		return ct;

@@ -29,7 +29,7 @@ public class PolicyStore {
 		// Policy for doing POST /resource/temperature
 				policyCounter++;
 				Policy policy2=new Policy(policyCounter);
-				policy2.setNombre("Tango User Information");
+				policy2.setName("Tango User Information");
 				policy2.setPurpose("Reveal id and last name of the user.");
 				policy2.setServiceProvider("did:serviceProvider:1");
 				SimpleAccessRight sar1=new SimpleAccessRight("POST", "https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature");
@@ -76,7 +76,7 @@ public class PolicyStore {
 				// Policy for doing GET /resource/temperature
 						policyCounter++;
 						Policy policy3=new Policy(policyCounter);
-						policy3.setNombre("Tango User Information");
+						policy3.setName("Tango User Information");
 						policy3.setPurpose("Reveal id of the user.");
 						policy3.setServiceProvider("did:serviceProvider:1");
 						SimpleAccessRight sar2=new SimpleAccessRight("GET", "https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature");
@@ -110,8 +110,8 @@ public class PolicyStore {
 						// Policy for doing GET /resource/humidity
 								policyCounter++;
 								Policy policy4=new Policy(policyCounter);
-								policy4.setNombre("Tango User Information");
-								policy4.setPurpose("Reveal id of the user.");
+								policy4.setName("Tango User Information");
+								policy4.setPurpose("Reveal role GOLD_COSTUMER of the user.");
 								policy4.setServiceProvider("did:serviceProvider:1");
 								SimpleAccessRight sar3=new SimpleAccessRight("GET", "https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/humidity");
 								List<SimpleAccessRight> accessRights3=new ArrayList<>();
@@ -123,8 +123,11 @@ public class PolicyStore {
 								// Field for revealing id
 								Field field8=new Field();
 								List<String> path8=new ArrayList<String>();
-								path8.add("$.id");
+								path8.add("$.roles.names");
 								field8.setPath(path8);
+								Filter roleFilter=new Filter("string");
+								roleFilter.setPattern("GOLD_COSTUMER");
+								field8.setFilter(roleFilter);
 
 								Constraint constraints3=new Constraint();
 								
@@ -146,7 +149,7 @@ public class PolicyStore {
 								// Policy for doing GET /resource/pressure
 								policyCounter++;
 								Policy policy5=new Policy(policyCounter);
-								policy5.setNombre("Tango User Information");
+								policy5.setName("Tango User Information");
 								policy5.setPurpose("Reveal id of the user.");
 								policy5.setServiceProvider("did:serviceProvider:1");
 								SimpleAccessRight sar4=new SimpleAccessRight("GET", "https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/pressure");
@@ -196,8 +199,10 @@ public class PolicyStore {
 	}
 	
 	public ArrayList<Policy> getPolicy(String didSP, String recursoSolicitado, String action) {
-		//Returned  policies
+		// Policies for the resource
 		ArrayList<Policy> politicas=new ArrayList<>();
+		//Returned  policies for performing the action
+		ArrayList<Policy> politicasOK=new ArrayList<>();
 		
 		for(Resource r : resources) {
 			if(r.getNombre().equals(recursoSolicitado)) { politicas=policies.get(r); }
@@ -205,11 +210,12 @@ public class PolicyStore {
 		for(Policy p : politicas) {
 			for(SimpleAccessRight sar :	p.getAccessRights()) {
 				if(sar.getAction().equals(action)) {
-					return politicas;
+					System.out.println("Retrieving policy for performing an action "+ action + " in the resource: "+ recursoSolicitado + "\n");
+					politicasOK.add(p);
 				}
 			}
 	}
-		return null;
+		return politicasOK;
 	}
 	
 	

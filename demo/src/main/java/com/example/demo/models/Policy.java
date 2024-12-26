@@ -11,7 +11,7 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 public class Policy {
 	
 	String id;
-	String nombre;
+	String name;
 	String purpose;
 	private String serviceProvider;
     private List<SimpleAccessRight> accessRights;
@@ -21,7 +21,7 @@ public class Policy {
 	
 	@Override
 	public String toString() {
-		return "Policy [id=" + id + ", name=" + nombre+ ", purpose=" + purpose + ", serviceProvider=" + serviceProvider
+		return "Policy [id=" + id + ", name=" +name+ ", purpose=" + purpose + ", serviceProvider=" + serviceProvider
 				+ ", accessRights=" + accessRights + ", authTime=" + authTime + ", minTrustScore=" + minTrustScore
 				+ ", constraints=" + constraints + "]";
 	}
@@ -39,12 +39,12 @@ public class Policy {
 		this.id = id;
 	}
 
-	public String getNombre() {
-		return nombre;
+	public String getName() {
+		return name;
 	}
 
-	public void setNombre(String name) {
-		this.nombre = name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getPurpose() {
