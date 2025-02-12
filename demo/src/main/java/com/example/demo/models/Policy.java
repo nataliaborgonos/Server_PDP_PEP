@@ -27,7 +27,7 @@ public class Policy {
 	}
 
 	public Policy(int id) {
-		this.id="did:politica:"+id;
+		this.id="did:policy:"+id;
 		
 	}
 

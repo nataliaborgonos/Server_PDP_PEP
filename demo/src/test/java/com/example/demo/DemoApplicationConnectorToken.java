@@ -284,6 +284,291 @@ public class DemoApplicationConnectorToken {
 			
 			}
 		
+		    @Order(3)
+					@Test
+					void testGetConfig() {
+						System.out.println("Test 3 for TANGO: Get Trustworthiness Configuration \n" );
+						
+						String requestBody = "{\n" +
+								"    \"entity_did\": \""+entityDid+"\",\n" +
+								"    \"config_id\": "+configId+"\n"+
+								"}";
+
+
+						HttpHeaders headers = new HttpHeaders();
+						headers.setContentType(MediaType.APPLICATION_JSON);
+
+						HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+				
+						ResponseEntity<String> responseEntity = restTemplate.exchange("/api/get-config", HttpMethod.POST,
+								requestEntity, String.class);
+
+					
+						// Verify 200 OK
+						assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+
+						// Verify that there's a CapabilityToken and is not null
+						assertNotNull(responseEntity.getBody());
+						assertTrue(!responseEntity.getBody().isEmpty());
+					
+					}
+		 
+		    @Order(1)
+			@Test
+			void testAddWrongTSMConfig() {
+				System.out.println("Test 1 for TANGO: Add wrong TSM Configuration \n" );
+				
+				
+				String requestBody = "{\n" +
+					    "    \"trustworthiness\": {\n" +
+					    "        \"name\": \"configuration\",\n" +
+					    "        \"minimum_value\": 0.33,\n" +
+					    "        \"description\": \"Configuration for testing\",\n" +
+					    "        \"buffer_size\": 100\n" +
+					    "    },\n" +
+					    "    \"characteristics\": [\n" +
+					    "        {\n" +
+					    "            \"name\": \"security\",\n" +
+					    "            \"weight\": 0.5,\n" +
+					    "            \"minimum_value\": 0.33,\n" +
+					    "            \"created\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"modified\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"attributes\": [\n" +
+					    "                {\n" +
+					    "                    \"name\": \"a1\",\n" +
+					    "                    \"weight\": 0.5,\n" +
+					    "                    \"minimum_value\": 0.33,\n" +
+					    "                    \"created\": \"2024-09-10T16:39:39.316Z\"\n" +
+					    "                },\n" +
+					    "                {\n" +
+					    "                    \"name\": \"a2\",\n" +
+					    "                    \"weight\": 0.6,\n" +
+					    "                    \"minimum_value\": 0.33,\n" +
+					    "                    \"created\": \"2024-09-10T16:39:39.316Z\"\n" +
+					    "                }\n" +
+					    "            ]\n" +
+					    "        },\n" +
+					    "        {\n" +
+					    "            \"name\": \"safety\",\n" +
+					    "            \"weight\": 0.4,\n" +
+					    "            \"minimum_value\": 0.33,\n" +
+					    "            \"created\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"modified\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"attributes\": [\n" +
+					    "                {\n" +
+					    "                    \"name\": \"a1\",\n" +
+					    "                    \"weight\": 0.5,\n" +
+					    "                    \"minimum_value\": 0.33,\n" +
+					    "                    \"created\": \"2024-09-10T16:39:39.316Z\"\n" +
+					    "                }\n" +
+					    "            ]\n" +
+					    "        },\n" +
+					    "        {\n" +
+					    "            \"name\": \"reliability\",\n" +
+					    "            \"weight\": 0.3,\n" +
+					    "            \"minimum_value\": 0.33,\n" +
+					    "            \"created\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"modified\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"attributes\": [\n" +
+					    "                {\n" +
+					    "                    \"name\": \"a1\",\n" +
+					    "                    \"weight\": 0.5,\n" +
+					    "                    \"minimum_value\": 0.33,\n" +
+					    "                    \"created\": \"2024-09-10T16:39:39.316Z\"\n" +
+					    "                },\n" +
+					    "                {\n" +
+					    "                    \"name\": \"a2\",\n" +
+					    "                    \"weight\": 0.6,\n" +
+					    "                    \"minimum_value\": 0.33,\n" +
+					    "                    \"created\": \"2024-09-10T16:39:39.316Z\"\n" +
+					    "                },\n" +
+					    "                {\n" +
+					    "                    \"name\": \"a3\",\n" +
+					    "                    \"weight\": 0.3,\n" +
+					    "                    \"minimum_value\": 0.33,\n" +
+					    "                    \"created\": \"2024-09-10T16:39:39.316Z\"\n" +
+					    "                }\n" +
+					    "            ]\n" +
+					    "        },\n" +
+					    "        {\n" +
+					    "            \"name\": \"resilience\",\n" +
+					    "            \"weight\": 0.3,\n" +
+					    "            \"minimum_value\": 0.33,\n" +
+					    "            \"created\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"modified\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"attributes\": [\n" +
+					    "                {\n" +
+					    "                    \"name\": \"a1\",\n" +
+					    "                    \"weight\": 0.8,\n" +
+					    "                    \"minimum_value\": 0.33,\n" +
+					    "                    \"created\": \"2024-09-10T16:39:39.316Z\"\n" +
+					    "                },\n" +
+					    "                {\n" +
+					    "                    \"name\": \"a2\",\n" +
+					    "                    \"weight\": 0.1,\n" +
+					    "                    \"minimum_value\": 0.33,\n" +
+					    "                    \"created\": \"2024-09-10T16:39:39.316Z\"\n" +
+					    "                }\n" +
+					    "            ]\n" +
+					    "        },\n" +
+					    "        {\n" +
+					    "            \"name\": \"privacy\",\n" +
+					    "            \"weight\": 0.2,\n" +
+					    "            \"minimum_value\": 0.33,\n" +
+					    "            \"created\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"modified\": \"2024-09-10T16:39:39.316Z\",\n" +
+					    "            \"attributes\": [\n" +
+					    "                {\n" +
+					    "                    \"name\": \"a1\",\n" +
+					    "                    \"weight\": 0.35,\n" +
+					    "                    \"minimum_value\": 0.33,\n" +
+					    "                    \"created\": \"2024-09-10T16:39:39.316Z\"\n" +
+					    "                }\n" +
+					    "            ]\n" +
+					    "        }\n" +
+					    "    ]\n" +
+					"}";
+
+				// Usa Gson para parsear la cadena en un JsonObject
+				JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
+				
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+
+				HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+		
+				ResponseEntity<String> responseEntity = restTemplate.exchange("/api/trust-score-config", HttpMethod.POST,
+						requestEntity, String.class);
+				
+				// Verify 200 OK
+				assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+
+				// Verify that there's a CapabilityToken and is not null
+				assertNotNull(responseEntity.getBody());
+				//assertTrue(!responseEntity.getBody());
+				TSMConfigResponse resp=gson.fromJson(responseEntity.getBody(), TSMConfigResponse.class);
+				
+			    // Extraer los valores de los campos entity_did y config_id
+			    entityDid = resp.getEntity_did();
+			    configId = resp.getConfig_id();
+			}
+		    
+		    
+		    @Order(2)
+			@Test
+			void testGetWongConfig() {
+				System.out.println("Test 3 for TANGO: Get wrong Trustworthiness Configuration \n" );
+				
+				String requestBody = "{\n" +
+						"    \"entity_did\": \""+entityDid+"\",\n" +
+						"    \"config_id\": -1\n"+
+						"}";
+
+
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+
+				HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+		
+				ResponseEntity<String> responseEntity = restTemplate.exchange("/api/get-config", HttpMethod.POST,
+						requestEntity, String.class);
+
+			
+				// Verify 200 OK
+				assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+
+				// Verify that there's a CapabilityToken and is not null
+				assertNotNull(responseEntity.getBody());
+				assertTrue(!responseEntity.getBody().isEmpty());
+			
+			}
+		    
+		    
+		    @Order(2)
+			@Test
+			void testAddWrongTSMPOSConfig() {
+				System.out.println("Test 2 for TANGO: Add Protective Objectives to the TSM Configuration \n" );
+				
+				String requestBody = "{\n" +
+						"    \"entity_did\": \"not_valid\",\n" +
+						"    \"config_id\": "+configId+",\n" +
+						"    \"protective_objectives\": [\n" +
+						"        {\n" +
+						"            \"name\": \"securitya1\",\n" +
+						"            \"value\": 0.7,\n" +
+						"            \"timestamp\": \"2024-09-10T16:58:17.445Z\",\n" +
+						"            \"created\": \"2024-09-10T16:58:17.445Z\"\n" +
+						"        },\n" +
+						"        {\n" +
+						"            \"name\": \"securitya2\",\n" +
+						"            \"value\": 0.8,\n" +
+						"            \"timestamp\": \"2024-09-10T16:58:17.445Z\",\n" +
+						"            \"created\": \"2024-09-10T16:58:17.445Z\"\n" +
+						"        },\n" +
+						"        {\n" +
+						"            \"name\": \"safetya1\",\n" +
+						"            \"value\": 0.8,\n" +
+						"            \"timestamp\": \"2024-09-10T16:58:17.445Z\",\n" +
+						"            \"created\": \"2024-09-10T16:58:17.445Z\"\n" +
+						"        },\n" +
+						"        {\n" +
+						"            \"name\": \"reliabilitya1\",\n" +
+						"            \"value\": 0.9,\n" +
+						"            \"timestamp\": \"2024-09-10T16:58:17.445Z\",\n" +
+						"            \"created\": \"2024-09-10T16:58:17.445Z\"\n" +
+						"        },\n" +
+						"        {\n" +
+						"            \"name\": \"reliabilitya2\",\n" +
+						"            \"value\": 0.8,\n" +
+						"            \"timestamp\": \"2024-09-10T16:58:17.445Z\",\n" +
+						"            \"created\": \"2024-09-10T16:58:17.445Z\"\n" +
+						"        },\n" +
+						"        {\n" +
+						"            \"name\": \"reliabilitya3\",\n" +
+						"            \"value\": 0.9,\n" +
+						"            \"timestamp\": \"2024-09-10T16:58:17.445Z\",\n" +
+						"            \"created\": \"2024-09-10T16:58:17.445Z\"\n" +
+						"        },\n" +
+						"        {\n" +
+						"            \"name\": \"resiliencea1\",\n" +
+						"            \"value\": 0.8,\n" +
+						"            \"timestamp\": \"2024-09-10T16:58:17.445Z\",\n" +
+						"            \"created\": \"2024-09-10T16:58:17.445Z\"\n" +
+						"        },\n" +
+						"        {\n" +
+						"            \"name\": \"resiliencea2\",\n" +
+						"            \"value\": 0.9,\n" +
+						"            \"timestamp\": \"2024-09-10T16:58:17.445Z\",\n" +
+						"            \"created\": \"2024-09-10T16:58:17.445Z\"\n" +
+						"        },\n" +
+						"        {\n" +
+						"            \"name\": \"privacya1\",\n" +
+						"            \"value\": 0.9,\n" +
+						"            \"timestamp\": \"2024-09-10T16:58:17.445Z\",\n" +
+						"            \"created\": \"2024-09-10T16:58:17.445Z\"\n" +
+						"        }\n" +
+						"    ]\n" +
+						"}";
+
+
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+
+				HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+		
+				ResponseEntity<String> responseEntity = restTemplate.exchange("/api/add-protective-objectives", HttpMethod.POST,
+						requestEntity, String.class);
+
+			
+				// Verify 200 OK
+				assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+
+				// Verify that there's a CapabilityToken and is not null
+				assertNotNull(responseEntity.getBody());
+				assertTrue(!responseEntity.getBody().isEmpty());
+			
+			}
+		    
 		 @Order(3)
 		@Test
 		void testRequestAccessEndpoint() {
@@ -726,7 +1011,7 @@ public class DemoApplicationConnectorToken {
 						
 						String requestBody =  "{\n" +
 							    "    \"sub\": \"PAT\",\n" +
-							    "    \"scope\": \"policies\"\n" +
+							    "    \"scope\": \"/api/new-policy\"\n" +
 							    "}";
 						HttpHeaders headers = new HttpHeaders();
 						headers.setContentType(MediaType.APPLICATION_JSON);
@@ -750,7 +1035,7 @@ public class DemoApplicationConnectorToken {
 						
 					 String requestBody = "{\n" +
 							    "    \"jwtAuth\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJUQU5HTyBQRVBcL1BEUCBDb21wb25lbnQiLCJzdWIiOiJQQVQiLCJleHAiOjE3MzE1ODg2NzMsImlhdCI6MTczMTU4NTA3Mywic2NvcGUiOiJwb2xpY2llcyJ9.qiQAQuCyaOeuoUj0DjwXimTIAWlOp-IolIGHhdAhglnhdRQz8SyviGoqevI0pKf8b_UCOJhx6evU9iZEC0wshivJiY6A3PERuWhgGcLWVuY3xsmSZs4gO4b9eHXG8E_COK18h8tkNpycXVzqnPqWZKf9pweQtgw3o5VjXoFvkC8BWL_Gni3ZejiWsYGVm3yx935coyE7vtAZgw_zhPEje3YF494yXAUsher7JbAaFmve75wTVNroEO5_TdW8sp3UU7F\",\n" +
-							    "    \"policy\": \"{\\\"id\\\":\\\"123\\\",\\\"name\\\":\\\"Student Information\\\",\\\"purpose\\\":\\\"Reveal id and name of the BachelorDegree's student in MIT.\\\",\\\"serviceProvider\\\":\\\"did:ServiceProvider:1\\\",\\\"accessRights\\\":[{\\\"resource\\\":\\\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\\\",\\\"action\\\":\\\"GET\\\"}],\\\"authTime\\\":1642058400,\\\"minTrustScore\\\":0.5,\\\"constraints\\\":{\\\"fields\\\":[{\\\"purpose\\\":\\\"Reveal name\\\",\\\"name\\\":\\\"Student name\\\",\\\"path\\\":[\\\"$.id\\\"],\\\"filter\\\":{\\\"type\\\":\\\"string\\\",\\\"pattern\\\":\\\"^[a-zA-Z0-9]+$\\\"}}]}}\",\n" +
+							    "    \"policy\": \"{\\\"id\\\":\\\"123\\\",\\\"name\\\":\\\"User Information\\\",\\\"purpose\\\":\\\"Reveal email of the user.\\\",\\\"serviceProvider\\\":\\\"did:ServiceProvider:1\\\",\\\"accessRights\\\":[{\\\"action\\\":\\\"GET\\\",\\\"resource\\\":\\\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\\\"}],\\\"authTime\\\":1642058400,\\\"minTrustScore\\\":0.5,\\\"constraints\\\":{\\\"fields\\\":[{\\\"path\\\":[\\\"$.email\\\"]}]}}\",\n" +
 							    "    \"resource\": \"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
 							    "}";
 

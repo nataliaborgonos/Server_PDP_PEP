@@ -213,7 +213,6 @@ public class PEP implements PEPInterface {
 		if (notExpired && signatureVerified && simpleAccessRightsOk) {
 			// Make an API call to bring the requested resource
 
-			// TODO: change it and set as an env variable
 			String url_string;
 			StringBuilder response = new StringBuilder();
 			boolean found = true;

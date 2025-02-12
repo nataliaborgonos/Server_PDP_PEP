@@ -56,6 +56,31 @@ public class TrustScoreManager {
 		return null;
     }
     
+    public String getConfig(TSMScoreRequest inputRequest) {
+
+        try {
+            HttpClient client = HttpClient.newBuilder()
+                    .build();
+            String input = gson.toJson(inputRequest);
+            System.out.println("input: "+input);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://tsm-development.k8s-cluster.tango.rid-intrasoft.eu/api/tsm/"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(input, StandardCharsets.UTF_8))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+           if(response.statusCode()==200) {System.out.println("Trustworthiness Configuration successfully retrieved.");}
+            return response.body();
+
+        } catch (Exception e) {
+        	System.out.println("Something went wrong retrieving the Trustworthiness Configuration.");
+            e.printStackTrace();
+        }
+    
+		return null;
+    }
+    
     public String calculateTrustScore(TSMScoreRequest inputRequest) {
     	 try {
              HttpClient client = HttpClient.newBuilder()

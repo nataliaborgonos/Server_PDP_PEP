@@ -471,6 +471,7 @@ public class PDP implements PDPInterface {
 			}else {allMatches=false;}
 		}
 		
+		//Behavioural Score
 		
 		
 		// Get the requester's VP

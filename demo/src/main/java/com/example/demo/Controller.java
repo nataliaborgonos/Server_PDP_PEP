@@ -2,6 +2,7 @@ package com.example.demo;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -50,7 +51,9 @@ import com.example.demo.models.AuthRequestTango;
 import com.example.demo.models.SimpleAccessRight;
 import com.example.demo.models.TSMConfigRequest;
 import com.example.demo.models.TSMConfigResponse;
+import com.example.demo.models.TSMGetResponse;
 import com.example.demo.models.TSMPOSRequest;
+import com.example.demo.models.TSMScoreRequest;
 import com.example.demo.models.CapabilityToken;
 import com.example.demo.models.Policy;
 import com.example.demo.models.PolicyRequest;
@@ -62,6 +65,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jwt.*;
+
+import com.github.fge.jackson.JsonLoader;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.core.report.ProcessingReport;
+import com.github.fge.jsonschema.main.JsonSchema;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import com.github.fge.jsonschema.main.JsonValidator;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import grpcEratosthenesAPI.GrpcEratosthenesAPI.DeviceMessage;
@@ -392,21 +403,110 @@ public String handleAuthPolicyRequest(@RequestHeader("Authorization") String aut
 
 @PostMapping("/new-policy")
 public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
+	String jsonSchemaStr = "{"
+	        + "  \"$schema\": \"http://json-schema.org/draft-07/schema#\","
+	        + "  \"type\": \"object\","
+	        + "  \"properties\": {"
+	        + "    \"id\": {\"type\": \"string\"},"
+	        + "    \"name\": {\"type\": \"string\"},"
+	        + "    \"purpose\": {\"type\": \"string\"},"
+	        + "    \"serviceProvider\": {\"type\": \"string\"},"
+	        + "    \"accessRights\": {"
+	        + "      \"type\": \"array\","
+	        + "      \"items\": {"
+	        + "        \"type\": \"object\","
+	        + "        \"properties\": {"
+	        + "          \"action\": {\"type\": \"string\"},"
+	        + "          \"resource\": {\"type\": \"string\"}"
+	        + "        },"
+	        + "        \"required\": [\"action\", \"resource\"]"
+	        + "      }"
+	        + "    },"
+	        + "    \"authTime\": {\"type\": \"integer\"},"
+	        + "    \"minTrustScore\": {"
+	        + "      \"type\": \"number\","
+	        + "      \"minimum\": 0,"
+	        + "      \"maximum\": 1"
+	        + "    },"
+	        + "    \"constraints\": {"
+	        + "      \"type\": \"object\","
+	        + "      \"properties\": {"
+	        + "        \"fields\": {"
+	        + "          \"type\": \"array\","
+	        + "          \"items\": {"
+	        + "            \"type\": \"object\","
+	        + "            \"properties\": {"
+	        + "              \"path\": {"
+	        + "                \"type\": \"array\","
+	        + "                \"items\": {\"type\": \"string\"}"
+	        + "              },"
+	        + "              \"filter\": {"
+	        + "                \"type\": \"object\","
+	        + "                \"properties\": {"
+	        + "                  \"type\": {\"type\": \"string\"},"
+	        + "                  \"min\": {\"type\": \"number\"},"
+	        + "                  \"max\": {\"type\": \"number\"},"
+	        + "                  \"pattern\": {\"type\": \"string\"}"
+	        + "                },"
+	        + "                \"required\": [\"type\"]"
+	        + "              }"
+	        + "            },"
+	        + "            \"required\": [\"path\"]"
+	        + "          }"
+	        + "        }"
+	        + "      },"
+	        + "      \"required\": [\"fields\"]"
+	        + "    }"
+	        + "  },"
+	        + "  \"required\": [\"purpose\", \"serviceProvider\", \"accessRights\", \"constraints\"]"
+	        + "}"; 
+	boolean policyOK=false;
 	if(pdpConfig.equals("test")) {
 		int policyCounter=((PAPTest) pap).getPolicyCounter();
 		policyCounter++;
-		String policyID= "did:politica:"+String.valueOf(policyCounter);
-		System.out.println("Policy will be added with internal ID: "+policyID);
+		String policyID= "did:policy:"+String.valueOf(policyCounter);
+	
 		 // Process short lived token -> verify signature
         boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth());
+        System.out.println(isValid);
 		if(isValid) {
 			try {
+				System.out.println("entro ");
+				System.out.println(request.getPolicy());
 			Policy p=gson.fromJson(request.getPolicy(), Policy.class);
-			p.setId(policyID);
+		//	System.out.println(p.getId());
+			// System.out.println("policy id");
+			if(p.getId()==null) {p.setId(policyID);System.out.println("Policy will be added with internal ID: "+policyID);}
+			else {System.out.println("Policy will be added with internal ID: "+p.getId());}
+			
+			//Check if the policy format is correct
+			try {
+				
+	            JsonNode schemaNode = JsonLoader.fromString(jsonSchemaStr);
+	            JsonNode jsonNode = JsonLoader.fromString(request.getPolicy());
+
+	            JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
+	            JsonSchema schema = factory.getJsonSchema(schemaNode);
+	            System.out.println(jsonNode);
+	            ProcessingReport report = schema.validate(jsonNode);
+
+	            if (report.isSuccess()) {
+	            	policyOK=true;
+	                System.out.println("Policy successfully validated");
+	            } else {
+	                System.out.println("Policy format is not correct");
+	                report.forEach(msg -> System.out.println(msg));
+	            }
+	        } catch (IOException | ProcessingException e) {
+	            e.printStackTrace();
+	        }
+			
+			if(policyOK) {
+				//Policy p=gson.fromJson(request.getPolicy(), Policy.class);
 			pap.addPolicy(p, request.getResource());
 			System.out.println("Policy: " + request.getPolicy() + " added to the Policy Administration Point for the resource "+request.getResource());
 			return ResponseEntity.status(HttpStatus.OK).body("\"Policy: \"" + request.getPolicy() +" \" added to the Policy Administration Point for the resource \""+request.getResource() +" \" ");
-			
+			}
 			} catch (Exception e) {
 				System.out.println("Error: 400 Bad Request");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: 400 Bad Request");
@@ -437,6 +537,17 @@ public String trustScoreConfig(@RequestBody TSMConfigRequest request) {
     System.out.println("config_id: " + configId);
 	return response;
 }
+
+@PostMapping("/get-config")
+public String getConfig(@RequestBody TSMScoreRequest request) {
+	//String requestJson = gson.toJson(request);
+	String response=((PIPTest) pip).getConfig(request);
+	
+	TSMGetResponse resp=gson.fromJson(response, TSMGetResponse.class);
+
+	return response;
+}
+
 
 @PostMapping("/add-protective-objectives")
 public String trustScoreObjectives(@RequestBody TSMPOSRequest request) {

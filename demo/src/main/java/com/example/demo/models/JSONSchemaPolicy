@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "serviceProvider": {
+      "type": "string"
+    },
+    "accessRights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+        "action": {
+            "type": "string"
+          },
+          "resource": {
+            "type": "string"
+          }
+        },
+        "required": ["action","resource"]
+      }
+    },
+    "authTime": {
+      "type": "integer"
+    },
+    "minTrustScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "filter": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  },
+                  "pattern": {
+                    "type": "string"
+                  }
+                },
+                "required": ["type"]
+              }
+            },
+            "required": ["path"]
+          }
+        }
+      },
+      "required": ["fields"]
+    }
+  },
+  "required": ["purpose", "serviceProvider", "accessRights", "constraints"]
+}
