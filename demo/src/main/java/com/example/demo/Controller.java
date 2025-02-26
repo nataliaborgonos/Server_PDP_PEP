@@ -88,6 +88,8 @@ public class Controller {
 	@Value("${app.DLT_PORT:8080}")
 	static int dlt_port;
 
+	
+	
 	private String pdpConfig;
 	PIPInterface pip;
 	PAPInterface pap;
@@ -98,6 +100,9 @@ public class Controller {
 	JWTGenerator jwtGenerator;
 	JWTVerifier jwtVerifier;
 	
+	@Value("${app.MIN_TRUST_SCORE:0.5}")
+	static String minTrustScore;
+	
 	/* CONSTRUCTOR */
 
 	public Controller() {
@@ -107,6 +112,17 @@ public class Controller {
 		dlt_ip = System.getenv("DLT_IP");
 		if(dlt_ip==null) {
 			dlt_ip="localhost";
+		}
+		
+		
+		//If policy doesn't contain a trust score value, there is no default value and no trust score processing
+		if(minTrustScore!=null) {
+			minTrustScore = System.getenv(minTrustScore);
+			if(System.getenv("MIN_TRUST_SCORE")==null) {
+				minTrustScore="0.0"; 
+			}
+		}else {
+			minTrustScore="0.0";
 		}
 		
 		String dltPortEnv = System.getenv("DLT_PORT");
@@ -303,7 +319,7 @@ public class Controller {
 		}
 	
 		if (claimsSet.getClaim("verifiablePresentation") != null) {
-            // Obtener el claim como un array de objetos JSON
+            // Claim is a JSON Object array 
             Object claim = claimsSet.getClaim("verifiablePresentation");
 
             if (claim instanceof List) {
@@ -311,13 +327,13 @@ public class Controller {
                 List<Object> vpList = (List<Object>) claim;
                 JsonArray verifiablePresentationJsonArray = new JsonArray();
 
-                // Convertir cada objeto de la lista a un JsonElement y añadir al JsonArray
+                // Convert each object of the list to a JsonElement and add to the JsonArray
                 for (Object vpObject : vpList) {
                     JsonElement jsonElement = JsonParser.parseString(vpObject.toString());
                     verifiablePresentationJsonArray.add(jsonElement);
                 }
 
-                // Agregar el JsonArray al jsonObject
+                // Add the JsonArray to the jsonObject
                 jsonObject.add("verifiablePresentation", verifiablePresentationJsonArray);
             }
         }else if(claimsSet.getClaim("verifiableCredential") != null) {jsonObject.addProperty("verifiableCredential", jsonString1);}
@@ -462,23 +478,30 @@ public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
 	        + "}"; 
 	boolean policyOK=false;
 	if(pdpConfig.equals("test")) {
-		int policyCounter=((PAPTest) pap).getPolicyCounter();
-		policyCounter++;
-		String policyID= "did:policy:"+String.valueOf(policyCounter);
 	
 		 // Process short lived token -> verify signature
         boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth());
         System.out.println(isValid);
 		if(isValid) {
 			try {
-				System.out.println("entro ");
-				System.out.println(request.getPolicy());
 			Policy p=gson.fromJson(request.getPolicy(), Policy.class);
-		//	System.out.println(p.getId());
-			// System.out.println("policy id");
-			if(p.getId()==null) {p.setId(policyID);System.out.println("Policy will be added with internal ID: "+policyID);}
+			if(p.getId()==null) {
+				int policyCounter=((PAPTest) pap).getPolicyCounter();
+				policyCounter++;
+				((PAPTest) pap).setPolicyCounter(policyCounter);
+				String policyID= "did:policy:"+String.valueOf(policyCounter);
+				p.setId(policyID);
+				System.out.println("Policy will be added with internal ID: "+policyID);}
 			else {System.out.println("Policy will be added with internal ID: "+p.getId());}
 			
+			//Policy without minTrustScore 
+			if(p.getMinTrustScore()==0.0) {
+				//If there is a default value, it is set on the policy
+				double mintrustScoreDouble= Double.parseDouble(minTrustScore);
+				p.setMinTrustScore(mintrustScoreDouble); // default value
+				}
+			
+				
 			//Check if the policy format is correct
 			try {
 				
@@ -506,7 +529,7 @@ public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
 			pap.addPolicy(p, request.getResource());
 			System.out.println("Policy: " + request.getPolicy() + " added to the Policy Administration Point for the resource "+request.getResource());
 			return ResponseEntity.status(HttpStatus.OK).body("\"Policy: \"" + request.getPolicy() +" \" added to the Policy Administration Point for the resource \""+request.getResource() +" \" ");
-			}
+			}else {	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: 400 Bad Request");}
 			} catch (Exception e) {
 				System.out.println("Error: 400 Bad Request");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: 400 Bad Request");
@@ -525,17 +548,22 @@ public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
 @PostMapping("/trust-score-config")
 public String trustScoreConfig(@RequestBody TSMConfigRequest request) {
 	//String requestJson = gson.toJson(request);
-	String response=((PIPTest) pip).createConfig(request);
 	
-	TSMConfigResponse resp=gson.fromJson(response, TSMConfigResponse.class);
-    // Extraer los valores de los campos entity_did y config_id
+	String response=((PIPTest) pip).createConfig(request);
+	TSMConfigResponse resp =null;
+	try {
+	resp=gson.fromJson(response, TSMConfigResponse.class);
+	 // Extract entity_did and config_id values
     String entityDid = resp.getEntity_did();
     int configId = resp.getConfig_id();
     ((PIPTest)pip).addConfig(entityDid,configId);
     // Imprimir los valores extraídos
     System.out.println("entity_did: " + entityDid);
     System.out.println("config_id: " + configId);
-	return response;
+
+	}catch (Exception e) {response="error";}
+   	return response;
+	
 }
 
 @PostMapping("/get-config")
@@ -543,7 +571,7 @@ public String getConfig(@RequestBody TSMScoreRequest request) {
 	//String requestJson = gson.toJson(request);
 	String response=((PIPTest) pip).getConfig(request);
 	
-	TSMGetResponse resp=gson.fromJson(response, TSMGetResponse.class);
+	//TSMGetResponse resp=gson.fromJson(response, TSMGetResponse.class);
 
 	return response;
 }

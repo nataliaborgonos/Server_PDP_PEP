@@ -37,6 +37,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -61,11 +62,11 @@ public class DemoApplicationConnectorToken {
 		 @Order(1)
 		@Test
 		void testAddTSMConfig() {
-			System.out.println("Test 1 for TANGO: Add TSM Configuration \n" );
+			System.out.println("Test 1 for TSM Component: Add TSM Configuration correctly.\n" );
 			
 			
 			String requestBody = "{\n" +
-				    "    \"entity_did\": \"did:example:123456789abcdefghi\",\n" +
+				    "    \"entity_did\": \"df429e49-23e1-4013-9962-091602afdd83\",\n" +
 				    "    \"trustworthiness\": {\n" +
 				    "        \"name\": \"configuration\",\n" +
 				    "        \"minimum_value\": 0.33,\n" +
@@ -175,7 +176,7 @@ public class DemoApplicationConnectorToken {
 				    "    ]\n" +
 				"}";
 
-			// Usa Gson para parsear la cadena en un JsonObject
+		
 			JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
 			
 			HttpHeaders headers = new HttpHeaders();
@@ -189,12 +190,10 @@ public class DemoApplicationConnectorToken {
 			// Verify 200 OK
 			assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
 
-			// Verify that there's a CapabilityToken and is not null
 			assertNotNull(responseEntity.getBody());
-			//assertTrue(!responseEntity.getBody());
 			TSMConfigResponse resp=gson.fromJson(responseEntity.getBody(), TSMConfigResponse.class);
 			
-		    // Extraer los valores de los campos entity_did y config_id
+		    // Extract fields entity_did and config_id
 		    entityDid = resp.getEntity_did();
 		    configId = resp.getConfig_id();
 		}
@@ -202,7 +201,7 @@ public class DemoApplicationConnectorToken {
 		 @Order(2)
 			@Test
 			void testAddTSMPOSConfig() {
-				System.out.println("Test 2 for TANGO: Add Protective Objectives to the TSM Configuration \n" );
+				System.out.println("Test 2 for TSM Component: Add Protective Objectives to the TSM Configuration correctly.\n" );
 				
 				String requestBody = "{\n" +
 						"    \"entity_did\": \""+entityDid+"\",\n" +
@@ -278,7 +277,7 @@ public class DemoApplicationConnectorToken {
 				// Verify 200 OK
 				assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
 
-				// Verify that there's a CapabilityToken and is not null
+			
 				assertNotNull(responseEntity.getBody());
 				assertTrue(!responseEntity.getBody().isEmpty());
 			
@@ -287,7 +286,7 @@ public class DemoApplicationConnectorToken {
 		    @Order(3)
 					@Test
 					void testGetConfig() {
-						System.out.println("Test 3 for TANGO: Get Trustworthiness Configuration \n" );
+						System.out.println("Test 3 for TSM Component: Get Trustworthiness Configuration correctly.\n" );
 						
 						String requestBody = "{\n" +
 								"    \"entity_did\": \""+entityDid+"\",\n" +
@@ -307,16 +306,15 @@ public class DemoApplicationConnectorToken {
 						// Verify 200 OK
 						assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
 
-						// Verify that there's a CapabilityToken and is not null
 						assertNotNull(responseEntity.getBody());
 						assertTrue(!responseEntity.getBody().isEmpty());
 					
 					}
 		 
-		    @Order(1)
+		    @Order(4)
 			@Test
 			void testAddWrongTSMConfig() {
-				System.out.println("Test 1 for TANGO: Add wrong TSM Configuration \n" );
+				System.out.println("Test 4 for TSM Component: Add wrong TSM Configuration.\n" );
 				
 				
 				String requestBody = "{\n" +
@@ -429,7 +427,7 @@ public class DemoApplicationConnectorToken {
 					    "    ]\n" +
 					"}";
 
-				// Usa Gson para parsear la cadena en un JsonObject
+				
 				JsonObject jsonObject = JsonParser.parseString(requestBody).getAsJsonObject();
 				
 				HttpHeaders headers = new HttpHeaders();
@@ -441,23 +439,16 @@ public class DemoApplicationConnectorToken {
 						requestEntity, String.class);
 				
 				// Verify 200 OK
-				assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+				assertEquals(responseEntity.getBody(), "error");
 
-				// Verify that there's a CapabilityToken and is not null
-				assertNotNull(responseEntity.getBody());
-				//assertTrue(!responseEntity.getBody());
-				TSMConfigResponse resp=gson.fromJson(responseEntity.getBody(), TSMConfigResponse.class);
 				
-			    // Extraer los valores de los campos entity_did y config_id
-			    entityDid = resp.getEntity_did();
-			    configId = resp.getConfig_id();
 			}
 		    
 		    
-		    @Order(2)
+		    @Order(5)
 			@Test
 			void testGetWongConfig() {
-				System.out.println("Test 3 for TANGO: Get wrong Trustworthiness Configuration \n" );
+				System.out.println("Test 5 for TSM Component: Get wrong Trustworthiness Configuration \n" );
 				
 				String requestBody = "{\n" +
 						"    \"entity_did\": \""+entityDid+"\",\n" +
@@ -484,10 +475,10 @@ public class DemoApplicationConnectorToken {
 			}
 		    
 		    
-		    @Order(2)
+		    @Order(6)
 			@Test
 			void testAddWrongTSMPOSConfig() {
-				System.out.println("Test 2 for TANGO: Add Protective Objectives to the TSM Configuration \n" );
+				System.out.println("Test 6 for TSM Component: Add Wrong Protective Objectives to the TSM Configuration. \n" );
 				
 				String requestBody = "{\n" +
 						"    \"entity_did\": \"not_valid\",\n" +
@@ -560,29 +551,268 @@ public class DemoApplicationConnectorToken {
 						requestEntity, String.class);
 
 			
-				// Verify 200 OK
-				assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
-
-				// Verify that there's a CapabilityToken and is not null
+		
 				assertNotNull(responseEntity.getBody());
+				assertEquals(responseEntity.getBody(),"{\"detail\":\"Entity not found.\"}");
 				assertTrue(!responseEntity.getBody().isEmpty());
 			
 			}
 		    
-		 @Order(3)
+			 @Order(7)
+				@Test
+				void testRequestAccessEndpointNoPolicies() {
+					System.out.println("Test 1 for New Policies Endpoint: Request access for doing action GET in the resource /humidity but it has no polcies so the Capability Token is not issued properly. \n" );
+					
+					
+					String requestBody =  "{\n" +
+						    "    \"didSP\": \"Leo-Free-Home-Standing-1 Hand-Phone\",\n" +
+						    "    \"sar\": {\n" +
+						    "        \"action\":\"GET\",\n" +
+						    "        \"resource\":\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/humidity\"\n" +
+						    "    },\n" +
+						    "    \"didRequester\": \""+entityDid+"\",\n" +
+						    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3NDA1NjcxNDAsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.2FQwqgwCrR1JF_23aYgP_CduY3TZD8TtIG7R0UkIbx2xdcpzybkZGMdzjaX1eyyPPer2dxRC-WeYq3n4Gvvh0g\"\n" +
+						    "}";
+					HttpHeaders headers = new HttpHeaders();
+					headers.setContentType(MediaType.APPLICATION_JSON);
+
+					HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+			
+					ResponseEntity<String> responseEntity = restTemplate.exchange("/api/connector-access-token", HttpMethod.POST,
+							requestEntity, String.class);
+
+				
+					token = responseEntity.getBody();
+
+					assertNotNull(responseEntity.getBody());
+					assertTrue(!responseEntity.getBody().isEmpty());
+					assertEquals(responseEntity.getBody(), "Capability Token couldn't be issued, please revise the request and try again.\n");
+
+				}
+		    
+			 @Order(8)
+				@Test
+				void testAuthEndpoint() {
+					 System.out.println("Test 2 for New Policies Endpoint: Request access using the Long-Lived JWT. \n" );
+						
+						
+						String requestBody =  "{\n" +
+							    "    \"sub\": \"PAT\",\n" +
+							    "    \"scope\": \"policies\"\n" +
+							    "}";
+						HttpHeaders headers = new HttpHeaders();
+						headers.setContentType(MediaType.APPLICATION_JSON);
+						headers.set("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJUQU5HTyBQRVBcL1BEUCBDb21wb25lbnQiLCJzdWIiOiJUQU5HTyBSZXF1ZXN0ZXIiLCJyb2xlIjoidXNlciIsImV4cCI6MTc5NDY1MzA2MiwiaWF0IjoxNzMxNTgxMDYyfQ.T8i4DvJZnGJH9TxGuCdrOEvHlpmJaWVzSv91NMEywL1uqalaP2Zc3_sk4Y8grauGKs7VvxRrJZCcNcH1MLPd0mb4movU4gk3_N4satDeoE8iBAKy2u3mVw3rV-rKOHJsmqzxeQD8lOl9p5ibwfphobN-li7w1KQSbxyTst-PjJwl1Rq83aCrVpaRy_KdXFuqxsavfzpHKO9FMPNgit4qd3PV7QP32Fgek-u3ENY0aW7jhj99N0qoZj-8zkQ4pFqMWSqBWpCWj9grb0vT0mEIDjYnjPrBpVii9nLjsmmQfW2lZxoGdq-Goo9K0KZD9gT28gN8zrhEzKL1xqoJSlvNkA");
+						HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+				
+						ResponseEntity<String> responseEntity = restTemplate.exchange("/api/auth", HttpMethod.POST,
+								requestEntity, String.class);
+
+						// JWT Short-lived issued for requester
+						shortLivedToken = responseEntity.getBody();
+
+						// Verify 200 OK
+						assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+
+						// Verify that there's a JWT Short Lived and is not null
+						assertNotNull(responseEntity.getBody());
+						assertNotEquals(responseEntity.getBody(), "The Authorization process couldn't be completed");
+						assertTrue(!responseEntity.getBody().isEmpty());
+				 }
+				 
+				 @Order(9)
+					@Test
+					void testNewPoliciesEndpoint() {
+						 System.out.println("Test 3 for New Policies Endpoint: Request publishing new policy using the Short-Lived JWT issued. \n" );
+							
+							
+						 String requestBody = "{\n" +
+								    "    \"jwtAuth\": \"" + shortLivedToken + "\",\n" +
+								    "    \"policy\": \"{\\\"name\\\":\\\"Tango User Information\\\",\\\"purpose\\\":\\\"Reveal role GOLD_COSTUMER of the user.\\\",\\\"serviceProvider\\\":\\\"did:serviceProvider:1\\\",\\\"accessRights\\\":[{\\\"action\\\":\\\"GET\\\",\\\"resource\\\":\\\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/humidity\\\"}],\\\"constraints\\\":{\\\"fields\\\":[{\\\"path\\\":[\\\"$.roles.names\\\"],\\\"filter\\\":{\\\"type\\\":\\\"string\\\",\\\"pattern\\\":\\\"GOLD_COSTUMER\\\"}}]}}\",\n" +
+								    "    \"resource\": \"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/humidity\"\n" +
+								    "}";
+
+							
+							HttpHeaders headers = new HttpHeaders();
+							headers.setContentType(MediaType.APPLICATION_JSON);
+							HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+					
+							ResponseEntity<String> responseEntity = restTemplate.exchange("/api/new-policy", HttpMethod.POST,
+									requestEntity, String.class);
+
+							
+
+							// Verify 200 OK
+							assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+
+							// Verify that there's a JWT Short Lived and is not null
+							assertNotNull(responseEntity.getBody());
+							assertTrue(!responseEntity.getBody().isEmpty());
+					 }
+				 
+				 @Order(10)
+					@Test
+					void testRequestAccessEndpointPoliciesAdded() {
+						System.out.println("Test 4 for New Policies Endpoint: Request access for doing action GET in the resource /humidity again but now the Capability Token is issued correctly. \n" );
+						
+						
+						String requestBody =  "{\n" +
+							    "    \"didSP\": \"Leo-Free-Home-Standing-1 Hand-Phone\",\n" +
+							    "    \"sar\": {\n" +
+							    "        \"action\":\"GET\",\n" +
+							    "        \"resource\":\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/humidity\"\n" +
+							    "    },\n" +
+							    "    \"didRequester\": \""+entityDid+"\",\n" +
+							    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3NDA1NjcxNDAsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.2FQwqgwCrR1JF_23aYgP_CduY3TZD8TtIG7R0UkIbx2xdcpzybkZGMdzjaX1eyyPPer2dxRC-WeYq3n4Gvvh0g\"\n" +
+							    "}";
+						HttpHeaders headers = new HttpHeaders();
+						headers.setContentType(MediaType.APPLICATION_JSON);
+
+						HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+				
+						ResponseEntity<String> responseEntity = restTemplate.exchange("/api/connector-access-token", HttpMethod.POST,
+								requestEntity, String.class);
+
+						// Token issued for requester
+						token = responseEntity.getBody();
+
+						// Verify 200 OK
+						assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+
+						// Verify that there's a CapabilityToken and is not null
+						assertNotNull(responseEntity.getBody());
+						assertNotEquals(responseEntity.getBody(), "Capability Token couldn't be issued, please revise the request and try again.");
+
+						assertTrue(!responseEntity.getBody().isEmpty());
+
+					}
+				 
+				 @Order(11)
+					@Test
+					void testAccessWithTokenNewPolicies() {
+						System.out.println("Test 5 for New Policies Endpoint: Doing action GET in the resource /humidity with the Capability Token received and policies added \n" );
+						
+						String requestBody = "{\n" +
+						        "    \"ct\": " + token + ",\n" +
+						        "     \"sar\":{\n" +
+						        "        \"action\":\"GET\",\n" +
+						        "        \"resource\":\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/humidity\"\n" +
+						        "    },\n" +
+						        "     \"queryParameters\": {\n" +
+						        "        \"id\": \"user123\",\n" +
+						        "        \"role\": \"employee\"\n" +
+						        "    }\n" +
+						        "}";	
+					
+						HttpHeaders headers = new HttpHeaders();
+						headers.setContentType(MediaType.APPLICATION_JSON);
+
+						HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+
+						ResponseEntity<String> responseEntity = restTemplate.exchange("/api/access-with-token", HttpMethod.POST,
+								requestEntity, String.class);
+
+						// Verify 200 OK
+						assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+
+						// Verify that it has been a successful validation
+						assertNotEquals("ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n", responseEntity.getBody());
+
+					}
+				 
+				 @Order(12)
+					@Test
+					void testWrongPolicy() {
+					 System.out.println("Test 6 for New Policies Endpoint: Request publishing new policy using a wrong policy \n" );
+						
+						
+					 String requestBody = "{\n" +
+							    "    \"jwtAuth\": \"" + shortLivedToken + "\",\n" +
+							    "    \"policy\": \"{\\\"name\\\":\\\"Tango User Information\\\",\\\"purpose\\\":\\\"Reveal role GOLD_COSTUMER of the user.\\\",\\\"serviceProvider\\\":\\\"did:serviceProvider:1\\\",\\\"constraints\\\":{\\\"fields\\\":[{\\\"path\\\":[\\\"$.roles.names\\\"],\\\"filter\\\":{\\\"type\\\":\\\"string\\\",\\\"pattern\\\":\\\"GOLD_COSTUMER\\\"}}]}}\",\n" +
+							    "    \"resource\": \"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
+							    "}";
+
+						HttpHeaders headers = new HttpHeaders();
+						headers.setContentType(MediaType.APPLICATION_JSON);
+						HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+				
+						ResponseEntity<String> responseEntity = restTemplate.exchange("/api/new-policy", HttpMethod.POST,
+								requestEntity, String.class);
+
+						// Verify 400 Bad Request 
+						assertTrue(responseEntity.getStatusCode().is4xxClientError());
+
+					 }
+				 
+				 
+				 @Order(13)
+					@Test
+					void testWrongAuthEndpoint() {
+						 System.out.println("Test 7 for New Policies Endpoint: Request access using a wrong Long-Lived JWT \n" );
+							
+							
+							String requestBody =  "{\n" +
+								    "    \"sub\": \"PAT\",\n" +
+								    "    \"scope\": \"/api/new-policy\"\n" +
+								    "}";
+							HttpHeaders headers = new HttpHeaders();
+							headers.setContentType(MediaType.APPLICATION_JSON);
+							headers.set("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJUQU5HTyBQRVBcL1BEUCBDb21wb25lbnQiLCJzdWIiOiJUQU5HTyBSZXF1ZXN0ZXIiLCJyb2xlIjoidXNlciIsImV4cCI6MTc5NDY1MzA2MiwiaWF0IjoxNzMxNTgxMDYyfQ.T8i4DvJZnGJH9TxGuCdrOEvHlpmJaWVzSv91NMEywL1uqalaP2Zc3_sk4Y8grauGKs7VvxRrJZCcNcH1MLPd0mb4movU4gk3_N4satDeoE8iBAKy2u3mVw3rV-rKOHJsmqzxeQD8lOl9p5ibwfphobN-li7w1KQSbxyTst-PjJwl1Rq83aCrVpaRy_KdXFuqxsavfzpHKO9FMPNgit4qd3PV7QP32Fgek-u3ENY0aW7jhj99N");
+							HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+					
+							ResponseEntity<String> responseEntity = restTemplate.exchange("/api/auth", HttpMethod.POST,
+									requestEntity, String.class);
+
+					
+							// Verify the authorization process wasn't completed
+							assertEquals( responseEntity.getBody(),"The Authorization process couldn't be completed");
+							
+					 }
+				 
+				 @Order(14)
+					@Test
+					void testWrongShortLivedJWT() {
+						 System.out.println("Test 8 for New Policies Endpoint: Request publishing new policy using a wrong Short-Lived JWT  \n" );
+							
+							
+						 String requestBody = "{\n" +
+								    "    \"jwtAuth\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJUQU5HTyBQRVBcL1BEUCBDb21wb25lbnQiLCJzdWIiOiJQQVQiLCJleHAiOjE3MzE1ODg2NzMsImlhdCI6MTczMTU4NTA3Mywic2NvcGUiOiJwb2xpY2llcyJ9.qiQAQuCyaOeuoUj0DjwXimTIAWlOp-IolIGHhdAhglnhdRQz8SyviGoqevI0pKf8b_UCOJhx6evU9iZEC0wshivJiY6A3PERuWhgGcLWVuY3xsmSZs4gO4b9eHXG8E_COK18h8tkNpycXVzqnPqWZKf9pweQtgw3o5VjXoFvkC8BWL_Gni3ZejiWsYGVm3yx935coyE7vtAZgw_zhPEje3YF494yXAUsher7JbAaFmve75wTVNroEO5_TdW8sp3UU7F\",\n" +
+								    "    \"policy\": \"{\\\"id\\\":\\\"123\\\",\\\"name\\\":\\\"User Information\\\",\\\"purpose\\\":\\\"Reveal email of the user.\\\",\\\"serviceProvider\\\":\\\"did:ServiceProvider:1\\\",\\\"accessRights\\\":[{\\\"action\\\":\\\"GET\\\",\\\"resource\\\":\\\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\\\"}],\\\"authTime\\\":1642058400,\\\"minTrustScore\\\":0.5,\\\"constraints\\\":{\\\"fields\\\":[{\\\"path\\\":[\\\"$.email\\\"]}]}}\",\n" +
+								    "    \"resource\": \"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
+								    "}";
+
+							
+							HttpHeaders headers = new HttpHeaders();
+							headers.setContentType(MediaType.APPLICATION_JSON);
+							HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+					
+							ResponseEntity<String> responseEntity = restTemplate.exchange("/api/new-policy", HttpMethod.POST,
+									requestEntity, String.class);
+
+						
+
+							// Verify 403 Forbidden
+							assertTrue(responseEntity.getStatusCode().is4xxClientError());
+
+					 }
+				 
+		    
+		    
+		    
+		 @Order(15)
 		@Test
 		void testRequestAccessEndpoint() {
-			System.out.println("Test 1 for TANGO: Request access for doing action GET in the resource /temperature and getting the Capability Token \n" );
+			System.out.println("Test 1 for PEP/PDP resources: Request access for doing action GET in the resource /temperature and getting the Capability Token \n" );
 			
 			
 			String requestBody =  "{\n" +
-				    "    \"didSP\": \"tangoUser\",\n" +
+				    "    \"didSP\": \"Leo-Free-Home-Standing-1 Hand-Phone\",\n" +
 				    "    \"sar\": {\n" +
 				    "        \"action\":\"GET\",\n" +
 				    "        \"resource\":\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
 				    "    },\n" +
 				    "    \"didRequester\": \""+entityDid+"\",\n" +
-				    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3MzQwMDAyNDQsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.eyuFqeY9lYoyIOeGNAiXgeOSL4964QPmL7-ni2Kyq7fV6vVmX_0915gA2WD60N_nxr87EVyo1KbnDsOsN-RvmQ\"\n" +
+				    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3NDA1NjcxNDAsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.2FQwqgwCrR1JF_23aYgP_CduY3TZD8TtIG7R0UkIbx2xdcpzybkZGMdzjaX1eyyPPer2dxRC-WeYq3n4Gvvh0g\"\n" +
 				    "}";
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -603,10 +833,10 @@ public class DemoApplicationConnectorToken {
 			assertTrue(!responseEntity.getBody().isEmpty());
 
 		}
-		 @Order(4)
+		 @Order(16)
 		@Test
 		void testAccessWithToken() {
-			System.out.println("Test 2 for TANGO: Doing action GET in the resource /temperature with the Capability Token received \n" );
+			System.out.println("Test 2 for PEP/PDP resources: Doing action GET in the resource /temperature with the Capability Token received \n" );
 			
 			String requestBody = "{\n" +
 			        "    \"ct\": " + token + ",\n" +
@@ -635,7 +865,7 @@ public class DemoApplicationConnectorToken {
 			assertNotEquals("ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n", responseEntity.getBody());
 
 		}
-		 @Order(5)
+		 @Order(17)
 		@Test
 		void testAccessWithWrongToken() {
 			System.out.println("Test 3 for TANGO: Trying to do action POST in the resource /temperature with the Capability Token received \n" );
@@ -659,14 +889,14 @@ public class DemoApplicationConnectorToken {
 			assertEquals("ERROR: Validation failed. Capability Token is not valid. The requester couldn't access to the resource.\n", responseEntity.getBody());
 
 		}
-		 @Order(6)
+		 @Order(18)
 			@Test
 			void testNotMatchingPolicy() {
 				System.out.println("Test 4 for TANGO: Request access for doing action GET in the resource /temperature and not getting the Capability Token because the token is expired and the policy matching failed \n" );
 				
 				
 				String requestBody =  "{\n" +
-					    "    \"didSP\": \"tangoUser\",\n" +
+					    "    \"didSP\": \"Leo-Free-Home-Standing-1 Hand-Phone\",\n" +
 					    "    \"sar\": {\n" +
 					    "        \"action\":\"GET\",\n" +
 					    "        \"resource\":\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
@@ -691,14 +921,14 @@ public class DemoApplicationConnectorToken {
 				assertEquals("Capability Token couldn't be issued, please revise the request and try again.\n", responseEntity.getBody());
 			}
 		 
-		 @Order(7)
+		 @Order(19)
 			@Test
 			void testNotVerifyingSignature() {
 				System.out.println("Test 5 for TANGO: Request access for doing action GET in the resource /temperature and not getting the Capability Token because access token signature couldn't be verified \n" );
 				
 				
 				String requestBody =  "{\n" +
-					    "    \"didSP\": \"tangoUser\",\n" +
+					    "    \"didSP\": \"Leo-Free-Home-Standing-1 Hand-Phone\",\n" +
 					    "    \"sar\": {\n" +
 					    "        \"action\":\"GET\",\n" +
 					    "        \"resource\":\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
@@ -723,20 +953,20 @@ public class DemoApplicationConnectorToken {
 				assertEquals("Capability Token couldn't be issued, please revise the request and try again.\n", responseEntity.getBody());
 			}
 		 
-		 @Order(8)
+		 @Order(20)
 			@Test
 			void testRequestAccessEndpointPost() {
 				System.out.println("Test 6 for TANGO: Request access for doing action POST in the resource /temperature and getting the Capability Token \n" );
 				
 				
 				String requestBody =  "{\n" +
-					    "    \"didSP\": \"tangoUser\",\n" +
+					    "    \"didSP\": \"Leo-Free-Home-Standing-1 Hand-Phone\",\n" +
 					    "    \"sar\": {\n" +
 					    "        \"action\":\"POST\",\n" +
 					    "        \"resource\":\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
 					    "    },\n" +
 					    "    \"didRequester\": \""+entityDid+"\",\n" +
-					    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3MzQwMDAyNDQsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.eyuFqeY9lYoyIOeGNAiXgeOSL4964QPmL7-ni2Kyq7fV6vVmX_0915gA2WD60N_nxr87EVyo1KbnDsOsN-RvmQ\"\n" +
+					    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3NDA1NjcxNDAsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.2FQwqgwCrR1JF_23aYgP_CduY3TZD8TtIG7R0UkIbx2xdcpzybkZGMdzjaX1eyyPPer2dxRC-WeYq3n4Gvvh0g\"\n" +
 					    "}";
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
@@ -758,7 +988,7 @@ public class DemoApplicationConnectorToken {
 
 			}
 		 
-		 @Order(9)
+		 @Order(21)
 			@Test
 			void testAccessWithTokenPost() {
 				System.out.println("Test 7 for TANGO: Doing action POST in the resource /temperature with the Capability Token received \n" );
@@ -774,7 +1004,7 @@ public class DemoApplicationConnectorToken {
 				        "        \"role\": \"leader\"\n" +
 				        "    },\n" +
 				        "    \"jsonBody\": {\n" +
-				        "        \"sensor\": \"sensor10\",\n" +
+				        "        \"sensor\": \"sensorTests1\",\n" +
 				        "        \"unit\": \"Celsius\",\n" +
 				        "        \"measure\": \"temperature\",\n" +
 				        "        \"values\": [\n" +
@@ -800,20 +1030,20 @@ public class DemoApplicationConnectorToken {
 
 			}
 		 
-		 @Order(10)
+		 @Order(22)
 			@Test
 			void testRequestAccessEndpointGetH() {
 				System.out.println("Test 8 for TANGO: Request access for doing action GET in the resource /humidity and getting the Capability Token \n" );
 				
 				
 				String requestBody =  "{\n" +
-					    "    \"didSP\": \"tangoUser\",\n" +
+					    "    \"didSP\": \"Leo-Free-Home-Standing-1 Hand-Phone\",\n" +
 					    "    \"sar\": {\n" +
 					    "        \"action\":\"GET\",\n" +
 					    "        \"resource\":\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/humidity\"\n" +
 					    "    },\n" +
 					    "    \"didRequester\": \""+entityDid+"\",\n" +
-					    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3MzQwMDAyNDQsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.eyuFqeY9lYoyIOeGNAiXgeOSL4964QPmL7-ni2Kyq7fV6vVmX_0915gA2WD60N_nxr87EVyo1KbnDsOsN-RvmQ\"\n" +
+					    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3NDA1NjcxNDAsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.2FQwqgwCrR1JF_23aYgP_CduY3TZD8TtIG7R0UkIbx2xdcpzybkZGMdzjaX1eyyPPer2dxRC-WeYq3n4Gvvh0g\"\n" +
 					    "}";
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
@@ -835,7 +1065,7 @@ public class DemoApplicationConnectorToken {
 
 			}
 		 
-		 @Order(11)
+		 @Order(23)
 		@Test
 		void testAccessWithTokenH() {
 			System.out.println("Test 9 for TANGO: Doing action GET in the resource /humidity with the Capability Token received \n" );
@@ -860,20 +1090,20 @@ public class DemoApplicationConnectorToken {
 
 		}
 
-		 @Order(12)
+		 @Order(24)
 			@Test
 			void testRequestAccessEndpointGetP() {
 				System.out.println("Test 10 for TANGO: Request access for doing action GET in the resource /pressure and getting the Capability Token \n" );
 				
 				
 				String requestBody =  "{\n" +
-					    "    \"didSP\": \"tangoUser\",\n" +
+					    "    \"didSP\": \"Leo-Free-Home-Standing-1 Hand-Phone\",\n" +
 					    "    \"sar\": {\n" +
 					    "        \"action\":\"GET\",\n" +
 					    "        \"resource\":\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/pressure\"\n" +
 					    "    },\n" +
 					    "    \"didRequester\": \""+entityDid+"\",\n" +
-					    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3MzQwMDAyNDQsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.eyuFqeY9lYoyIOeGNAiXgeOSL4964QPmL7-ni2Kyq7fV6vVmX_0915gA2WD60N_nxr87EVyo1KbnDsOsN-RvmQ\"\n" +
+					    "    \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IkN3YjlhMzNnVVE3Wmw0amlJZTI3alkwc1oweUd0ZXRVamxqdUFsb3RSWnciLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicG9ydGFsLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXUiXSwiY2xpZW50X2lkIjoiZGlkOndlYjppcHMudGVzdGluZzEuazhzLWNsdXN0ZXIudGFuZ28ucmlkLWludHJhc29mdC5ldTpkaWQiLCJleHAiOjE3NDA1NjcxNDAsImlzcyI6ImRpZDp3ZWI6aXBzLnRlc3RpbmcxLms4cy1jbHVzdGVyLnRhbmdvLnJpZC1pbnRyYXNvZnQuZXU6ZGlkIiwia2lkIjoiQ3diOWEzM2dVUTdabDRqaUllMjdqWTBzWjB5R3RldFVqbGp1QWxvdFJadyIsInN1YiI6ImRpZDpteTp3YWxsZXQiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdzNpZC5vcmcvc2VjdXJpdHkvc3VpdGVzL2p3cy0yMDIwL3YxIl0sImNyZWRlbnRpYWxTY2hlbWEiOnsiaWQiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRklXQVJFLU9wcy90ZWNoLXgtY2hhbGxlbmdlL21haW4vc2NoZW1hLmpzb24iLCJ0eXBlIjoiRnVsbEpzb25TY2hlbWFWYWxpZGF0b3IyMDIxIn0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoic3RhbmRhcmQtZW1wbG95ZWVAaXBzLm9yZyIsImlkIjoiMGIxOWEzNDItN2I2NC00NjJmLWI5OTctYjkwZmZiYTlkMjgyIiwibGFzdE5hbWUiOiJJUFMiLCJyb2xlcyI6W3sibmFtZXMiOlsiR09MRF9DVVNUT01FUiJdLCJ0YXJnZXQiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCJ9XSwidHlwZSI6Imd4Ok5hdHVyYWxQYXJ0aWNpcGFudCJ9LCJpZCI6InVybjp1dWlkOjhkMzdlNTA5LWNkNTctNGYwNS04YWIwLTY5YmM1NDNmMzE4MCIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMTEtMjBUMDk6Mzc6NDRaIiwiaXNzdWVkIjoiMjAyNC0xMS0yMFQwOTozNzo0NFoiLCJpc3N1ZXIiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCIsInByb29mIjp7ImNyZWF0ZWQiOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiIsImp3cyI6ImV5SmlOalFpT21aaGJITmxMQ0pqY21sMElqcGJJbUkyTkNKZExDSmhiR2NpT2lKUVV6STFOaUo5Li5qb1pyTmtMRDJtNVBWVWNTZkp3Tjlnb0YxUzZVcEhfR3lmNEJVTDA4NEtQeFA0NENrNzB0eEFoN0NfLWRsQllTZ0FYeEhod0xzRWVvaHpkb1BNV1M3Ql9hZ2pMZlpSUjY3SzFBR00zelI4VWtXeTRNc3cxMWlUa0FmRUlRNWtaSzZ6SHk4WlptaExJQTJPT1U2T3NTZU9neVR5bGNKU1ItWHlIWjQxZkNuX3haVl94RkZqNU1OWEhkRG95UENsV2MwdVk5MVlXT09DQU1rdGF6RkhVQTVrY29IejV5YThJSGtoc29FLUNRRFpWUFF6QmdjaGU0ZHdPTGhZdVdMQ3ZOMjkwVDNRRTlLSGY3Qno5OVRveS1qZVhpZEJYbER0NENlcWx4OEt1T0hYRzJITmxTdlRDTXVQXzdoYW5WWjRPSTVqbG5nXzRXWE1zREo1eEJpbHhUaEEiLCJ0eXBlIjoiSnNvbldlYlNpZ25hdHVyZTIwMjAiLCJ2ZXJpZmljYXRpb25NZXRob2QiOiJkaWQ6d2ViOmlwcy5rOHMtY2x1c3Rlci50YW5nby5yaWQtaW50cmFzb2Z0LmV1OmRpZCM4MTY0ZTdlYTE5NmE0NTdmODZiM2Y4ODdhYjY5MTYyYiJ9LCJ0eXBlIjpbIkVtcGxveWVlQ3JlZGVudGlhbCJdLCJ2YWxpZEZyb20iOiIyMDI0LTExLTIwVDA5OjM3OjQ0WiJ9fQ.2FQwqgwCrR1JF_23aYgP_CduY3TZD8TtIG7R0UkIbx2xdcpzybkZGMdzjaX1eyyPPer2dxRC-WeYq3n4Gvvh0g\"\n" +
 					    "}";
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
@@ -895,7 +1125,7 @@ public class DemoApplicationConnectorToken {
 
 			}
 		 
-		 @Order(13)
+		 @Order(25)
 		@Test
 		void testAccessWithTokenP() {
 			System.out.println("Test 11 for TANGO: Doing action GET in the resource /pressure with the Capability Token received \n" );
@@ -920,139 +1150,6 @@ public class DemoApplicationConnectorToken {
 
 		}
 		 
-		 @Order(14)
-			@Test
-			void testAuthEndpoint() {
-				 System.out.println("Test 1 for New Policies for TANGO: Request access using the Long-Lived JWT \n" );
-					
-					
-					String requestBody =  "{\n" +
-						    "    \"sub\": \"PAT\",\n" +
-						    "    \"scope\": \"policies\"\n" +
-						    "}";
-					HttpHeaders headers = new HttpHeaders();
-					headers.setContentType(MediaType.APPLICATION_JSON);
-					headers.set("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJUQU5HTyBQRVBcL1BEUCBDb21wb25lbnQiLCJzdWIiOiJUQU5HTyBSZXF1ZXN0ZXIiLCJyb2xlIjoidXNlciIsImV4cCI6MTc5NDY1MzA2MiwiaWF0IjoxNzMxNTgxMDYyfQ.T8i4DvJZnGJH9TxGuCdrOEvHlpmJaWVzSv91NMEywL1uqalaP2Zc3_sk4Y8grauGKs7VvxRrJZCcNcH1MLPd0mb4movU4gk3_N4satDeoE8iBAKy2u3mVw3rV-rKOHJsmqzxeQD8lOl9p5ibwfphobN-li7w1KQSbxyTst-PjJwl1Rq83aCrVpaRy_KdXFuqxsavfzpHKO9FMPNgit4qd3PV7QP32Fgek-u3ENY0aW7jhj99N0qoZj-8zkQ4pFqMWSqBWpCWj9grb0vT0mEIDjYnjPrBpVii9nLjsmmQfW2lZxoGdq-Goo9K0KZD9gT28gN8zrhEzKL1xqoJSlvNkA");
-					HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-			
-					ResponseEntity<String> responseEntity = restTemplate.exchange("/api/auth", HttpMethod.POST,
-							requestEntity, String.class);
 
-					// JWT Short-lived issued for requester
-					shortLivedToken = responseEntity.getBody();
-
-					// Verify 200 OK
-					assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
-
-					// Verify that there's a JWT Short Lived and is not null
-					assertNotNull(responseEntity.getBody());
-					assertTrue(!responseEntity.getBody().isEmpty());
-			 }
-			 
-			 @Order(15)
-				@Test
-				void testNewPoliciesEndpoint() {
-					 System.out.println("Test 2 for New Policies for TANGO: Request publishing new policy using the Short-Lived JWT issued  \n" );
-						
-						
-					 String requestBody = "{\n" +
-							    "    \"jwtAuth\": \"" + shortLivedToken + "\",\n" +
-							    "    \"policy\": \"{\\\"id\\\":\\\"123\\\",\\\"name\\\":\\\"Student Information\\\",\\\"purpose\\\":\\\"Reveal id and name of the BachelorDegree's student in MIT.\\\",\\\"serviceProvider\\\":\\\"did:ServiceProvider:1\\\",\\\"accessRights\\\":[{\\\"resource\\\":\\\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\\\",\\\"action\\\":\\\"GET\\\"}],\\\"authTime\\\":1642058400,\\\"minTrustScore\\\":0.5,\\\"constraints\\\":{\\\"fields\\\":[{\\\"purpose\\\":\\\"Reveal name\\\",\\\"name\\\":\\\"Student name\\\",\\\"path\\\":[\\\"$.id\\\"],\\\"filter\\\":{\\\"type\\\":\\\"string\\\",\\\"pattern\\\":\\\"^[a-zA-Z0-9]+$\\\"}}]}}\",\n" +
-							    "    \"resource\": \"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
-							    "}";
-
-						
-						HttpHeaders headers = new HttpHeaders();
-						headers.setContentType(MediaType.APPLICATION_JSON);
-						HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-				
-						ResponseEntity<String> responseEntity = restTemplate.exchange("/api/new-policy", HttpMethod.POST,
-								requestEntity, String.class);
-
-						
-
-						// Verify 200 OK
-						assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
-
-						// Verify that there's a JWT Short Lived and is not null
-						assertNotNull(responseEntity.getBody());
-						assertTrue(!responseEntity.getBody().isEmpty());
-				 }
-			 
-			 @Order(16)
-				@Test
-				void testWrongPolicy() {
-				 System.out.println("Test 3 for New Policies for TANGO: Request publishing new policy using a wrong policy \n" );
-					
-					
-				 String requestBody = "{\n" +
-						    "    \"jwtAuth\": \"" + shortLivedToken + "\",\n" +
-						    "    \"policy\": \"\",\n" +
-						    "    \"resource\": \"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
-						    "}";
-
-					HttpHeaders headers = new HttpHeaders();
-					headers.setContentType(MediaType.APPLICATION_JSON);
-					HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-			
-					ResponseEntity<String> responseEntity = restTemplate.exchange("/api/new-policy", HttpMethod.POST,
-							requestEntity, String.class);
-
-					// Verify 400 Bad Request 
-					assertTrue(responseEntity.getStatusCode().is4xxClientError());
-
-				 }
-			 
-			 @Order(17)
-				@Test
-				void testWrongAuthEndpoint() {
-					 System.out.println("Test 4 for New Policies for TANGO: Request access using a wrong Long-Lived JWT \n" );
-						
-						
-						String requestBody =  "{\n" +
-							    "    \"sub\": \"PAT\",\n" +
-							    "    \"scope\": \"/api/new-policy\"\n" +
-							    "}";
-						HttpHeaders headers = new HttpHeaders();
-						headers.setContentType(MediaType.APPLICATION_JSON);
-						headers.set("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJUQU5HTyBQRVBcL1BEUCBDb21wb25lbnQiLCJzdWIiOiJUQU5HTyBSZXF1ZXN0ZXIiLCJyb2xlIjoidXNlciIsImV4cCI6MTc5NDY1MzA2MiwiaWF0IjoxNzMxNTgxMDYyfQ.T8i4DvJZnGJH9TxGuCdrOEvHlpmJaWVzSv91NMEywL1uqalaP2Zc3_sk4Y8grauGKs7VvxRrJZCcNcH1MLPd0mb4movU4gk3_N4satDeoE8iBAKy2u3mVw3rV-rKOHJsmqzxeQD8lOl9p5ibwfphobN-li7w1KQSbxyTst-PjJwl1Rq83aCrVpaRy_KdXFuqxsavfzpHKO9FMPNgit4qd3PV7QP32Fgek-u3ENY0aW7jhj99N");
-						HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-				
-						ResponseEntity<String> responseEntity = restTemplate.exchange("/api/auth", HttpMethod.POST,
-								requestEntity, String.class);
-
-				
-						// Verify the authorization process wasn't completed
-						assertEquals( responseEntity.getBody(),"The Authorization process couldn't be completed");
-						
-				 }
-			 
-			 @Order(18)
-				@Test
-				void testWrongShortLivedJWT() {
-					 System.out.println("Test 5 for New Policies for TANGO: Request publishing new policy using a wrong Short-Lived JWT  \n" );
-						
-						
-					 String requestBody = "{\n" +
-							    "    \"jwtAuth\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJUQU5HTyBQRVBcL1BEUCBDb21wb25lbnQiLCJzdWIiOiJQQVQiLCJleHAiOjE3MzE1ODg2NzMsImlhdCI6MTczMTU4NTA3Mywic2NvcGUiOiJwb2xpY2llcyJ9.qiQAQuCyaOeuoUj0DjwXimTIAWlOp-IolIGHhdAhglnhdRQz8SyviGoqevI0pKf8b_UCOJhx6evU9iZEC0wshivJiY6A3PERuWhgGcLWVuY3xsmSZs4gO4b9eHXG8E_COK18h8tkNpycXVzqnPqWZKf9pweQtgw3o5VjXoFvkC8BWL_Gni3ZejiWsYGVm3yx935coyE7vtAZgw_zhPEje3YF494yXAUsher7JbAaFmve75wTVNroEO5_TdW8sp3UU7F\",\n" +
-							    "    \"policy\": \"{\\\"id\\\":\\\"123\\\",\\\"name\\\":\\\"User Information\\\",\\\"purpose\\\":\\\"Reveal email of the user.\\\",\\\"serviceProvider\\\":\\\"did:ServiceProvider:1\\\",\\\"accessRights\\\":[{\\\"action\\\":\\\"GET\\\",\\\"resource\\\":\\\"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\\\"}],\\\"authTime\\\":1642058400,\\\"minTrustScore\\\":0.5,\\\"constraints\\\":{\\\"fields\\\":[{\\\"path\\\":[\\\"$.email\\\"]}]}}\",\n" +
-							    "    \"resource\": \"https://api-server.testing1.k8s-cluster.tango.rid-intrasoft.eu/resource/temperature\"\n" +
-							    "}";
-
-						
-						HttpHeaders headers = new HttpHeaders();
-						headers.setContentType(MediaType.APPLICATION_JSON);
-						HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-				
-						ResponseEntity<String> responseEntity = restTemplate.exchange("/api/new-policy", HttpMethod.POST,
-								requestEntity, String.class);
-
-					
-
-						// Verify 403 Forbidden
-						assertTrue(responseEntity.getStatusCode().is4xxClientError());
-
-				 }
-			 
 
 }

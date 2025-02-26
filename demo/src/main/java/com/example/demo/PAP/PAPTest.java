@@ -26,6 +26,9 @@ public class PAPTest implements PAPInterface{
 	public int getPolicyCounter() {
 		return policyStore.getPolicyCounter();
 	}
+	public void setPolicyCounter(int policyCounter) {
+		policyStore.setPolicyCounter(policyCounter);
+	}
 	/*
 	@Override
 	public void addPolicy(String didSP, Policy policy, String resource) {

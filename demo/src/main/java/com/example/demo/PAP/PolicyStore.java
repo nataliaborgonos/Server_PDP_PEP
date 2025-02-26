@@ -106,7 +106,7 @@ public class PolicyStore {
 						pols1.add(policy3);
 						policies.put(r,pols1);
 						
-
+/*
 						// Policy for doing GET /resource/humidity
 								policyCounter++;
 								Policy policy4=new Policy(policyCounter);
@@ -144,7 +144,7 @@ public class PolicyStore {
 								resources.add(r1);
 								ArrayList<Policy> pols2=new ArrayList<>();
 								pols2.add(policy4);
-								policies.put(r1,pols2);
+								policies.put(r1,pols2);*/
 							
 								// Policy for doing GET /resource/pressure
 								policyCounter++;
@@ -254,14 +254,14 @@ public class PolicyStore {
 		System.out.println("LIST OF POLICIES HAS BEEN UPDATED: ");
 		// Recorremos el Map<String, ArrayList<Policy>>
 		for (Map.Entry<Resource, ArrayList<Policy>> outerEntry : policies.entrySet()) {
-		    Resource resource1 = outerEntry.getKey(); // Muestra el recurso (la clave del mapa)
-		    ArrayList<Policy> policyList = outerEntry.getValue(); // Obtiene la lista de políticas asociada al recurso
+		    Resource resource1 = outerEntry.getKey(); 
+		    ArrayList<Policy> policyList = outerEntry.getValue(); 
 
-		    System.out.println("Resource: " + resource1.getNombre()); // Muestra el nombre del recurso
+		    System.out.println("Resource: " + resource1.getNombre()); 
 
 		    // Recorremos la lista de políticas
 		    for (Policy policy1 : policyList) {
-		        System.out.println("  Policy: " + policy1); // Muestra la descripción de la política
+		        System.out.println("  Policy: " + policy1); 
 		    }
 		}
 
@@ -269,6 +269,9 @@ public class PolicyStore {
 	
 	public int getPolicyCounter() {
 		return policyCounter;
+	}
+	public void setPolicyCounter(int policyCounter) {
+		this.policyCounter=policyCounter;
 	}
 
 	/*

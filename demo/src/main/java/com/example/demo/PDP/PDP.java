@@ -96,6 +96,8 @@ public class PDP implements PDPInterface {
 	static String expiration;
 	long expirationInPolicy;
 
+
+	
 	PIPInterface pip;
 	PAPInterface pap;
 
@@ -152,8 +154,9 @@ public class PDP implements PDPInterface {
 		}
 		expiration = System.getenv("CT_EXPIRATION");
 		if(System.getenv("CT_EXPIRATION")==null) {
-			expiration="360000";
+			expiration="3600000";
 		}
+		
 
 		gson = new Gson();
 		this.pip = pip;
@@ -161,7 +164,7 @@ public class PDP implements PDPInterface {
 		createdWallet = false;
 	}
 
-	/* METHODS */
+	/* METHODS */	
 
 	public CapabilityToken verifyIdErat(String authRequestJson) {
 
@@ -451,27 +454,29 @@ public class PDP implements PDPInterface {
 		// Get policies needed to do the requested action in that resource
 		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),
 				ar.getSar().getAction());
-		if(politicas==null) {System.out.println("There are no policies registered for this request.");}
 
-		// Get trust score associated with the requester
-		//double trustScore = pip.getTrustScore(ar.getDidRequester());
-		
+	
+		if(politicas.size()==0) {System.out.println("There are no policies registered for this request."); allMatches=false;}
 
-		String response=((PIPTest) pip).calculateTrustScore(ar.getDidRequester());
-		TSMScoreResponse resp=gson.fromJson(response, TSMScoreResponse.class);
-	    // Extraer los valores de los campos entity_did y config_id
-	    double trustScore = resp.getScore();
-	   	    
-	    // Imprimir los valores extraídos
-	    System.out.println("Trust Score received for the user: " + trustScore);
-		
+				
 		for (Policy p : politicas) {
-			if (trustScore > p.getMinTrustScore()) {
-				System.out.println("Trust Score successfully checked for the policy: "+p.getId()+"\n");
-			}else {allMatches=false;}
+			System.out.println("Policies retrieved for "+ ar.getSar().getResource());
+			//if policies content the trust score then there's a request for PIP
+			if(p.getMinTrustScore()!=0.0) {
+				// Get trust score associated with the requester
+				String response=((PIPTest) pip).calculateTrustScore(ar.getDidRequester());
+				TSMScoreResponse resp=gson.fromJson(response, TSMScoreResponse.class);
+			    // Extract entity_did and config_id values
+			    double trustScore = resp.getScore();
+			   	    
+			    System.out.println("Trust Score received for the user: " + trustScore);
+			    if (trustScore > p.getMinTrustScore()) {
+					System.out.println("Trust Score successfully checked for the policy: "+p.getId()+"\n");
+				}else {allMatches=false;}
+			}else {System.out.println("Policy without a minimum Trust Score");}
 		}
 		
-		//Behavioural Score
+		//TODO: Behavioural Score checking and communication 
 		
 		
 		// Get the requester's VP
@@ -754,25 +759,20 @@ public class PDP implements PDPInterface {
 			System.out.println(
 					"The matching process has been successfully finished. Issuing Capability Token for requester...\n");
 			if(expirationInPolicy==0) { 
-				//default value
-			
-				// El tiempo de expiración del token en milisegundos (ejemplo: 3600000 ms = 1 hora)
-		        long expirationTimeInMillis = 123123123; // 
 
-		        // Obtener el tiempo actual en milisegundos desde la época (1970-01-01T00:00:00Z)
+		        long expirationTimeInMillis =  Long.parseLong(expiration); // default expiration value
+
+		        // current time in milliseconds 
 		        long currentTimeInMillis = System.currentTimeMillis();
 		        
-		        // Calcular el tiempo de expiración sumando los milisegundos de expiración
+		        // Calculating expiration time 
 		        long expirationInMillis = currentTimeInMillis + expirationTimeInMillis;
-
-		        // Convertir milisegundos a LocalDateTime
 		        LocalDateTime expirationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(expirationInMillis), ZoneId.systemDefault());
 
-		        // Formatear la fecha de expiración
+		        // Format expiration date
 		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		        String formattedExpiration = expirationDateTime.format(formatter);
 
-		        // Imprimir el mensaje con la fecha de expiración
 		        System.out.println("The Capability Token will be available until " + formattedExpiration);
 				
 			ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),
@@ -781,23 +781,13 @@ public class PDP implements PDPInterface {
 			}else {
 				//value "authtime" in the policy
 				String expstring=Long.toString(expirationInPolicy);
-				
-
-
-		        // Obtener el tiempo actual en milisegundos desde la época (1970-01-01T00:00:00Z)
+		       
 		        long currentTimeInMillis = System.currentTimeMillis();
-		        
-		        // Calcular el tiempo de expiración sumando los milisegundos de expiración
 		        long expirationInMillis = currentTimeInMillis + expirationInPolicy;
 
-		        // Convertir milisegundos a LocalDateTime
 		        LocalDateTime expirationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(expirationInMillis), ZoneId.systemDefault());
-
-		        // Formatear la fecha de expiración
 		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		        String formattedExpiration = expirationDateTime.format(formatter);
-
-		        // Imprimir el mensaje con la fecha de expiración
 		        System.out.println("The Capability Token will be available until " + formattedExpiration + "\n");
 				
 				ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),

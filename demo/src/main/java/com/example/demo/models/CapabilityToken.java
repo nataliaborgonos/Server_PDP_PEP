@@ -53,7 +53,7 @@ public class CapabilityToken {
 		this.id = UUID.randomUUID().toString().substring(0, 8);
 		long time = System.currentTimeMillis();
 		this.ii = String.valueOf(time);
-		this.is = "erat";
+		this.is = "TANGO";
 		this.su = didRequester;
 		this.de = didSP;
 		ArrayList<SimpleAccessRight> ar = new ArrayList<>();
@@ -71,7 +71,7 @@ public class CapabilityToken {
 		this.id = UUID.randomUUID().toString().substring(0, 8);
 		long time = System.currentTimeMillis();
 		this.ii = String.valueOf(time);
-		this.is = "erat";
+		this.is = "TANGO";
 		this.su = didRequester;
 		this.de = didSP;
 		ArrayList<SimpleAccessRight> ar = new ArrayList<>();

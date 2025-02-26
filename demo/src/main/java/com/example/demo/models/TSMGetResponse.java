@@ -9,10 +9,10 @@ public class TSMGetResponse {
 	 public String entity_did;
 	    public int id;
 	    public String name;
-	    public int minimum_value;
+	    public double minimum_value;
 	    public String description;
 	    public int buffer_size;
-	    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
+	    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
 	    public Date created;
 	    public JSONArray characteristics;
 		public String getEntity_did() {
@@ -33,10 +33,10 @@ public class TSMGetResponse {
 		public void setName(String name) {
 			this.name = name;
 		}
-		public int getMinimum_value() {
+		public double getMinimum_value() {
 			return minimum_value;
 		}
-		public void setMinimum_value(int minimum_value) {
+		public void setMinimum_value(double minimum_value) {
 			this.minimum_value = minimum_value;
 		}
 		public String getDescription() {
