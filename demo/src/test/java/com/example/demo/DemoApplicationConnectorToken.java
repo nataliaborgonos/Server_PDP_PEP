@@ -1004,7 +1004,7 @@ public class DemoApplicationConnectorToken {
 				        "        \"role\": \"leader\"\n" +
 				        "    },\n" +
 				        "    \"jsonBody\": {\n" +
-				        "        \"sensor\": \"sensorTests1\",\n" +
+				        "        \"sensor\": \"sensorTests3\",\n" +
 				        "        \"unit\": \"Celsius\",\n" +
 				        "        \"measure\": \"temperature\",\n" +
 				        "        \"values\": [\n" +
