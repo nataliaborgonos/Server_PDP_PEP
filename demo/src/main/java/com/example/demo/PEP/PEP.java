@@ -263,9 +263,9 @@ public class PEP implements PEPInterface {
 							os.write(input, 0, input.length);
 						}
 						
-						//201 CREATED Response
+						//201 CREATED Response or 200 OK
 						int responseCode = connection.getResponseCode();
-						if (responseCode == HttpURLConnection.HTTP_CREATED) {
+						if (responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_OK) {
 							BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 							String inputLine;
 							while ((inputLine = in.readLine()) != null) {
@@ -323,9 +323,9 @@ public class PEP implements PEPInterface {
 						os.write(input, 0, input.length);
 					}
 					
-					//201 CREATED Response
+					//201 CREATED Response or 200 OK
 					int responseCode = connection.getResponseCode();
-					if (responseCode == HttpURLConnection.HTTP_CREATED) {
+					if (responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_OK) {
 						BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 						String inputLine;
 						while ((inputLine = in.readLine()) != null) {
@@ -359,9 +359,9 @@ public class PEP implements PEPInterface {
 						os.write(input, 0, input.length);
 					}
 					
-					//201 CREATED Response
+					//201 CREATED Response or 200 OK
 					int responseCode = connection.getResponseCode();
-					if (responseCode == HttpURLConnection.HTTP_CREATED) {
+					if (responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_OK) {
 						BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 						String inputLine;
 						while ((inputLine = in.readLine()) != null) {

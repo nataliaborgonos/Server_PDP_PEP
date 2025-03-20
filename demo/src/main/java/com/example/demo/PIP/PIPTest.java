@@ -25,6 +25,7 @@ public class PIPTest implements PIPInterface{
 	}
 	public PIPTest(TrustScoreManager tsm) {
 		this.tsm=tsm;
+		this.ucba=new UCBA();
 		trustScores=new HashMap<>();
 	}
 	

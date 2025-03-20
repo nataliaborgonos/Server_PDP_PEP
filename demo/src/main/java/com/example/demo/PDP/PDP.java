@@ -43,6 +43,8 @@ import com.example.demo.models.Policy;
 import com.example.demo.models.Proof;
 import com.example.demo.models.TSMConfigResponse;
 import com.example.demo.models.TSMScoreResponse;
+import com.example.demo.models.UCBARequest;
+import com.example.demo.models.UCBAResponse;
 import com.example.demo.models.VCredential;
 import com.example.demo.models.VPresentation;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -74,13 +76,15 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class PDP implements PDPInterface {
 
-	@Value("${app.VERIFIER_IP:ips-verifier.testing1.k8s-cluster.tango.rid-intrasoft.eu}")
+	//@Value("${app.VERIFIER_IP:ips-verifier.testing1.k8s-cluster.tango.rid-intrasoft.eu}")
+	@Value("${app.VERIFIER_IP:ips-verifier.testing2.k8s-cluster.tango.rid-intrasoft.eu}")
 	static String ipVerifier;
 
 	@Value("${app.VERIFIER_PORT:8082}")
 	static String portVerifier;
-	
+
 	@Value("${app.VERIFIER_ENDPOINT:\"/.well-known/jwks\"}")
+//	@Value("${app.VERIFIER_ENDPOINT:\"/did/did.json\"}")
 	static String endpointVerifier;
 	
 	@Value("${app.PDP_KS: \"/app/crypto/serverErat.ks\"}")
@@ -125,7 +129,8 @@ public class PDP implements PDPInterface {
 	public PDP(PIPInterface pip, PAPInterface pap) {
 		ipVerifier = System.getenv("VERIFIER_IP");
 		if( System.getenv("VERIFIER_IP")==null) {
-			ipVerifier="ips-verifier.testing1.k8s-cluster.tango.rid-intrasoft.eu";
+			//ipVerifier="ips-verifier.testing1.k8s-cluster.tango.rid-intrasoft.eu";
+			ipVerifier="ips-verifier.testing2.k8s-cluster.tango.rid-intrasoft.eu";
 		}
 		
 		portVerifier = System.getenv("VERIFIER_PORT");
@@ -136,6 +141,7 @@ public class PDP implements PDPInterface {
 		endpointVerifier= System.getenv("VERIFIER_ENDPOINT");
 		if( System.getenv("VERIFIER_ENDPOINT")==null) {
 			endpointVerifier="/.well-known/jwks";
+			//endpointVerifier="/did/did.json";
 		}
 
 		keystore = System.getenv("PDP_KS");
@@ -461,9 +467,11 @@ public class PDP implements PDPInterface {
 				
 		for (Policy p : politicas) {
 			System.out.println("Policies retrieved for "+ ar.getSar().getResource());
+			
 			//if policies content the trust score then there's a request for PIP
 			if(p.getMinTrustScore()!=0.0) {
 				// Get trust score associated with the requester
+				try {
 				String response=((PIPTest) pip).calculateTrustScore(ar.getDidRequester());
 				TSMScoreResponse resp=gson.fromJson(response, TSMScoreResponse.class);
 			    // Extract entity_did and config_id values
@@ -473,12 +481,38 @@ public class PDP implements PDPInterface {
 			    if (trustScore > p.getMinTrustScore()) {
 					System.out.println("Trust Score successfully checked for the policy: "+p.getId()+"\n");
 				}else {allMatches=false;}
+				} catch (Exception e) {
+					System.err.println("The user does not have an associated trust score and the policy requires the user to meet a minimum trust score, register a trustworthiness configuration and try again.");
+					allMatches=false;
+				}
 			}else {System.out.println("Policy without a minimum Trust Score");}
+			
+			//if policies have minimum behavioural scores then there's a request for PIP
+			if(p.getMinBehaviouralScore()!=0.0) {
+				// Get behavioural score associated with the requester
+				try {
+					//Behavioural Score checking and communication 
+					UCBARequest ucbaRequest =new UCBARequest(ar.getDidSP(),ar.getDidRequester());
+					String response = ((PIPTest) pip).getBehaviouralScore(ucbaRequest);
+					UCBAResponse ucbaResponse=gson.fromJson(response, UCBAResponse.class);
+					
+					//extract behavioural score value
+					double behaviouralScore=ucbaResponse.getSimilarity();
+					System.out.println("Behavioural Score received for the user: "+behaviouralScore);
+					
+					//user behavioural score must be higher than the one included in the policy
+					if(behaviouralScore> p.getMinBehaviouralScore()) {
+						System.out.println("Behavioural Score successfully checked for the policy: "+p.getId()+"\n");
+					}else {allMatches=false;}
+				
+				} catch (Exception e) {
+					System.err.println("The user does not have an associated behavioural score and the policy requires the user to meet a minimum behavioural score, register a behavioural score and try again.");
+					allMatches=false;
+				}
+			}else {System.out.println("Policy without a minimum Behavioural Score");}
 		}
 		
-		//TODO: Behavioural Score checking and communication 
-		
-		
+			
 		// Get the requester's VP
 		String token = ar.getToken();
 
@@ -492,7 +526,7 @@ public class PDP implements PDPInterface {
 		javax.json.JsonObject singleVcredential = null;
 		JsonObject verifiableCredentialJsonObject = null;
 		
-		jsonObject.getString("iss");
+		String origin = jsonObject.getString("iss");
 		jsonObject.getString("client_id");
 		jsonObject.getString("sub");
 		jsonObject.getString("aud");
@@ -541,11 +575,14 @@ public class PDP implements PDPInterface {
 
 		// Verify that the signing is correct
 		String kid = jsonObject.getString("kid");
+	            
 		
 		//Make a request to the Verifier to get the JWKS
+		boolean verificationResult=false;
 		String url = "https://"+ipVerifier+endpointVerifier;
-		    boolean verificationResult = verifier.verifyJwt(jwtString, url);
-		    
+		  
+		 verificationResult = verifier.verifyJwt(jwtString, url);
+		   
 		    if(verificationResult) {
 		    	System.out.println("Access token signature has been successfully verified.\n");
 		    }else {System.out.println("There was an error verifying Access token signature.\n"); allMatches=false; }

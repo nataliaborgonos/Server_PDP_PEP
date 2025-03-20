@@ -17,13 +17,23 @@ public class Policy {
     private List<SimpleAccessRight> accessRights;
     private long authTime;
     private double minTrustScore;
+    private double minBehaviouralScore;
     private Constraint constraints;
+	
 	
 	@Override
 	public String toString() {
-		return "Policy [id=" + id + ", name=" +name+ ", purpose=" + purpose + ", serviceProvider=" + serviceProvider
+		return "Policy [id=" + id + ", name=" + name + ", purpose=" + purpose + ", serviceProvider=" + serviceProvider
 				+ ", accessRights=" + accessRights + ", authTime=" + authTime + ", minTrustScore=" + minTrustScore
-				+ ", constraints=" + constraints + "]";
+				+ ", minBehaviouralScore=" + minBehaviouralScore + ", constraints=" + constraints + "]";
+	}
+
+	public double getMinBehaviouralScore() {
+		return minBehaviouralScore;
+	}
+
+	public void setMinBehaviouralScore(double minBehaviouralScore) {
+		this.minBehaviouralScore = minBehaviouralScore;
 	}
 
 	public Policy(int id) {

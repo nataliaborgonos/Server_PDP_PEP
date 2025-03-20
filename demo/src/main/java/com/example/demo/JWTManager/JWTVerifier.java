@@ -1,19 +1,33 @@
 package com.example.demo.JWTManager;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.cert.Certificate;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jose.shaded.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
@@ -51,18 +65,28 @@ public class JWTVerifier {
 		}
 	}
 	
+
+    
 	//Method for verifying JWT using the public key from verifier
 	    public boolean verifyJwt(String jwtString, String jwksUrl) {
 	        try {
 	            // Obtain JWKS
 	            JWKSource<SecurityContext> keySource = new RemoteJWKSet<>(new URL(jwksUrl));
+	          
+	            JWKSet jwkSet = JWKSet.load(new URL(jwksUrl).openStream());
+	          
 
-	            
 	            // Parse the JWT
 	            SignedJWT jwt = SignedJWT.parse(jwtString);
-	            
+
+				for (JWK key : jwkSet.getKeys()) {
+				    if (key.getKeyID().equals(jwt.getHeader().getKeyID())) {
+				        System.out.println("Matching JWK Found: " + key.toJSONString());
+				    }
+				}
+
 	            // Create a key selector based on the JWKS
-	            JWSVerificationKeySelector<SecurityContext> selector = new JWSVerificationKeySelector<>(jwt.getHeader().getAlgorithm(), keySource);
+	            JWSVerificationKeySelector<SecurityContext> selector = new JWSVerificationKeySelector<>(JWSAlgorithm.RS256, keySource);
 
 	            // Create a JWT  processor with the key selector 
 	            ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
@@ -74,10 +98,9 @@ public class JWTVerifier {
 				} catch (Exception e) {
 					// TODO: handle exception
 					System.err.println("The process of verifying JWT failed.");
+					e.printStackTrace();
 					return false;
 				}
-	            
-	            
 
 	            // If the verification is successful
 	            return true;
@@ -89,6 +112,8 @@ public class JWTVerifier {
 	            return false;
 	        }
 	    }
+	    
+	    
 
 		//Method for verifying JWT using the PDP public key 
 	    public boolean verifyJwtLived(String jwtString) {
@@ -104,7 +129,7 @@ public class JWTVerifier {
 	            byte[] signatureBytes = Base64.getUrlDecoder().decode(parts[2]);
 
 	            // Verify signature
-	            Signature signature = Signature.getInstance("SHA256withRSA");  // Asegúrate de usar el algoritmo adecuado
+	            Signature signature = Signature.getInstance("SHA256withRSA");  
 
 	        //Load Public key from keystore
 	            KeyStore keyStore = KeyStore.getInstance("JKS");

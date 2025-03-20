@@ -85,7 +85,7 @@ public class PolicyStore {
 						policy3.setAccessRights(accessRights2);
 						policy3.setAuthTime(123123123);
 						policy3.setMinTrustScore(0.5);
-						
+						policy3.setMinBehaviouralScore(0.5);
 						// Field for revealing id
 						Field field7=new Field();
 						List<String> path7=new ArrayList<String>();
@@ -157,7 +157,7 @@ public class PolicyStore {
 								accessRights4.add(sar4);
 								policy5.setAccessRights(accessRights4);
 								policy5.setAuthTime(123123123);
-								policy5.setMinTrustScore(0.5);
+								//policy5.setMinBehaviouralScore(0.5);
 								
 								// Field for revealing id
 								Field field9=new Field();

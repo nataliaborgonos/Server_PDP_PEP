@@ -19,10 +19,10 @@ public class UCBA {
 	//Returns true or false whether the user is authenticated
 	public String auth(UCBARequest req) {
 		        try {
-		            // Crear el cliente HTTP
+		         
 		            HttpClient client = HttpClient.newBuilder().build();
 
-		            // Convertir el objeto inputRequest a JSON usando Gson
+
 		            Gson gson = new Gson();
 		            String input = gson.toJson(req);
 		            // Crear la solicitud POST
@@ -33,12 +33,12 @@ public class UCBA {
 		                    .POST(HttpRequest.BodyPublishers.ofString(input, StandardCharsets.UTF_8))
 		                    .build();
 
-		            // Enviar la solicitud y obtener la respuesta
+	
 		            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-		            // Verificar el código de estado y manejar la respuesta
-		            if (response.statusCode() == 200) {
-		                System.out.println("Authentication successful.");
+
+		            if (response.statusCode() == 201) {
+		                System.out.println("Authentication from UCBA successful.");
 		                return response.body();
 		            } else {
 		                System.out.println("Failed to authenticate. Response code: " + response.statusCode());
