@@ -55,6 +55,7 @@ import com.example.demo.models.TSMGetResponse;
 import com.example.demo.models.TSMPOSRequest;
 import com.example.demo.models.TSMScoreRequest;
 import com.example.demo.models.CapabilityToken;
+import com.example.demo.models.GetPoliciesRequest;
 import com.example.demo.models.Policy;
 import com.example.demo.models.PolicyRequest;
 import com.example.demo.requester.Requester;
@@ -394,7 +395,19 @@ public class Controller {
 
 	//}*/
 	
-
+	@PostMapping("/get-policies")
+	public String getPolicies(@RequestBody GetPoliciesRequest request) {
+		 // Process short lived token -> verify signature
+		 String policies="";
+        boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth());
+        System.out.println(isValid);
+		if(isValid) {
+			 policies=((PAPTest)pap).printPolicies();
+			 System.out.println(policies);
+		}
+		return policies;
+		}
+	
 @PostMapping("/auth")
 public String handleAuthPolicyRequest(@RequestHeader("Authorization") String authorizationHeader, @RequestBody AuthPolicyRequest request) {  
        // header token Bearer
@@ -588,6 +601,8 @@ public String trustScoreObjectives(@RequestBody TSMPOSRequest request) {
 	String response=((PIPTest) pip).addProtectiveObjectives(request);
 	return response;
 }
+
+
 
 	public PDP getPdp() {
 		return pdp;

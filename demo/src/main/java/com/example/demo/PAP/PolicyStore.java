@@ -266,6 +266,28 @@ public class PolicyStore {
 		}
 
 	}	
+
+	public String printPolicies() {
+		String response = "Policies stored in the Policy Administration Point: \n";
+		for (Map.Entry<Resource, ArrayList<Policy>> outerEntry : policies.entrySet()) {
+		    Resource resource1 = outerEntry.getKey(); 
+		    ArrayList<Policy> policyList = outerEntry.getValue(); 
+
+		    response=response+"Resource: " + resource1.getNombre() + "\n" + "Associated policies: \n"; 
+
+		    // Recorremos la lista de políticas
+		    for (Policy policy1 : policyList) {
+		    	  response=response + "\n Policy: " + policy1 + "\n"; 
+		    	  response=response+" for performing actions: ";
+		        for (SimpleAccessRight sar : policy1.getAccessRights()) {
+		        	  response=response+sar.getAction();
+		        }
+		        response=response+"\n";
+		    }
+		}
+		return response;
+	}
+	
 	
 	public int getPolicyCounter() {
 		return policyCounter;
