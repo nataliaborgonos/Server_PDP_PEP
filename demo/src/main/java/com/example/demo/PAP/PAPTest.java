@@ -33,6 +33,10 @@ public class PAPTest implements PAPInterface{
 	public String printPolicies() {
 		return policyStore.printPolicies();
 	}
+	public void deletePolicy(String policyID){
+		policyStore.deletePolicy(policyID);
+	}
+	
 	/*
 	@Override
 	public void addPolicy(String didSP, Policy policy, String resource) {

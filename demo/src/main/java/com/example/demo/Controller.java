@@ -55,6 +55,7 @@ import com.example.demo.models.TSMGetResponse;
 import com.example.demo.models.TSMPOSRequest;
 import com.example.demo.models.TSMScoreRequest;
 import com.example.demo.models.CapabilityToken;
+import com.example.demo.models.DeletePolicyRequest;
 import com.example.demo.models.GetPoliciesRequest;
 import com.example.demo.models.Policy;
 import com.example.demo.models.PolicyRequest;
@@ -407,6 +408,22 @@ public class Controller {
 		}
 		return policies;
 		}
+	
+	@PostMapping("/delete-policy")
+	public ResponseEntity<String> deletePolicy(@RequestBody DeletePolicyRequest request) {
+		 // Process short lived token -> verify signature
+        boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth());
+        System.out.println(isValid);
+		if(isValid) {
+			((PAPTest)pap).deletePolicy(request.getPolicyID());
+			return ResponseEntity.status(HttpStatus.OK).body("\"Policy: \"" + request.getPolicyID() +" \" deleted from the Policy Administration Point. "+" \n" );
+			
+		}
+		return null;
+		
+		}
+	
+	
 	
 @PostMapping("/auth")
 public String handleAuthPolicyRequest(@RequestHeader("Authorization") String authorizationHeader, @RequestBody AuthPolicyRequest request) {  

@@ -2,6 +2,7 @@ package com.example.demo.PAP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -288,6 +289,33 @@ public class PolicyStore {
 		return response;
 	}
 	
+	public void deletePolicy(String policyID) {
+	    for (Resource r : policies.keySet()) {
+	        ArrayList<Policy> pols = policies.get(r);
+	        Iterator<Policy> it = pols.iterator();
+
+	        while (it.hasNext()) {
+	            Policy p = it.next();
+	            if (p.getId().equals(policyID)) {
+	                it.remove(); 
+	            }
+	        }
+
+	        policies.replace(r, pols);
+	    }
+
+	    System.out.println("LIST OF POLICIES HAS BEEN UPDATED:");
+	    for (Map.Entry<Resource, ArrayList<Policy>> outerEntry : policies.entrySet()) {
+	        Resource resource1 = outerEntry.getKey(); 
+	        ArrayList<Policy> policyList = outerEntry.getValue(); 
+
+	        System.out.println("Resource: " + resource1.getNombre()); 
+	        for (Policy policy1 : policyList) {
+	            System.out.println("  Policy: " + policy1); 
+	        }
+	    }
+	}
+
 	
 	public int getPolicyCounter() {
 		return policyCounter;
