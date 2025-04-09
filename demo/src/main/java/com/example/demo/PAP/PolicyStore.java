@@ -234,7 +234,7 @@ public class PolicyStore {
 		//Searchs if the resource already has policies associated
 		     for(Resource r : policies.keySet()){
 		     //The resource have policies, so the new policy is added in its list
-		     	if(r.getNombre()==resource){
+		     	if(r.getNombre().equals(resource)){
 		     		resourceFound=true;
 		     		ArrayList<Policy> pols=new ArrayList<>();
 		     		pols=policies.get(r);
@@ -270,11 +270,14 @@ public class PolicyStore {
 
 	public String printPolicies() {
 		String response = "Policies stored in the Policy Administration Point: \n";
+		
+		if(policies.isEmpty()) {return null;}
+		
 		for (Map.Entry<Resource, ArrayList<Policy>> outerEntry : policies.entrySet()) {
 		    Resource resource1 = outerEntry.getKey(); 
 		    ArrayList<Policy> policyList = outerEntry.getValue(); 
 
-		    response=response+"Resource: " + resource1.getNombre() + "\n" + "Associated policies: \n"; 
+		    response=response+" \n Resource: " + resource1.getNombre() + "\n" + "Associated policies: \n"; 
 
 		    // Recorremos la lista de políticas
 		    for (Policy policy1 : policyList) {
@@ -289,7 +292,10 @@ public class PolicyStore {
 		return response;
 	}
 	
-	public void deletePolicy(String policyID) {
+	public boolean deletePolicy(String policyID) {
+		boolean deleted=false;
+
+	    List<Resource> resourcesToRemove = new ArrayList<>();
 	    for (Resource r : policies.keySet()) {
 	        ArrayList<Policy> pols = policies.get(r);
 	        Iterator<Policy> it = pols.iterator();
@@ -297,13 +303,23 @@ public class PolicyStore {
 	        while (it.hasNext()) {
 	            Policy p = it.next();
 	            if (p.getId().equals(policyID)) {
-	                it.remove(); 
+	                it.remove();
+	                deleted=true;
 	            }
 	        }
 
+	        if (pols.isEmpty()) {
+	            resourcesToRemove.add(r); // Marcar para eliminar luego
+	        } else {
 	        policies.replace(r, pols);
 	    }
+	    }
 
+	    for (Resource r : resourcesToRemove) {
+	        policies.remove(r);
+	    }
+	    
+	    if(deleted) {
 	    System.out.println("LIST OF POLICIES HAS BEEN UPDATED:");
 	    for (Map.Entry<Resource, ArrayList<Policy>> outerEntry : policies.entrySet()) {
 	        Resource resource1 = outerEntry.getKey(); 
@@ -314,6 +330,8 @@ public class PolicyStore {
 	            System.out.println("  Policy: " + policy1); 
 	        }
 	    }
+	    return true;
+	    }else {return false;}
 	}
 
 	

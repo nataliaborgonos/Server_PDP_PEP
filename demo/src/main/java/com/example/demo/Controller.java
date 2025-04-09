@@ -397,29 +397,32 @@ public class Controller {
 	//}*/
 	
 	@PostMapping("/get-policies")
-	public String getPolicies(@RequestBody GetPoliciesRequest request) {
+	public ResponseEntity<String> getPolicies(@RequestBody GetPoliciesRequest request) {
 		 // Process short lived token -> verify signature
 		 String policies="";
-        boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth());
+        boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth(),"/api/get-policies" );
         System.out.println(isValid);
 		if(isValid) {
 			 policies=((PAPTest)pap).printPolicies();
 			 System.out.println(policies);
+			 if(policies!= null) {
+				 return ResponseEntity.status(HttpStatus.OK).body( policies + " \n" );
+			 }else {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: 500 Internal Server Error");}
 		}
-		return policies;
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: 403 Forbidden");
 		}
 	
 	@PostMapping("/delete-policy")
 	public ResponseEntity<String> deletePolicy(@RequestBody DeletePolicyRequest request) {
 		 // Process short lived token -> verify signature
-        boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth());
+        boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth(), "/api/delete-policy");
         System.out.println(isValid);
 		if(isValid) {
-			((PAPTest)pap).deletePolicy(request.getPolicyID());
-			return ResponseEntity.status(HttpStatus.OK).body("\"Policy: \"" + request.getPolicyID() +" \" deleted from the Policy Administration Point. "+" \n" );
-			
+			boolean deleted=((PAPTest)pap).deletePolicy(request.getPolicyID());
+			if(deleted) {return ResponseEntity.status(HttpStatus.OK).body("\"Policy: \"" + request.getPolicyID() +" \" deleted from the Policy Administration Point. "+" \n" );
+			}else {return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: 400 Bad Request");}
 		}
-		return null;
+		 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: 403 Forbidden");
 		
 		}
 	
@@ -431,7 +434,7 @@ public String handleAuthPolicyRequest(@RequestHeader("Authorization") String aut
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
             // Process token -> verify signature
-            boolean isValid=jwtVerifier.verifyJwtLived(token);
+            boolean isValid=jwtVerifier.verifyJwtLived(token,"long-lived");
             if(isValid==true) {
             	System.out.println("Verified signature of Bearer Token");
             	// Generate short-lived JWT
@@ -512,10 +515,11 @@ public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
 	        + "  \"required\": [\"purpose\", \"serviceProvider\", \"accessRights\", \"constraints\"]"
 	        + "}"; 
 	boolean policyOK=false;
+	boolean matchResource=true;
 	if(pdpConfig.equals("test")) {
 	
 		 // Process short lived token -> verify signature
-        boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth());
+        boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth(), "/api/new-policy");
         System.out.println(isValid);
 		if(isValid) {
 			try {
@@ -536,6 +540,10 @@ public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
 				p.setMinTrustScore(mintrustScoreDouble); // default value
 				}
 			
+			//Check policy resource matches with the one that is in the request
+			for (SimpleAccessRight sar : p.getAccessRights()) {
+				if(!sar.getResource().equals(request.getResource())) {matchResource=false;}
+			}
 				
 			//Check if the policy format is correct
 			try {
@@ -559,7 +567,7 @@ public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
 	            e.printStackTrace();
 	        }
 			
-			if(policyOK) {
+			if(policyOK && matchResource) {
 				//Policy p=gson.fromJson(request.getPolicy(), Policy.class);
 			pap.addPolicy(p, request.getResource());
 			System.out.println("Policy: " + request.getPolicy() + " added to the Policy Administration Point for the resource "+request.getResource());
