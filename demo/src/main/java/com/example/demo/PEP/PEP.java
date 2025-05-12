@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.nio.file.spi.FileSystemProvider;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -33,6 +34,7 @@ import com.example.demo.models.CapabilityToken;
 import com.example.demo.models.Resource;
 import com.example.demo.models.SimpleAccessRight;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JsonLoader;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.main.JsonSchema;
@@ -82,9 +84,9 @@ public class PEP implements PEPInterface {
 	// Sends request to PDP for verifying requester's ID, matching policies and
 	// trust score
 	public CapabilityToken sendRequest(String authRequestJson) {
-		CapabilityToken ct = pdp.verifyIdErat(authRequestJson);
+	//	CapabilityToken ct = pdp.verifyIdErat(authRequestJson);
 		pbk = pdp.getPbk();
-		return ct;
+		return null;
 	}
 
 	// Sends request to PDP for verifying requester's ID, matching policies and
@@ -221,9 +223,17 @@ public class PEP implements PEPInterface {
 
 				// Request does not contain query parameters -> GET /resource y POST /resource
 				if ((acc.getQueryParameters() == null) && (acc.getJsonBody()==null)) {
+					//JSONObject qp=acc.getCt().getQueryParameters();
+					
+				
+				//	Map<String, String> queryParams = jsonToMap(qp);
 					url_string = acc.getCt().getAr().get(0).getResource();
-					URL url = new URL(url_string);
-					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+					//url_string = buildUrlWithQueryParameters(url_string, queryParams);
+					
+					System.out.println("resource: "+url_string);
+					
+					
+					HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
 					connection.setRequestMethod(acc.getCt().getAr().get(0).getAction());
 					int responseCode = connection.getResponseCode();
 					if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -243,14 +253,70 @@ public class PEP implements PEPInterface {
 					
 					//POST request 
 					if (acc.getCt().getAr().get(0).getAction().equals("POST")) {
-						Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
-						url_string = acc.getCt().getAr().get(0).getResource();
+						JSONObject qp=acc.getCt().getQueryParameters();
+						Map<String, String> queryParamsCt = jsonToMap(qp);
+						//Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
+						ObjectMapper mapper = new ObjectMapper();
+						JsonNode qpNode = mapper.readTree(acc.getQueryParameters().toString());
+						
+						Map<String, String> queryParams = new HashMap<>();
+
+						if (qpNode != null && qpNode.isObject()) {
+						    Iterator<Map.Entry<String, JsonNode>> fields = qpNode.fields();
+						    while (fields.hasNext()) {
+						        Map.Entry<String, JsonNode> field = fields.next();
+						        String key = field.getKey();
+						        JsonNode valueNode = field.getValue();
+						        String value = valueNode.isNull() ? null : valueNode.asText(); 
+						        queryParams.put(key, value);
+						    }
+						}
+						
+						boolean qpOk=true;
+						for (Map.Entry<String, String> entry : queryParamsCt.entrySet()) {
+						    String key = entry.getKey();
+						    String expectedValue = entry.getValue();
+						    
+						    //Check the parameters and its values
+						    if (queryParams.containsKey(key)) {
+						    	
+						    	if(queryParams.get(key).equals("null")){
+						    		 System.out.println("Using the value taken from the access token: "+queryParamsCt.get(key));
+						    		 //replace the value with the one taken by the capabilityToken
+						    		 queryParams.remove(key);
+								     queryParams.put(key, queryParamsCt.get(key));
+						    	}else {
+						    		  //Verify that values match with the ones taken from the Access Token
+								    String actualValue = queryParams.get(key);
+								    if (!expectedValue.equals(actualValue)) {
+								        System.out.println("Different value for '" + key + "': expected = " + expectedValue + ", current = " + actualValue);
+								      qpOk=false;
+								        
+								    }
+						    	}
+						      
+						    }
+
+						  
+						}
+
+						if(qpOk) {url_string = acc.getCt().getAr().get(0).getResource();
 						url_string = buildUrlWithQueryParameters(url_string, queryParams);
 						
 						System.out.println("resource: "+url_string);
 						HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
 						connection.setRequestMethod("POST");
+						JSONObject headers = acc.getHeaders(); 
+
 						
+
+
+						for (String key : headers.keySet()) {
+						    String value = headers.get(key).toString();
+						    if(key.equals("fiware-service") || key.equals("fiware-servicepath") || key.equals("accept")) {connection.setRequestProperty(key, value);
+						    System.out.println(" Using headers -> " + key + ": " + value);}
+						    
+						}
 						//Attach query parameters as a JSON body
 						connection.setRequestProperty("Content-Type", "application/json");
 						connection.setDoOutput(true); 
@@ -276,9 +342,60 @@ public class PEP implements PEPInterface {
 							found = false;
 							System.out.println("Request not worked. Response code: " + responseCode);
 						}
+						}else {found=false;}
+						
 
 					} else { //GET request 
-						Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
+						
+						JSONObject qp=acc.getCt().getQueryParameters();
+						Map<String, String> queryParamsCt = jsonToMap(qp);
+						//Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
+						ObjectMapper mapper = new ObjectMapper();
+						JsonNode qpNode = mapper.readTree(acc.getQueryParameters().toString());
+						
+						Map<String, String> queryParams = new HashMap<>();
+
+						if (qpNode != null && qpNode.isObject()) {
+						    Iterator<Map.Entry<String, JsonNode>> fields = qpNode.fields();
+						    while (fields.hasNext()) {
+						        Map.Entry<String, JsonNode> field = fields.next();
+						        String key = field.getKey();
+						        JsonNode valueNode = field.getValue();
+						        String value = valueNode.isNull() ? null : valueNode.asText(); 
+						        queryParams.put(key, value);
+						    }
+						}
+						
+						boolean qpOk=true;
+						for (Map.Entry<String, String> entry : queryParamsCt.entrySet()) {
+						    String key = entry.getKey();
+						    String expectedValue = entry.getValue();
+						    
+						    //Check the parameters and its values
+						    if (queryParams.containsKey(key)) {
+						    	
+						    	if(queryParams.get(key).equals("null")){
+						    		 System.out.println("Using the value taken from the access token: "+queryParamsCt.get(key));
+						    		 //replace the value with the one taken by the capabilityToken
+						    		 queryParams.remove(key);
+								     queryParams.put(key, queryParamsCt.get(key));
+						    	}else {
+						    		  //Verify that values match with the ones taken from the Access Token
+								    String actualValue = queryParams.get(key);
+								    if (!expectedValue.equals(actualValue)) {
+								        System.out.println("Different value for '" + key + "': expected = " + expectedValue + ", current = " + actualValue);
+								      qpOk=false;
+								        
+								    }
+						    	}
+						      
+						    }
+
+						  
+						}
+
+						if(qpOk) 
+						{
 						url_string = acc.getCt().getAr().get(0).getResource();
 						//Generate URL including the query parameters
 						url_string = buildUrlWithQueryParameters(url_string, queryParams);
@@ -287,6 +404,17 @@ public class PEP implements PEPInterface {
 						
 						HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
 						connection.setRequestMethod(acc.getCt().getAr().get(0).getAction());
+						JSONObject headers = acc.getHeaders(); 
+
+						
+
+
+for (String key : headers.keySet()) {
+    String value = headers.get(key).toString();
+    if(key.equals("fiware-service") || key.equals("fiware-servicepath") || key.equals("accept")) {connection.setRequestProperty(key, value);
+    System.out.println(" Using headers -> " + key + ": " + value);}
+    
+}
 
 						int responseCode = connection.getResponseCode();
 						if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -301,12 +429,18 @@ public class PEP implements PEPInterface {
 							System.out.println(responseCode);
 							System.out.println("Request not worked. Response code: " + responseCode);
 						}
-					
+						}else {found=false;}
 					}
 				} else if((acc.getQueryParameters() == null) && (acc.getJsonBody()!=null)){ //POST /resource {jsonBody} 
+					//JSONObject qp=acc.getCt().getQueryParameters();
+					
+					
+					//Map<String, String> queryParams = jsonToMap(qp);
 					url_string = acc.getCt().getAr().get(0).getResource();
+					//url_string = buildUrlWithQueryParameters(url_string, queryParams);
 					
 					System.out.println("resource: "+url_string);
+					
 					
 					HttpURLConnection connection = (HttpURLConnection) new URL(url_string).openConnection();
 					connection.setRequestMethod("POST"); //only the POST can attach a jsonBody
@@ -338,7 +472,40 @@ public class PEP implements PEPInterface {
 					}
 	
 		} else if((acc.getQueryParameters() != null) && (acc.getJsonBody()!=null)){ //POST /resource?id=1 {jsonBody} 
-					Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
+			JSONObject qp=acc.getCt().getQueryParameters();
+			Map<String, String> queryParamsCt = jsonToMap(qp);
+			Map<String, String> queryParams = jsonToMap(acc.getQueryParameters());
+			
+			
+			boolean qpOk=true;
+			for (Map.Entry<String, String> entry : queryParamsCt.entrySet()) {
+			    String key = entry.getKey();
+			    String expectedValue = entry.getValue();
+			    
+			    //Check the parameters and its values
+			    if (queryParams.containsKey(key)) {
+			    	
+			    	if(queryParams.get(key).equals("null")){
+			    		 System.out.println("Using the value taken from the access token: "+queryParamsCt.get(key));
+			    		 //replace the value with the one taken by the capabilityToken
+			    		 queryParams.remove(key);
+					     queryParams.put(key, queryParamsCt.get(key));
+			    	}else {
+			    		  //Verify that values match with the ones taken from the Access Token
+					    String actualValue = queryParams.get(key);
+					    if (!expectedValue.equals(actualValue)) {
+					        System.out.println("Different value for '" + key + "': expected = " + expectedValue + ", current = " + actualValue);
+					      qpOk=false;
+					        
+					    }
+			    	}
+			      
+			    }
+
+			  
+			}
+
+			if(qpOk) {
 					url_string =  acc.getCt().getAr().get(0).getResource();
 					url_string = buildUrlWithQueryParameters(url_string, queryParams);
 					
@@ -373,6 +540,7 @@ public class PEP implements PEPInterface {
 						 System.out.println("Conflict: " + response.toString());
 						System.out.println("Request not worked. Response code: " + responseCode);
 					}
+					}else {found=false;}
 		}
 			} catch (IOException e) {
 				e.printStackTrace();

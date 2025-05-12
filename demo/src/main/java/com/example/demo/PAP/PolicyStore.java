@@ -233,11 +233,12 @@ public class PolicyStore {
 		}else {
 		//Searchs if the resource already has policies associated
 		     for(Resource r : policies.keySet()){
-		     //The resource have policies, so the new policy is added in its list
+		     //The resource have policies, so the new policy is added in its list 
 		     	if(r.getNombre().equals(resource)){
 		     		resourceFound=true;
 		     		ArrayList<Policy> pols=new ArrayList<>();
 		     		pols=policies.get(r);
+		     		
 		     		pols.add(policy);
 		     		policies.put(r,pols);
 		     	}
@@ -253,14 +254,14 @@ public class PolicyStore {
 		     }
 		}
 		System.out.println("LIST OF POLICIES HAS BEEN UPDATED: ");
-		// Recorremos el Map<String, ArrayList<Policy>>
+		
 		for (Map.Entry<Resource, ArrayList<Policy>> outerEntry : policies.entrySet()) {
 		    Resource resource1 = outerEntry.getKey(); 
 		    ArrayList<Policy> policyList = outerEntry.getValue(); 
 
 		    System.out.println("Resource: " + resource1.getNombre()); 
 
-		    // Recorremos la lista de políticas
+		 
 		    for (Policy policy1 : policyList) {
 		        System.out.println("  Policy: " + policy1); 
 		    }
@@ -279,7 +280,7 @@ public class PolicyStore {
 
 		    response=response+" \n Resource: " + resource1.getNombre() + "\n" + "Associated policies: \n"; 
 
-		    // Recorremos la lista de políticas
+		   
 		    for (Policy policy1 : policyList) {
 		    	  response=response + "\n Policy: " + policy1 + "\n"; 
 		    	  response=response+" for performing actions: ";
@@ -295,6 +296,8 @@ public class PolicyStore {
 	public boolean deletePolicy(String policyID) {
 		boolean deleted=false;
 
+		// Search the policy and delete it from the list of policies associated with the resource
+		
 	    List<Resource> resourcesToRemove = new ArrayList<>();
 	    for (Resource r : policies.keySet()) {
 	        ArrayList<Policy> pols = policies.get(r);
@@ -309,7 +312,7 @@ public class PolicyStore {
 	        }
 
 	        if (pols.isEmpty()) {
-	            resourcesToRemove.add(r); // Marcar para eliminar luego
+	            resourcesToRemove.add(r); 
 	        } else {
 	        policies.replace(r, pols);
 	    }
@@ -317,6 +320,13 @@ public class PolicyStore {
 
 	    for (Resource r : resourcesToRemove) {
 	        policies.remove(r);
+	        List<Resource> toRemove = new ArrayList<>();
+	        for (Resource r1 : resources) {
+	            if (r1.equals(r)) {
+	                toRemove.add(r1);
+	            }
+	        }
+	        resources.removeAll(toRemove);
 	    }
 	    
 	    if(deleted) {

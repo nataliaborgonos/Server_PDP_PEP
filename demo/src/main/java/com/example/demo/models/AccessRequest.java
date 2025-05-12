@@ -10,6 +10,16 @@ public class AccessRequest {
 	private SimpleAccessRight sar;
 	private JSONObject queryParameters;
 	private JSONObject jsonBody;
+	private JSONObject headers;
+	
+
+	public JSONObject getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(JSONObject headers) {
+		this.headers = headers;
+	}
 
 	public JSONObject getJsonBody() {
 		return jsonBody;
@@ -28,6 +38,7 @@ public class AccessRequest {
 		this.sar = sar;
 		this.queryParameters=queryParameters;
 	}
+	
 
 	/* GETTER AND SETTER METHODS */
 	public CapabilityToken getCt() {

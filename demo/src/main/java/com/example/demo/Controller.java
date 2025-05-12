@@ -59,6 +59,7 @@ import com.example.demo.models.DeletePolicyRequest;
 import com.example.demo.models.GetPoliciesRequest;
 import com.example.demo.models.Policy;
 import com.example.demo.models.PolicyRequest;
+import com.example.demo.models.RegisterVerifierRequest;
 import com.example.demo.requester.Requester;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -369,10 +370,16 @@ public class Controller {
 	}
 
 	@PostMapping("/access-with-token")
-	public String accessWithToken(@RequestBody AccessRequest request) {
-
+	public String accessWithToken(@RequestBody AccessRequest request, @RequestHeader Map<String, String> allHeaders) {
+		   JSONObject headersJson = new JSONObject();
+		    
+		    for (Map.Entry<String, String> entry : allHeaders.entrySet()) {
+		        headersJson.put(entry.getKey(), entry.getValue());
+		    }
+		    request.setHeaders(headersJson); 
 		// Verify capability token
 		String requestJson = gson.toJson(request);
+		System.out.println(requestJson);
 		//System.out.println(requestJson);
 		String response = pep.validateCapabilityToken(requestJson);
 
@@ -396,6 +403,18 @@ public class Controller {
 
 	//}*/
 	
+	@PostMapping("/register-verifier")
+	public ResponseEntity<String> registerVerifier(@RequestBody RegisterVerifierRequest request) {
+		boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth(),"/api/register-verifier" );
+		if(isValid) {
+			if(pdp.registerVerifier(request.getDomain(), request.getVerifier())) {
+				return ResponseEntity.status(HttpStatus.CREATED).body("Domain: "+ request.getDomain() + " has been successfully associated with Verifier: " + request.getVerifier());
+			}else {ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: 400 Bad Request");}
+		}
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: 403 Forbidden");
+	}
+	
+	
 	@PostMapping("/get-policies")
 	public ResponseEntity<String> getPolicies(@RequestBody GetPoliciesRequest request) {
 		 // Process short lived token -> verify signature
@@ -407,7 +426,7 @@ public class Controller {
 			 System.out.println(policies);
 			 if(policies!= null) {
 				 return ResponseEntity.status(HttpStatus.OK).body( policies + " \n" );
-			 }else {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: 500 Internal Server Error");}
+			 }else {return ResponseEntity.status(HttpStatus.NO_CONTENT).body( "There are no policies stored in the Policy Administrator Point: 402 No Content \n" );}
 		}
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: 403 Forbidden");
 		}
@@ -416,11 +435,11 @@ public class Controller {
 	public ResponseEntity<String> deletePolicy(@RequestBody DeletePolicyRequest request) {
 		 // Process short lived token -> verify signature
         boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth(), "/api/delete-policy");
-        System.out.println(isValid);
+    
 		if(isValid) {
 			boolean deleted=((PAPTest)pap).deletePolicy(request.getPolicyID());
 			if(deleted) {return ResponseEntity.status(HttpStatus.OK).body("\"Policy: \"" + request.getPolicyID() +" \" deleted from the Policy Administration Point. "+" \n" );
-			}else {return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: 400 Bad Request");}
+			}else {return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: 404 Not Found");}
 		}
 		 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: 403 Forbidden");
 		
@@ -520,7 +539,7 @@ public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
 	
 		 // Process short lived token -> verify signature
         boolean isValid=jwtVerifier.verifyJwtLived(request.getJwtAuth(), "/api/new-policy");
-        System.out.println(isValid);
+        
 		if(isValid) {
 			try {
 			Policy p=gson.fromJson(request.getPolicy(), Policy.class);
@@ -571,7 +590,7 @@ public ResponseEntity<String> newPolicy(@RequestBody PolicyRequest request) {
 				//Policy p=gson.fromJson(request.getPolicy(), Policy.class);
 			pap.addPolicy(p, request.getResource());
 			System.out.println("Policy: " + request.getPolicy() + " added to the Policy Administration Point for the resource "+request.getResource());
-			return ResponseEntity.status(HttpStatus.OK).body("\"Policy: \"" + request.getPolicy() +" \" added to the Policy Administration Point for the resource \""+request.getResource() +" \" ");
+			return ResponseEntity.status(HttpStatus.CREATED).body("\"Policy: \"" + request.getPolicy() +" \" added to the Policy Administration Point for the resource \""+request.getResource() +" \" ");
 			}else {	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: 400 Bad Request");}
 			} catch (Exception e) {
 				System.out.println("Error: 400 Bad Request");

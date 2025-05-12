@@ -20,6 +20,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.nimbusds.jose.shaded.json.JSONObject;
+
 public class CapabilityToken {
 
 	/* ATTRIBUTES */
@@ -42,6 +44,7 @@ public class CapabilityToken {
 	String de;
 	String si;
 	ArrayList<SimpleAccessRight> ar;
+	JSONObject queryParameters;
 	long nb;
 	long na;
 
@@ -49,7 +52,7 @@ public class CapabilityToken {
 
 	/* CONSTRUCTORS */
 	public CapabilityToken(String keyStore, char[] keyStorePWD, String alias, String didRequester, String didSP,
-			SimpleAccessRight sar) {
+			SimpleAccessRight sar, JSONObject queryParameters) {
 		this.id = UUID.randomUUID().toString().substring(0, 8);
 		long time = System.currentTimeMillis();
 		this.ii = String.valueOf(time);
@@ -60,6 +63,7 @@ public class CapabilityToken {
 		SimpleAccessRight sarAdd = new SimpleAccessRight(sar.getAction(), sar.getResource());
 		ar.add(sarAdd);
 		this.ar = ar;
+		this.queryParameters=queryParameters;
 		this.nb = time;
 		// 60 min TTL
 		this.na = time + 60 * 60 * 1000;
@@ -67,7 +71,7 @@ public class CapabilityToken {
 	}
 	
 	public CapabilityToken(String keyStore, char[] keyStorePWD, String alias, String didRequester, String didSP,
-			SimpleAccessRight sar, String expiration ) {
+			SimpleAccessRight sar,JSONObject queryParameters, String expiration ) {
 		this.id = UUID.randomUUID().toString().substring(0, 8);
 		long time = System.currentTimeMillis();
 		this.ii = String.valueOf(time);
@@ -78,10 +82,19 @@ public class CapabilityToken {
 		SimpleAccessRight sarAdd = new SimpleAccessRight(sar.getAction(), sar.getResource());
 		ar.add(sarAdd);
 		this.ar = ar;
+		this.queryParameters=queryParameters;
 		this.nb = time;
 		// 60 min TTL
 		this.na = time + Long.parseLong(expiration);
 		this.si = getPrivKey(keyStore, keyStorePWD, alias);
+	}
+
+	public JSONObject getQueryParameters() {
+		return queryParameters;
+	}
+
+	public void setQueryParameters(JSONObject queryParameters) {
+		this.queryParameters = queryParameters;
 	}
 
 	public CapabilityToken() {

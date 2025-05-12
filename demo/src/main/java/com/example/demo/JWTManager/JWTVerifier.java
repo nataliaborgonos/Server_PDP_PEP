@@ -79,13 +79,15 @@ public class JWTVerifier {
 			SignedJWT jwt = SignedJWT.parse(jwtString);
 
 			for (JWK key : jwkSet.getKeys()) {
+				System.out.println("kid in the endpoint: "+key);
+				System.out.println("kid in the access token: "+jwt.getHeader().getKeyID());
 				if (key.getKeyID().equals(jwt.getHeader().getKeyID())) {
 					System.out.println("Matching JWK Found: " + key.toJSONString());
 				}
 			}
 
 			// Create a key selector based on the JWKS
-			JWSVerificationKeySelector<SecurityContext> selector = new JWSVerificationKeySelector<>(JWSAlgorithm.RS256,
+			JWSVerificationKeySelector<SecurityContext> selector = new JWSVerificationKeySelector<>(jwt.getHeader().getAlgorithm(),
 					keySource);
 
 			// Create a JWT processor with the key selector

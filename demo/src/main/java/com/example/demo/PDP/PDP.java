@@ -41,6 +41,7 @@ import com.example.demo.models.Field;
 import com.example.demo.models.Issuer;
 import com.example.demo.models.Policy;
 import com.example.demo.models.Proof;
+import com.example.demo.models.QueryParameters;
 import com.example.demo.models.TSMConfigResponse;
 import com.example.demo.models.TSMScoreResponse;
 import com.example.demo.models.UCBARequest;
@@ -62,6 +63,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.nimbusds.jose.shaded.json.JSONObject;
 
 import javax.json.*;
 
@@ -77,7 +79,8 @@ import org.springframework.beans.factory.annotation.Value;
 public class PDP implements PDPInterface {
 
 	//@Value("${app.VERIFIER_IP:ips-verifier.testing1.k8s-cluster.tango.rid-intrasoft.eu}")
-	@Value("${app.VERIFIER_IP:ips-verifier.testing2.k8s-cluster.tango.rid-intrasoft.eu}")
+	//@Value("${app.VERIFIER_IP:ips-verifier.testing2.k8s-cluster.tango.rid-intrasoft.eu}")
+	@Value("${app.VERIFIER_IP:ips-verifier.tango.nadiaplatform.com}")
 	static String ipVerifier;
 
 	@Value("${app.VERIFIER_PORT:8082}")
@@ -106,6 +109,8 @@ public class PDP implements PDPInterface {
 	PAPInterface pap;
 
 	String jwtString;
+	
+	Map <String,String> verifiers;
 
 	public String getJwtString() {
 		return jwtString;
@@ -130,7 +135,7 @@ public class PDP implements PDPInterface {
 		ipVerifier = System.getenv("VERIFIER_IP");
 		if( System.getenv("VERIFIER_IP")==null) {
 			//ipVerifier="ips-verifier.testing1.k8s-cluster.tango.rid-intrasoft.eu";
-			ipVerifier="ips-verifier.testing2.k8s-cluster.tango.rid-intrasoft.eu";
+			ipVerifier="ips-verifier.tango.nadiaplatform.com";
 		}
 		
 		portVerifier = System.getenv("VERIFIER_PORT");
@@ -168,10 +173,30 @@ public class PDP implements PDPInterface {
 		this.pip = pip;
 		this.pap = pap;
 		createdWallet = false;
+		this.verifiers=new HashMap<String, String>();
+		verifiers.put("ips.testing1.k8s-cluster.tango.rid-intrasoft.eu", "ips-verifier.testing1.k8s-cluster.tango.rid-intrasoft.eu");
+		verifiers.put("ips.tango.nadiaplatform.com", "ips-verifier.tango.nadiaplatform.com");
+		System.out.println("\n VERIFIERS LIST:\n");
+		for(String key : verifiers.keySet()) {
+			System.out.println("Domain: " + key);
+			System.out.println("Verifier: " + verifiers.get(key)+"\n");
+		}
 	}
 
 	/* METHODS */	
-
+	
+	public boolean registerVerifier(String domain, String verifier) {
+		System.out.println("\n VERIFIERS LIST HAS BEEN UPDATED:\n");
+		if(verifiers.put(domain, verifier) != null) {
+			for(String key : verifiers.keySet()) {
+				System.out.println("Domain: " + key);
+				System.out.println("Verifier: " + verifiers.get(key)+"\n");
+			}
+			return true;
+		}
+		return false;
+	}
+/*
 	public CapabilityToken verifyIdErat(String authRequestJson) {
 
 		CapabilityToken ct = null;
@@ -437,7 +462,7 @@ public class PDP implements PDPInterface {
 			System.out.println("The matching process failed...\n");
 		}
 		return ct;
-	}
+	}*/
 
 	// Method for formatting JSON
 	private String removeQuotesAndUnescape(String uncleanJson) {
@@ -456,6 +481,11 @@ public class PDP implements PDPInterface {
 		ar = gson.fromJson(goodJson, AuthRequestTango.class);
 
 		boolean allMatches = true;
+		boolean contains=false;
+		String valueMatched = null;
+		String idForQP = null;
+		String email=null;
+		JSONObject queryParams;
 
 		// Get policies needed to do the requested action in that resource
 		ArrayList<Policy> politicas = pap.getPolicies(ar.getDidSP(), ar.getSar().getResource(),
@@ -557,6 +587,15 @@ public class PDP implements PDPInterface {
 			//JsonParser jsonp = new JsonParser();
 			//verifiableCredentialJsonObject = jsonp.parse(vc).getAsJsonObject();
 			 verifiableCredentialJsonObject = JsonParser.parseString(vc).getAsJsonObject();
+			 JsonObject credentialSubject = verifiableCredentialJsonObject
+					    .getAsJsonObject("credentialSubject");
+
+					
+					idForQP = credentialSubject.get("id").getAsString();
+					
+					if(credentialSubject.has("email") && !credentialSubject.get("email").isJsonNull()) {
+						email= credentialSubject.get("email").getAsString();
+					}
 
 		}
 
@@ -576,11 +615,22 @@ public class PDP implements PDPInterface {
 		// Verify that the signing is correct
 		String kid = jsonObject.getString("kid");
 	            
+		String iss=jsonObject.getString("iss");
+		
+
+if (iss.startsWith("did:web:") && iss.endsWith(":did")) {
+    String domain = iss.substring("did:web:".length(), iss.length() - ":did".length());
+    if(verifiers.containsKey(domain)) {
+    	ipVerifier=verifiers.get(domain);
+    }
+} else {
+    System.out.println("Wrong format for issuer field.");
+}
 		
 		//Make a request to the Verifier to get the JWKS
 		boolean verificationResult=false;
 		String url = "https://"+ipVerifier+endpointVerifier;
-		  
+		  System.out.println(url);
 		 verificationResult = verifier.verifyJwt(jwtString, url);
 		   
 		    if(verificationResult) {
@@ -679,50 +729,61 @@ public class PDP implements PDPInterface {
 							String patron = f.getFilter().getPattern();
 							String patron1 = "\"" + patron + "\"";
 							for (String j : path) {
-
 								String[] partes1 = i.split("\\.");
 
 								// Hierarchy list
 								for (String parte1 : partes1) {
 									String parte2 = new String(parte1);
 									for (javax.json.JsonObject obj1 : listajsn) {
+										
 										javax.json.JsonObject credentialSubject = obj1
 												.getJsonObject("credentialSubject");
 										javax.json.JsonObject currentObj = obj1;
 								
 										// If the field is present, we take its value
 										if (!parte1.equals("$")) {
+											
 											if (credentialSubject.containsKey(parte1)) {
 												String parte11 = new String(parte1);
-											
 												JsonValue e = credentialSubject.get(parte11);
 												if (e.getValueType() == JsonValue.ValueType.OBJECT) {
-
 													if (e.asJsonObject() != null) {
 														objGlobal = e.asJsonObject();
 													}
 												} else if(e.getValueType()==JsonValue.ValueType.ARRAY) {
-												
 													arrayGlobal=e.asJsonArray();
 													
 													}
 												
-											} else if (objGlobal != null && objGlobal.containsKey(parte2)) {
-
-												JsonValue valor = objGlobal.get(parte2);
-												String valorS = valor.toString();
-
-												if (patron1.equals(valorS)) {
-
-												} else {
-													allMatches = false;
-												}
-											}else if(arrayGlobal!=null) {
+											} else if(arrayGlobal!=null) {
 												for(JsonValue v : arrayGlobal) {
-													
 													if(v.getValueType()== JsonValue.ValueType.OBJECT) {
 														if (v.asJsonObject() != null) {
 															objGlobal = v.asJsonObject();
+														}
+														if(objGlobal.containsKey(parte2)) {
+															if(objGlobal.get(parte2).getValueType()==JsonValue.ValueType.ARRAY) {
+																arrayGlobal=objGlobal.get(parte2).asJsonArray();
+																for(JsonValue vv : arrayGlobal) {
+																	 if (vv.getValueType() == JsonValue.ValueType.STRING) {
+																		String valorS=vv.toString();
+													                        if (patron1.equals(valorS)) {
+													                            contains=true;
+													                            valueMatched=valorS;
+													                            System.out.println("role matches: "+valueMatched);
+													                        } 
+																	 }
+																}	if(contains==false) {allMatches=false;}
+															}else {
+																JsonValue valor = objGlobal.get(parte2);
+										                        // Procesamos este valor de la misma forma que lo hacíamos antes
+										                        String valorS = valor.toString();
+										                        if (patron1.equals(valorS)) {
+										                            contains=true;
+										                            valueMatched=valorS;
+										                        } 
+										                        if(contains==false) {allMatches=false;}
+															}
 														}
 													}
 													else if(v.getValueType()==JsonValue.ValueType.ARRAY) {
@@ -793,6 +854,9 @@ public class PDP implements PDPInterface {
 		// If everything is OK, the Capability Token is issued
 
 		if (allMatches == true) {
+			
+			
+			
 			System.out.println(
 					"The matching process has been successfully finished. Issuing Capability Token for requester...\n");
 			if(expirationInPolicy==0) { 
@@ -812,8 +876,16 @@ public class PDP implements PDPInterface {
 
 		        System.out.println("The Capability Token will be available until " + formattedExpiration);
 				
+		         
+		        queryParams = new JSONObject();
+		        queryParams.put("id", idForQP);
+		        String cleanValueMatched = valueMatched.replace("\"", "");
+		        queryParams.put("role", cleanValueMatched);
+		        queryParams.put("email", email);
+		      System.out.println("queryParameters taken from the access token: "+queryParams);
+		        
 			ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),
-					ar.getSar(), expiration);
+					ar.getSar(),queryParams, expiration);
 			pbk = ct.getPublicKey();
 			}else {
 				//value "authtime" in the policy
@@ -826,9 +898,14 @@ public class PDP implements PDPInterface {
 		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		        String formattedExpiration = expirationDateTime.format(formatter);
 		        System.out.println("The Capability Token will be available until " + formattedExpiration + "\n");
-				
+		        queryParams = new JSONObject();
+		        queryParams.put("id", idForQP);
+		        queryParams.put("role", valueMatched);
+
+		      System.out.println("queryParameters taken from the access token: "+queryParams);
+		  
 				ct = new CapabilityToken(keystore, keystorepwd.toCharArray(), alias, ar.getDidRequester(), ar.getDidSP(),
-						ar.getSar(), expstring);
+						ar.getSar(), queryParams, expstring);
 				pbk = ct.getPublicKey();
 			}
 		} else {
