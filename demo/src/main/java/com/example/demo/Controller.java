@@ -256,7 +256,7 @@ public class Controller {
 	public String trying(@RequestBody AuthRequestConnectorToken request) {
 
 		String jwtString = request.getAccessToken();
-		
+		System.out.println("access token: "+jwtString);
 		pep.setJwtString(jwtString);
 		
 		// Parse JWT
