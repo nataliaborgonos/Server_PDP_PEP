@@ -409,7 +409,7 @@ public class Controller {
 		if(isValid) {
 			if(pdp.registerVerifier(request.getDomain(), request.getVerifier())) {
 				return ResponseEntity.status(HttpStatus.CREATED).body("Domain: "+ request.getDomain() + " has been successfully associated with Verifier: " + request.getVerifier());
-			}else {ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: 400 Bad Request");}
+			}
 		}
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: 403 Forbidden");
 	}

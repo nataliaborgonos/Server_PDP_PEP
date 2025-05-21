@@ -186,15 +186,18 @@ public class PDP implements PDPInterface {
 	/* METHODS */	
 	
 	public boolean registerVerifier(String domain, String verifier) {
-		System.out.println("\n VERIFIERS LIST HAS BEEN UPDATED:\n");
-		if(verifiers.put(domain, verifier) != null) {
-			for(String key : verifiers.keySet()) {
-				System.out.println("Domain: " + key);
-				System.out.println("Verifier: " + verifiers.get(key)+"\n");
-			}
-			return true;
-		}
-		return false;
+		 String previous = verifiers.put(domain, verifier);
+		    System.out.println("\n VERIFIERS LIST HAS BEEN UPDATED:\n");
+		    for (String key : verifiers.keySet()) {
+		        System.out.println("Domain: " + key);
+		        System.out.println("Verifier: " + verifiers.get(key) + "\n");
+		    }
+		    if (previous == null) {
+		        System.out.println("New verifier registered for domain: " + domain);
+		    } else {
+		        System.out.println("Updated verifier for domain: " + domain);
+		    }
+		    return true;
 	}
 /*
 	public CapabilityToken verifyIdErat(String authRequestJson) {
