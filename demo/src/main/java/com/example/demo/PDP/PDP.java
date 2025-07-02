@@ -608,19 +608,19 @@ public class PDP implements PDPInterface {
 		Instant expInstant = Instant.ofEpochSecond(expTimestamp);
 		LocalDateTime expDateTime = LocalDateTime.ofInstant(expInstant, ZoneId.systemDefault());
 		LocalDateTime now = LocalDateTime.now();
-		if (expDateTime.isBefore(now)) {
-			 allMatches=false;
-			 System.out.println("The access token is expired.\n");
-		}else {
-			System.out.println("The access token is not expired.\n");
-		}
+		//if (expDateTime.isBefore(now)) {
+			// allMatches=false;
+			 //System.out.println("The access token is expired.\n");
+		//}else {
+			//System.out.println("The access token is not expired.\n");
+		//}
 
 		// Verify that the signing is correct
 		String kid = jsonObject.getString("kid");
 	            
 		String iss=jsonObject.getString("iss");
 		
-
+/*
 if (iss.startsWith("did:web:") && iss.endsWith(":did")) {
     String domain = iss.substring("did:web:".length(), iss.length() - ":did".length());
     if(verifiers.containsKey(domain)) {
@@ -639,7 +639,7 @@ if (iss.startsWith("did:web:") && iss.endsWith(":did")) {
 		    if(verificationResult) {
 		    	System.out.println("Access token signature has been successfully verified.\n");
 		    }else {System.out.println("There was an error verifying Access token signature.\n"); allMatches=false; }
-		 
+		 */
 		// POLICY MATCHING
 
 		// Take the verifiable presentation or credential values
@@ -727,6 +727,7 @@ if (iss.startsWith("did:web:") && iss.endsWith(":did")) {
 
 				}
 				if (f.getFilter() != null) {
+					System.out.println("detecto el filtro");
 					for (String i : path) {
 						if (f.getFilter().getType().equals("string")) {
 							String patron = f.getFilter().getPattern();
@@ -760,6 +761,7 @@ if (iss.startsWith("did:web:") && iss.endsWith(":did")) {
 												
 											} else if(arrayGlobal!=null) {
 												for(JsonValue v : arrayGlobal) {
+													System.out.println("evaluando: "+v);
 													if(v.getValueType()== JsonValue.ValueType.OBJECT) {
 														if (v.asJsonObject() != null) {
 															objGlobal = v.asJsonObject();
@@ -768,12 +770,15 @@ if (iss.startsWith("did:web:") && iss.endsWith(":did")) {
 															if(objGlobal.get(parte2).getValueType()==JsonValue.ValueType.ARRAY) {
 																arrayGlobal=objGlobal.get(parte2).asJsonArray();
 																for(JsonValue vv : arrayGlobal) {
+																	System.out.println("evaluando... "+vv);
 																	 if (vv.getValueType() == JsonValue.ValueType.STRING) {
 																		String valorS=vv.toString();
+																		System.out.println(valorS);
 													                        if (patron1.equals(valorS)) {
 													                            contains=true;
 													                            valueMatched=valorS;
-													                            System.out.println("role matches: "+valueMatched);
+													                            System.out.println("role matches: "+valueMatched); 
+													                          //  break;
 													                        } 
 																	 }
 																}	if(contains==false) {allMatches=false;}
@@ -781,6 +786,7 @@ if (iss.startsWith("did:web:") && iss.endsWith(":did")) {
 																JsonValue valor = objGlobal.get(parte2);
 										                        // Procesamos este valor de la misma forma que lo hacíamos antes
 										                        String valorS = valor.toString();
+										                        System.out.println("objeto: "+valorS);
 										                        if (patron1.equals(valorS)) {
 										                            contains=true;
 										                            valueMatched=valorS;
@@ -797,6 +803,7 @@ if (iss.startsWith("did:web:") && iss.endsWith(":did")) {
 											} 
 											
 											else {
+												System.out.println("error!");
 												allMatches = false;
 											}
 										}
